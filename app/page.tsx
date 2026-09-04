@@ -154,7 +154,7 @@ const softwareStack = [
   },
 ];
 
-// مطابقة تامة 100% مع أسماء ملفاتك داخل مجلد public/video/
+// مسارات مطابقة بالحرف لأسماء الملفات لديك
 const videosData = [
   {
     id: "man-u",
@@ -162,7 +162,6 @@ const videosData = [
     category: "Sports",
     tab: "commercial",
     src: "/video/Man-U.mp4",
-    poster: "/images/thumbnails/thumb-6.png",
     description:
       "Fast-paced football edit focused on rhythm, impact, typography and music synchronization.",
     orientation: "portrait",
@@ -173,7 +172,6 @@ const videosData = [
     category: "Cinematic Narrative",
     tab: "cinematic",
     src: "/video/The-Odyssey.mp4",
-    poster: "/images/thumbnails/thumb-1.png",
     description:
       "Cinematic storytelling edit combining pacing, atmosphere, sound design and visual continuity.",
     orientation: "landscape",
@@ -184,7 +182,6 @@ const videosData = [
     category: "Brand Campaign",
     tab: "commercial",
     src: "/video/Mb22.mp4",
-    poster: "/images/thumbnails/thumb-5.png",
     description:
       "Commercial showcase built around product presentation, dynamic cuts and visual impact.",
     orientation: "landscape",
@@ -195,7 +192,6 @@ const videosData = [
     category: "Color Correction",
     tab: "commercial",
     src: "/video/Color.mp4",
-    poster: "/images/thumbnails/thumb-4.png",
     description:
       "Color grading showcase demonstrating contrast, skin tones, mood and cinematic look development.",
     orientation: "landscape",
@@ -206,7 +202,6 @@ const videosData = [
     category: "TikTok / Reels",
     tab: "reels",
     src: "/video/1.mp4",
-    poster: "/images/thumbnails/thumb-2.png",
     description:
       "Short-form edit designed around strong hooks, rapid pacing and audience retention.",
     orientation: "portrait",
@@ -217,7 +212,6 @@ const videosData = [
     category: "Pop-Up Subtitles",
     tab: "reels",
     src: "/video/2.mp4",
-    poster: "/images/thumbnails/thumb-3.png",
     description:
       "Business-focused short-form edit using animated subtitles, visual emphasis and sound effects.",
     orientation: "portrait",
@@ -228,7 +222,6 @@ const videosData = [
     category: "Fast Paced",
     tab: "reels",
     src: "/video/3.mp4",
-    poster: "/images/thumbnails/thumb-4.png",
     description:
       "High-energy social edit focused on hooks, fast transitions and visual storytelling.",
     orientation: "portrait",
@@ -239,7 +232,6 @@ const videosData = [
     category: "Fast Paced Cuts",
     tab: "reels",
     src: "/video/4.mp4",
-    poster: "/images/thumbnails/thumb-2.png",
     description:
       "Engagement-first edit with rhythmic cuts, zooms, subtitles and layered sound design.",
     orientation: "portrait",
@@ -250,7 +242,6 @@ const videosData = [
     category: "Commercial Cut",
     tab: "reels",
     src: "/video/5.mp4",
-    poster: "/images/thumbnails/thumb-3.png",
     description:
       "Brand storytelling reel combining clean editing, narrative structure and visual consistency.",
     orientation: "portrait",
@@ -261,7 +252,6 @@ const videosData = [
     category: "Short-Form Reel",
     tab: "reels",
     src: "/video/12.mp4",
-    poster: "/images/thumbnails/thumb-2.png",
     description:
       "Short-form social media edit built to grab attention immediately and maintain momentum.",
     orientation: "portrait",
@@ -272,7 +262,6 @@ const videosData = [
     category: "Cinematic Sound Design",
     tab: "cinematic",
     src: "/video/Habib-Ayamy.mp4",
-    poster: "/images/thumbnails/thumb-1.png",
     description:
       "Emotional cinematic edit with music synchronization, atmosphere and detailed sound design.",
     orientation: "portrait",
@@ -535,7 +524,7 @@ function MarqueeCard({
   );
 }
 
-// --- VIDEO CARD ---
+// --- VIDEO CARD (الفيديو نفسه هو الثامنيل) ---
 
 function VideoCard({
   item,
@@ -579,76 +568,65 @@ function VideoCard({
       <motion.div
         whileHover={{ y: -6 }}
         transition={{ duration: 0.25 }}
-        className="bg-[#141414] border border-white/10 rounded-[32px] overflow-hidden p-3.5 shadow-2xl flex flex-col justify-between h-full group hover:border-[#B600A8]/50"
+        className="bg-[#141414] border border-white/10 rounded-[28px] sm:rounded-[32px] overflow-hidden p-3 sm:p-3.5 shadow-2xl flex flex-col justify-between h-full group hover:border-[#B600A8]/50"
       >
         <div
           onMouseEnter={handleEnter}
           onMouseLeave={handleLeave}
           onClick={() => onOpen(item)}
-          className={`rounded-[24px] overflow-hidden ${aspectClass} bg-black relative cursor-pointer`}
+          className={`rounded-[20px] sm:rounded-[24px] overflow-hidden ${aspectClass} bg-black relative cursor-pointer`}
         >
-          <img
-            src={item.poster}
-            alt={item.title}
-            loading="lazy"
-            className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 ${
-              isHovered ? "opacity-0 scale-105" : "opacity-100"
-            }`}
-          />
-
+          {/* الفيديو نفسه يعمل كـ Thumbnail أصلي مطابق للمحتوى 100% */}
           <video
             ref={videoRef}
-            src={item.src}
-            poster={item.poster}
+            src={`${item.src}#t=0.001`}
             muted
             loop
             playsInline
-            preload="auto"
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
-              isHovered ? "opacity-100" : "opacity-0"
-            }`}
+            preload="metadata"
+            className="w-full h-full object-cover"
           />
 
           <div
-            className={`absolute inset-0 transition-all duration-300 flex items-center justify-center ${
+            className={`absolute inset-0 transition-all duration-300 flex items-center justify-center pointer-events-none ${
               isHovered ? "bg-black/10" : "bg-black/30"
             }`}
           >
             <motion.span
               whileHover={{ scale: 1.12 }}
-              className="w-16 h-16 rounded-full bg-[#B600A8]/90 text-white flex items-center justify-center text-xl shadow-[0_0_30px_rgba(182,0,168,0.35)] backdrop-blur-md"
+              className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#B600A8]/90 text-white flex items-center justify-center text-lg sm:text-xl shadow-[0_0_30px_rgba(182,0,168,0.35)] backdrop-blur-md"
             >
               ▶
             </motion.span>
           </div>
 
-          <div className="absolute top-4 left-4">
-            <span className="px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[10px] uppercase tracking-widest font-bold text-white">
+          <div className="absolute top-3 sm:top-4 left-3 sm:left-4 pointer-events-none">
+            <span className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[9px] sm:text-[10px] uppercase tracking-widest font-bold text-white">
               {item.tab}
             </span>
           </div>
 
-          <div className="absolute bottom-4 right-4">
-            <span className="px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[10px] uppercase tracking-wider text-white/80">
+          <div className="absolute bottom-3 sm:bottom-4 right-3 sm:right-4 pointer-events-none">
+            <span className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[9px] sm:text-[10px] uppercase tracking-wider text-white/80">
               Click to watch
             </span>
           </div>
         </div>
 
-        <div className="p-4 flex items-start justify-between gap-4">
+        <div className="p-3 sm:p-4 flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <span className="text-[11px] font-mono uppercase tracking-wider text-[#B600A8] font-bold">
+            <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-[#B600A8] font-bold">
               {item.category}
             </span>
 
-            <h3 className="text-white font-semibold text-lg mt-1 leading-snug">
+            <h3 className="text-white font-semibold text-base sm:text-lg mt-0.5 sm:mt-1 leading-snug">
               {item.title}
             </h3>
           </div>
 
           <button
             onClick={() => onOpen(item)}
-            className="shrink-0 text-xs uppercase font-bold text-white/50 hover:text-[#B600A8] transition-colors"
+            className="shrink-0 text-[11px] sm:text-xs uppercase font-bold text-white/50 hover:text-[#B600A8] transition-colors pt-1"
           >
             Expand ↗
           </button>
@@ -857,7 +835,7 @@ export default function Home() {
         }}
       />
 
-      {/* VIDEO THEATER MODE */}
+      {/* VIDEO THEATER MODE - محسن بالكامل للموبايل والكمبيوتر */}
       <AnimatePresence>
         {activeModalVideo && (
           <motion.div
@@ -865,11 +843,12 @@ export default function Home() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={closeModal}
-            className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-3 sm:p-6"
+            className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-2 sm:p-6"
           >
-            <div className="absolute top-0 left-0 right-0 z-[120] p-4 sm:p-6 flex items-center justify-between pointer-events-none">
+            {/* الشريط العلوي */}
+            <div className="absolute top-3 sm:top-6 left-3 sm:left-6 right-3 sm:right-6 z-[130] flex items-center justify-between pointer-events-none">
               <div className="pointer-events-auto">
-                <span className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl text-[10px] sm:text-xs uppercase tracking-widest text-[#B600A8] font-bold">
+                <span className="px-3 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur-xl text-[10px] sm:text-xs uppercase tracking-widest text-[#B600A8] font-bold">
                   {currentVideoIndex + 1} / {videosData.length}
                 </span>
               </div>
@@ -887,7 +866,7 @@ export default function Home() {
 
                 <button
                   onClick={closeModal}
-                  className="w-11 h-11 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl text-white flex items-center justify-center text-lg hover:bg-[#B600A8] hover:border-[#B600A8] transition-all"
+                  className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/10 border border-white/10 backdrop-blur-xl text-white flex items-center justify-center text-lg hover:bg-[#B600A8] transition-all"
                   aria-label="Close video"
                 >
                   ✕
@@ -895,12 +874,13 @@ export default function Home() {
               </div>
             </div>
 
+            {/* أزرار التنقل */}
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 goPrevious();
               }}
-              className="absolute left-3 sm:left-8 z-[120] w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-black/50 border border-white/10 backdrop-blur-xl text-white flex items-center justify-center text-xl sm:text-2xl hover:bg-[#B600A8] hover:border-[#B600A8] transition-all"
+              className="absolute left-2 sm:left-6 z-[120] w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 border border-white/15 backdrop-blur-xl text-white flex items-center justify-center text-xl hover:bg-[#B600A8] transition-all"
               aria-label="Previous video"
             >
               ←
@@ -911,29 +891,29 @@ export default function Home() {
                 e.stopPropagation();
                 goNext();
               }}
-              className="absolute right-3 sm:right-8 z-[120] w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-black/50 border border-white/10 backdrop-blur-xl text-white flex items-center justify-center text-xl sm:text-2xl hover:bg-[#B600A8] hover:border-[#B600A8] transition-all"
+              className="absolute right-2 sm:right-6 z-[120] w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 border border-white/15 backdrop-blur-xl text-white flex items-center justify-center text-xl hover:bg-[#B600A8] transition-all"
               aria-label="Next video"
             >
               →
             </button>
 
+            {/* حاوية الفيديو المصممة لشاشات الهواتف الرأسية بدقة dvh */}
             <motion.div
-              initial={{ scale: 0.92, opacity: 0 }}
+              initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.92, opacity: 0 }}
-              transition={{ duration: 0.3 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              transition={{ duration: 0.25 }}
               onClick={(e) => e.stopPropagation()}
               className={`relative ${
                 activeModalVideo.orientation === "landscape"
-                  ? "w-[90vw] max-w-5xl aspect-video"
-                  : "h-[88vh] w-auto aspect-[9/16] max-w-[90vw]"
-              } bg-black rounded-[24px] sm:rounded-[32px] overflow-hidden border border-white/15 shadow-[0_0_80px_rgba(182,0,168,0.25)]`}
+                  ? "w-full max-w-4xl aspect-video"
+                  : "w-full max-w-[380px] sm:max-w-sm h-[84dvh] sm:h-[88vh] aspect-[9/16]"
+              } bg-black rounded-[28px] sm:rounded-[36px] overflow-hidden border border-white/15 shadow-[0_0_60px_rgba(182,0,168,0.25)]`}
             >
               <video
                 key={activeModalVideo.id}
                 ref={modalVideoRef}
                 src={activeModalVideo.src}
-                poster={activeModalVideo.poster}
                 autoPlay
                 controls
                 playsInline
@@ -941,20 +921,24 @@ export default function Home() {
                 preload="auto"
                 onPlay={() => setIsPlaying(true)}
                 onPause={() => setIsPlaying(false)}
-                className="w-full h-full object-contain bg-black"
+                className={`w-full h-full bg-black ${
+                  activeModalVideo.orientation === "landscape"
+                    ? "object-contain"
+                    : "object-cover"
+                }`}
               />
 
-              <div className="absolute left-0 right-0 bottom-0 pointer-events-none p-5 sm:p-7 bg-gradient-to-t from-black via-black/80 to-transparent">
+              <div className="absolute left-0 right-0 bottom-0 pointer-events-none p-4 sm:p-6 bg-gradient-to-t from-black via-black/80 to-transparent">
                 <div className="max-w-2xl">
                   <span className="text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] text-[#B600A8] font-bold">
                     {activeModalVideo.category}
                   </span>
 
-                  <h3 className="text-white font-bold text-lg sm:text-2xl mt-1">
+                  <h3 className="text-white font-bold text-base sm:text-xl mt-0.5 leading-snug">
                     {activeModalVideo.title}
                   </h3>
 
-                  <p className="hidden sm:block text-white/60 text-sm mt-2 max-w-xl leading-relaxed">
+                  <p className="hidden sm:block text-white/60 text-xs sm:text-sm mt-1.5 max-w-xl leading-relaxed">
                     {activeModalVideo.description}
                   </p>
                 </div>
@@ -1220,7 +1204,7 @@ export default function Home() {
       {/* FEATURED VIDEOS */}
       <section
         id="videos"
-        className="py-24 px-5 sm:px-8 md:px-12 bg-[#0C0C0C] border-t border-white/5"
+        className="py-20 sm:py-24 px-4 sm:px-8 md:px-12 bg-[#0C0C0C] border-t border-white/5"
       >
         <div className="max-w-6xl mx-auto">
           <FadeIn delay={0} y={30} className="text-center mb-8">
@@ -1231,11 +1215,11 @@ export default function Home() {
             <div className="relative inline-block mt-3">
               <button
                 onClick={() => setIsVideoMenuOpen(!isVideoMenuOpen)}
-                className="group inline-flex items-center gap-3 sm:gap-4 hero-heading font-black uppercase text-3xl sm:text-5xl md:text-6xl hover:opacity-90 transition-all cursor-pointer select-none"
+                className="group inline-flex items-center gap-3 sm:gap-4 hero-heading font-black uppercase text-2xl sm:text-5xl md:text-6xl hover:opacity-90 transition-all cursor-pointer select-none"
               >
                 <span>Featured Video Cuts</span>
                 <span
-                  className={`text-2xl sm:text-4xl text-[#B600A8] transition-transform duration-300 ${
+                  className={`text-xl sm:text-4xl text-[#B600A8] transition-transform duration-300 ${
                     isVideoMenuOpen ? "rotate-180" : "rotate-0"
                   }`}
                 >
@@ -1270,7 +1254,7 @@ export default function Home() {
                             tab.id as "all" | "reels" | "commercial" | "cinematic"
                           )
                         }
-                        className={`px-5 py-2 rounded-full text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all duration-200 border ${
+                        className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all duration-200 border ${
                           selectedVideoTab === tab.id
                             ? "bg-[#B600A8] text-white border-[#B600A8] shadow-lg shadow-[#B600A8]/30"
                             : "bg-white/5 text-[#D7E2EA]/70 border-white/10 hover:border-white/20 hover:text-white"
@@ -1292,7 +1276,7 @@ export default function Home() {
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -15 }}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-12"
               >
                 {filteredVideos.map((item, idx) => (
                   <VideoCard
