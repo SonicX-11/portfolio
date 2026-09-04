@@ -154,13 +154,14 @@ const softwareStack = [
   },
 ];
 
+// تم تدقيق ومطابقة المسارات بالحروف الكبيرة لتطابق أسماء الملفات على Git و Vercel تماماً
 const videosData = [
   {
     id: "man-u",
     title: "Manchester United Highlight Cut",
     category: "Sports",
     tab: "commercial",
-    src: "/video/man-u.mp4",
+    src: "/video/Man-U.mp4",
     poster: "/images/thumbnails/thumb-6.png",
     description:
       "Fast-paced football edit focused on rhythm, impact, typography and music synchronization.",
@@ -171,7 +172,7 @@ const videosData = [
     title: "The Odyssey Cinematic Master",
     category: "Cinematic Narrative",
     tab: "cinematic",
-    src: "/video/the-odyssey.mp4",
+    src: "/video/The-Odyssey.mp4",
     poster: "/images/thumbnails/thumb-1.png",
     description:
       "Cinematic storytelling edit combining pacing, atmosphere, sound design and visual continuity.",
@@ -182,7 +183,7 @@ const videosData = [
     title: "Commercial Showcase (mb22)",
     category: "Brand Campaign",
     tab: "commercial",
-    src: "/video/mb22.mp4",
+    src: "/video/Mb22.mp4",
     poster: "/images/thumbnails/thumb-5.png",
     description:
       "Commercial showcase built around product presentation, dynamic cuts and visual impact.",
@@ -193,7 +194,7 @@ const videosData = [
     title: "Color Grading Reel",
     category: "Color Correction",
     tab: "commercial",
-    src: "/video/color.mp4",
+    src: "/video/Color.mp4",
     poster: "/images/thumbnails/thumb-4.png",
     description:
       "Color grading showcase demonstrating contrast, skin tones, mood and cinematic look development.",
@@ -270,7 +271,7 @@ const videosData = [
     title: "Habib Ayamy",
     category: "Cinematic Sound Design",
     tab: "cinematic",
-    src: "/video/habib-ayamy.mp4",
+    src: "/video/Habib-Ayamy.mp4",
     poster: "/images/thumbnails/thumb-1.png",
     description:
       "Emotional cinematic edit with music synchronization, atmosphere and detailed sound design.",
@@ -307,13 +308,13 @@ const marqueeItems = [
     title: "Gigabyte B840M Eagle",
     category: "Hardware Commercial",
     image: "/images/thumbnails/thumb-5.png",
-    video: "/video/mb22.mp4",
+    video: "/video/Mb22.mp4",
   },
   {
     title: "Manchester United | Bruno Cut",
     category: "Sports Poster",
     image: "/images/thumbnails/thumb-6.png",
-    video: "/video/man-u.mp4",
+    video: "/video/Man-U.mp4",
   },
 ];
 
@@ -534,7 +535,7 @@ function MarqueeCard({
   );
 }
 
-// --- VIDEO CARD ---
+// --- VIDEO CARD (FEATURED SECTION) ---
 
 function VideoCard({
   item,
@@ -550,16 +551,18 @@ function VideoCard({
 
   const handleEnter = () => {
     setIsHovered(true);
-
     if (videoRef.current) {
       videoRef.current.currentTime = 0;
-      videoRef.current.play().catch(() => {});
+      videoRef.current.muted = true;
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {});
+      }
     }
   };
 
   const handleLeave = () => {
     setIsHovered(false);
-
     if (videoRef.current) {
       videoRef.current.pause();
       videoRef.current.currentTime = 0;
@@ -593,10 +596,10 @@ function VideoCard({
             }`}
           />
 
+          {/* تم ضبط الكتم الإجباري الصريح لضمان عمل المعاينة لدى جميع المتصفحات */}
           <video
             ref={videoRef}
             src={item.src}
-            poster={item.poster}
             muted
             loop
             playsInline
@@ -608,9 +611,7 @@ function VideoCard({
 
           <div
             className={`absolute inset-0 transition-all duration-300 flex items-center justify-center ${
-              isHovered
-                ? "bg-black/10"
-                : "bg-black/30"
+              isHovered ? "bg-black/10" : "bg-black/30"
             }`}
           >
             <motion.span
@@ -660,44 +661,20 @@ function VideoCard({
 // --- MAIN COMPONENT ---
 
 export default function Home() {
-  const [currencyMode, setCurrencyMode] = useState<
-    "ALL" | "USD" | "EGP"
-  >("ALL");
-
-  const [selectedVideoTab, setSelectedVideoTab] = useState<
-    "all" | "reels" | "commercial" | "cinematic"
-  >("all");
-
-  const [isVideoMenuOpen, setIsVideoMenuOpen] =
-    useState(false);
-
-  const [isThumbnailsMenuOpen, setIsThumbnailsMenuOpen] =
-    useState(false);
-
-  const [activeModalVideo, setActiveModalVideo] =
-    useState<(typeof videosData)[0] | null>(null);
-
-  const [showScrollTop, setShowScrollTop] =
-    useState(false);
-
-  const [mousePos, setMousePos] = useState({
-    x: -200,
-    y: -200,
-  });
-
+  const [currencyMode, setCurrencyMode] = useState<"ALL" | "USD" | "EGP">("ALL");
+  const [selectedVideoTab, setSelectedVideoTab] = useState<"all" | "reels" | "commercial" | "cinematic">("all");
+  const [isVideoMenuOpen, setIsVideoMenuOpen] = useState(true); // تم جعلها مفتوحة تلقائياً لسهولة استعراض الفيديوهات
+  const [isThumbnailsMenuOpen, setIsThumbnailsMenuOpen] = useState(false);
+  const [activeModalVideo, setActiveModalVideo] = useState<(typeof videosData)[0] | null>(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: -200, y: -200 });
   const [typedText, setTypedText] = useState("");
-
   const marqueeRef = useRef<HTMLDivElement>(null);
-
   const [scrollOffset, setScrollOffset] = useState(0);
-
-  const modalVideoRef =
-    useRef<HTMLVideoElement>(null);
-
+  const modalVideoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(true);
-
-  const [isFullscreen, setIsFullscreen] =
-    useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isModalMuted, setIsModalMuted] = useState(false);
 
   // Typewriter
   useEffect(() => {
@@ -723,52 +700,23 @@ export default function Home() {
 
       if (!marqueeRef.current) return;
 
-      const rect =
-        marqueeRef.current.getBoundingClientRect();
-
-      const sectionTop =
-        window.scrollY + rect.top;
-
-      const offset =
-        (window.scrollY -
-          sectionTop +
-          window.innerHeight) *
-        0.3;
-
+      const rect = marqueeRef.current.getBoundingClientRect();
+      const sectionTop = window.scrollY + rect.top;
+      const offset = (window.scrollY - sectionTop + window.innerHeight) * 0.3;
       setScrollOffset(offset);
     };
 
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({
-        x: e.clientX,
-        y: e.clientY,
-      });
+      setMousePos({ x: e.clientX, y: e.clientY });
     };
 
-    window.addEventListener(
-      "scroll",
-      handleScroll,
-      { passive: true }
-    );
-
-    window.addEventListener(
-      "mousemove",
-      handleMouseMove,
-      { passive: true }
-    );
-
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
     handleScroll();
 
     return () => {
-      window.removeEventListener(
-        "scroll",
-        handleScroll
-      );
-
-      window.removeEventListener(
-        "mousemove",
-        handleMouseMove
-      );
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
 
@@ -776,48 +724,34 @@ export default function Home() {
     if (modalVideoRef.current) {
       modalVideoRef.current.pause();
     }
-
     setActiveModalVideo(null);
     setIsFullscreen(false);
   }, []);
 
-  const openModal = useCallback(
-    (video: (typeof videosData)[0]) => {
-      setActiveModalVideo(video);
-      setIsPlaying(true);
-    },
-    []
-  );
+  const openModal = useCallback((video: (typeof videosData)[0]) => {
+    setActiveModalVideo(video);
+    setIsPlaying(true);
+  }, []);
 
   const currentVideoIndex = activeModalVideo
-    ? videosData.findIndex(
-        (video) => video.id === activeModalVideo.id
-      )
+    ? videosData.findIndex((video) => video.id === activeModalVideo.id)
     : -1;
 
   const goNext = useCallback(() => {
     if (currentVideoIndex === -1) return;
-
-    const nextIndex =
-      (currentVideoIndex + 1) %
-      videosData.length;
-
+    const nextIndex = (currentVideoIndex + 1) % videosData.length;
     setActiveModalVideo(videosData[nextIndex]);
     setIsPlaying(true);
   }, [currentVideoIndex]);
 
   const goPrevious = useCallback(() => {
     if (currentVideoIndex === -1) return;
-
-    const previousIndex =
-      (currentVideoIndex - 1 + videosData.length) %
-      videosData.length;
-
+    const previousIndex = (currentVideoIndex - 1 + videosData.length) % videosData.length;
     setActiveModalVideo(videosData[previousIndex]);
     setIsPlaying(true);
   }, [currentVideoIndex]);
 
-  // Modal ESC Key
+  // Modal ESC & Shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!activeModalVideo) return;
@@ -825,48 +759,56 @@ export default function Home() {
       if (e.key === "Escape") {
         closeModal();
       }
-
       if (e.key === "ArrowRight") {
         goNext();
       }
-
       if (e.key === "ArrowLeft") {
         goPrevious();
       }
-
       if (e.key === " ") {
         e.preventDefault();
-
         if (!modalVideoRef.current) return;
 
         if (modalVideoRef.current.paused) {
-          modalVideoRef.current
-            .play()
-            .catch(() => {});
-
+          modalVideoRef.current.play().catch(() => {});
           setIsPlaying(true);
         } else {
           modalVideoRef.current.pause();
           setIsPlaying(false);
         }
       }
-
       if (e.key.toLowerCase() === "f") {
         toggleFullscreen();
       }
     };
 
-    window.addEventListener(
-      "keydown",
-      handleKeyDown
-    );
-
-    return () =>
-      window.removeEventListener(
-        "keydown",
-        handleKeyDown
-      );
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [activeModalVideo, closeModal, goNext, goPrevious]);
+
+  // التحكم في تشغيل الفيديو التفاعلي في المودال عند التبديل
+  useEffect(() => {
+    if (activeModalVideo && modalVideoRef.current) {
+      modalVideoRef.current.currentTime = 0;
+      const playPromise = modalVideoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // في حال منع المتصفح الصوت التلقائي، يُشغل صامتاً لتفادي التعليق
+          if (modalVideoRef.current) {
+            modalVideoRef.current.muted = true;
+            setIsModalMuted(true);
+            modalVideoRef.current.play().catch(() => {});
+          }
+        });
+      }
+    }
+  }, [activeModalVideo]);
+
+  const toggleSound = () => {
+    if (!modalVideoRef.current) return;
+    modalVideoRef.current.muted = !modalVideoRef.current.muted;
+    setIsModalMuted(modalVideoRef.current.muted);
+  };
 
   const toggleFullscreen = async () => {
     try {
@@ -888,11 +830,7 @@ export default function Home() {
     if (selectedVideoTab === "all") {
       return videosData;
     }
-
-    return videosData.filter(
-      (video) =>
-        video.tab === selectedVideoTab
-    );
+    return videosData.filter((video) => video.tab === selectedVideoTab);
   }, [selectedVideoTab]);
 
   const tripleMarqueeItems = [
@@ -902,10 +840,7 @@ export default function Home() {
   ];
 
   const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -937,18 +872,30 @@ export default function Home() {
             <div className="absolute top-0 left-0 right-0 z-[120] p-4 sm:p-6 flex items-center justify-between pointer-events-none">
               <div className="pointer-events-auto">
                 <span className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl text-[10px] sm:text-xs uppercase tracking-widest text-[#B600A8] font-bold">
-                  {currentVideoIndex + 1} /{" "}
-                  {videosData.length}
+                  {currentVideoIndex + 1} / {videosData.length}
                 </span>
               </div>
 
-              <button
-                onClick={closeModal}
-                className="pointer-events-auto w-11 h-11 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl text-white flex items-center justify-center text-lg hover:bg-[#B600A8] hover:border-[#B600A8] transition-all"
-                aria-label="Close video"
-              >
-                ✕
-              </button>
+              <div className="flex items-center gap-2 pointer-events-auto">
+                {/* زر تشغيل / كتم الصوت في المودال */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleSound();
+                  }}
+                  className="px-3 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur-xl text-white text-xs font-bold hover:bg-[#B600A8] transition-all flex items-center gap-1.5"
+                >
+                  {isModalMuted ? "🔇 UNMUTE" : "🔊 MUTE"}
+                </button>
+
+                <button
+                  onClick={closeModal}
+                  className="w-11 h-11 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl text-white flex items-center justify-center text-lg hover:bg-[#B600A8] hover:border-[#B600A8] transition-all"
+                  aria-label="Close video"
+                >
+                  ✕
+                </button>
+              </div>
             </div>
 
             <button
@@ -974,27 +921,13 @@ export default function Home() {
             </button>
 
             <motion.div
-              initial={{
-                scale: 0.92,
-                opacity: 0,
-              }}
-              animate={{
-                scale: 1,
-                opacity: 1,
-              }}
-              exit={{
-                scale: 0.92,
-                opacity: 0,
-              }}
-              transition={{
-                duration: 0.3,
-              }}
-              onClick={(e) =>
-                e.stopPropagation()
-              }
+              initial={{ scale: 0.92, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.92, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              onClick={(e) => e.stopPropagation()}
               className={`relative ${
-                activeModalVideo.orientation ===
-                "landscape"
+                activeModalVideo.orientation === "landscape"
                   ? "w-[90vw] max-w-5xl aspect-video"
                   : "h-[88vh] w-auto aspect-[9/16] max-w-[90vw]"
               } bg-black rounded-[24px] sm:rounded-[32px] overflow-hidden border border-white/15 shadow-[0_0_80px_rgba(182,0,168,0.25)]`}
@@ -1007,6 +940,7 @@ export default function Home() {
                 autoPlay
                 controls
                 playsInline
+                loop
                 onPlay={() => setIsPlaying(true)}
                 onPause={() => setIsPlaying(false)}
                 className="w-full h-full object-contain bg-black"
@@ -1032,17 +966,9 @@ export default function Home() {
                 <div className="flex gap-2 pointer-events-auto">
                   <button
                     onClick={() => {
-                      if (!modalVideoRef.current)
-                        return;
-
-                      if (
-                        modalVideoRef.current
-                          .paused
-                      ) {
-                        modalVideoRef.current
-                          .play()
-                          .catch(() => {});
-
+                      if (!modalVideoRef.current) return;
+                      if (modalVideoRef.current.paused) {
+                        modalVideoRef.current.play().catch(() => {});
                         setIsPlaying(true);
                       } else {
                         modalVideoRef.current.pause();
@@ -1050,11 +976,7 @@ export default function Home() {
                       }
                     }}
                     className="w-10 h-10 rounded-full bg-black/60 border border-white/10 backdrop-blur-md text-white flex items-center justify-center hover:bg-[#B600A8] transition-colors"
-                    aria-label={
-                      isPlaying
-                        ? "Pause"
-                        : "Play"
-                    }
+                    aria-label={isPlaying ? "Pause" : "Play"}
                   >
                     {isPlaying ? "Ⅱ" : "▶"}
                   </button>
@@ -1065,7 +987,7 @@ export default function Home() {
                   className="pointer-events-auto w-10 h-10 rounded-full bg-black/60 border border-white/10 backdrop-blur-md text-white flex items-center justify-center hover:bg-[#B600A8] transition-colors"
                   aria-label="Fullscreen"
                 >
-                  {isFullscreen ? "⛶" : "⛶"}
+                  ⛶
                 </button>
               </div>
             </motion.div>
@@ -1075,54 +997,15 @@ export default function Home() {
 
       {/* HERO SECTION */}
       <section className="relative min-h-screen flex flex-col justify-between overflow-x-clip bg-[#0C0C0C] pb-8">
-        <FadeIn
-          delay={0}
-          y={-20}
-          className="w-full z-30"
-        >
+        <FadeIn delay={0} y={-20} className="w-full z-30">
           <nav className="flex justify-between items-center px-6 md:px-10 pt-6 md:pt-8 text-sm md:text-base font-medium tracking-wider uppercase gap-6">
             <div className="flex gap-5 sm:gap-8 items-center flex-wrap">
-              <a
-                href="#about"
-                className="hover:text-[#B600A8] transition-colors"
-              >
-                About
-              </a>
-
-              <a
-                href="#videos"
-                className="hover:text-[#B600A8] transition-colors"
-              >
-                Videos
-              </a>
-
-              <a
-                href="#price"
-                className="hover:text-[#B600A8] transition-colors"
-              >
-                Pricing
-              </a>
-
-              <a
-                href="#reviews"
-                className="hover:text-[#B600A8] transition-colors"
-              >
-                Reviews
-              </a>
-
-              <a
-                href="#thumbnails"
-                className="hover:text-[#B600A8] transition-colors"
-              >
-                Thumbnails
-              </a>
-
-              <a
-                href="#services"
-                className="hover:text-[#B600A8] transition-colors"
-              >
-                Services
-              </a>
+              <a href="#about" className="hover:text-[#B600A8] transition-colors">About</a>
+              <a href="#videos" className="hover:text-[#B600A8] transition-colors">Videos</a>
+              <a href="#price" className="hover:text-[#B600A8] transition-colors">Pricing</a>
+              <a href="#reviews" className="hover:text-[#B600A8] transition-colors">Reviews</a>
+              <a href="#thumbnails" className="hover:text-[#B600A8] transition-colors">Thumbnails</a>
+              <a href="#services" className="hover:text-[#B600A8] transition-colors">Services</a>
             </div>
 
             <div className="flex items-center gap-3 shrink-0">
@@ -1168,29 +1051,17 @@ export default function Home() {
         </FadeIn>
 
         <div className="overflow-hidden w-full select-none my-auto">
-          <FadeIn
-            delay={0.15}
-            y={40}
-          >
+          <FadeIn delay={0.15} y={40}>
             <h1 className="hero-heading font-black uppercase tracking-tight leading-none whitespace-nowrap w-full text-center text-[15vw] sm:text-[16vw] md:text-[18vw] inline-flex items-center justify-center">
               <span>{typedText}</span>
-
-              <span className="text-[#B600A8] animate-pulse ml-2 font-light">
-                |
-              </span>
+              <span className="text-[#B600A8] animate-pulse ml-2 font-light">|</span>
             </h1>
           </FadeIn>
         </div>
 
         <div className="absolute left-1/2 -translate-x-1/2 z-10 bottom-16 sm:bottom-10 pointer-events-auto">
-          <FadeIn
-            delay={0.4}
-            y={30}
-          >
-            <Magnet
-              padding={150}
-              strength={3}
-            >
+          <FadeIn delay={0.4} y={30}>
+            <Magnet padding={150} strength={3}>
               <img
                 src="/images/avatar.png"
                 alt="Lil Portrait"
@@ -1201,20 +1072,13 @@ export default function Home() {
         </div>
 
         <div className="flex flex-col sm:flex-row justify-between items-center sm:items-end px-6 md:px-10 gap-6 z-20 mt-12 sm:mt-0">
-          <FadeIn
-            delay={0.3}
-            y={20}
-          >
+          <FadeIn delay={0.3} y={20}>
             <p className="text-[#D7E2EA] font-light leading-snug max-w-[280px] text-center sm:text-start text-xs sm:text-sm md:text-base opacity-80 uppercase tracking-wide">
               Senior video editor shaping memorable visual stories
             </p>
           </FadeIn>
 
-          <FadeIn
-            delay={0.4}
-            y={20}
-            className="flex gap-3 items-center"
-          >
+          <FadeIn delay={0.4} y={20} className="flex gap-3 items-center">
             <a
               href="#videos"
               className="rounded-full border-2 border-[#D7E2EA] text-[#D7E2EA] font-medium uppercase tracking-widest px-6 py-2.5 text-xs sm:text-sm hover:bg-white/10 transition-colors"
@@ -1252,42 +1116,26 @@ export default function Home() {
             willChange: "transform",
           }}
         >
-          {tripleMarqueeItems.map(
-            (item, i) => (
-              <MarqueeCard
-                key={i}
-                item={item}
-              />
-            )
-          )}
+          {tripleMarqueeItems.map((item, i) => (
+            <MarqueeCard key={i} item={item} />
+          ))}
         </div>
       </section>
 
       {/* ABOUT */}
-      <section
-        id="about"
-        className="py-24 px-6 md:px-12 bg-[#0C0C0C]"
-      >
+      <section id="about" className="py-24 px-6 md:px-12 bg-[#0C0C0C]">
         <div className="max-w-5xl mx-auto">
-          <FadeIn
-            delay={0}
-            y={30}
-            className="text-center mb-16"
-          >
+          <FadeIn delay={0} y={30} className="text-center mb-16">
             <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
               Background & Track Record
             </span>
-
             <h2 className="hero-heading font-black uppercase text-4xl sm:text-6xl md:text-7xl mt-2">
               Who Am I
             </h2>
           </FadeIn>
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-            <FadeIn
-              delay={0.1}
-              className="md:col-span-7 bg-[#141414] border border-white/10 rounded-[32px] p-8 sm:p-10"
-            >
+            <FadeIn delay={0.1} className="md:col-span-7 bg-[#141414] border border-white/10 rounded-[32px] p-8 sm:p-10">
               <h3 className="text-2xl font-bold text-white mb-4">
                 Hey, I&apos;m Lil — Senior Video Editor
               </h3>
@@ -1298,33 +1146,18 @@ export default function Home() {
 
               <div className="grid grid-cols-3 gap-4 pt-6 border-t border-white/10 text-center mb-8">
                 <div>
-                  <div className="text-2xl sm:text-3xl font-black text-white">
-                    4+
-                  </div>
-
-                  <div className="text-[11px] sm:text-xs text-[#D7E2EA]/60 uppercase tracking-wider mt-1">
-                    Years Experience
-                  </div>
+                  <div className="text-2xl sm:text-3xl font-black text-white">4+</div>
+                  <div className="text-[11px] sm:text-xs text-[#D7E2EA]/60 uppercase tracking-wider mt-1">Years Experience</div>
                 </div>
 
                 <div>
-                  <div className="text-2xl sm:text-3xl font-black text-white">
-                    350+
-                  </div>
-
-                  <div className="text-[11px] sm:text-xs text-[#D7E2EA]/60 uppercase tracking-wider mt-1">
-                    Videos Delivered
-                  </div>
+                  <div className="text-2xl sm:text-3xl font-black text-white">350+</div>
+                  <div className="text-[11px] sm:text-xs text-[#D7E2EA]/60 uppercase tracking-wider mt-1">Videos Delivered</div>
                 </div>
 
                 <div>
-                  <div className="text-2xl sm:text-3xl font-black text-white">
-                    +45%
-                  </div>
-
-                  <div className="text-[11px] sm:text-xs text-[#D7E2EA]/60 uppercase tracking-wider mt-1">
-                    Retention Growth
-                  </div>
+                  <div className="text-2xl sm:text-3xl font-black text-white">+45%</div>
+                  <div className="text-[11px] sm:text-xs text-[#D7E2EA]/60 uppercase tracking-wider mt-1">Retention Growth</div>
                 </div>
               </div>
 
@@ -1334,34 +1167,23 @@ export default function Home() {
                 </span>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {softwareStack.map(
-                    (soft, idx) => (
-                      <div
-                        key={idx}
-                        className="p-3 rounded-2xl bg-white/[0.03] border border-white/10 flex flex-col items-center text-center hover:border-[#B600A8]/60 transition-colors"
-                      >
-                        <span className="w-9 h-9 rounded-xl bg-[#B600A8]/20 border border-[#B600A8]/40 text-[#B600A8] font-black text-sm flex items-center justify-center mb-2">
-                          {soft.icon}
-                        </span>
-
-                        <h4 className="text-white text-xs font-semibold">
-                          {soft.name}
-                        </h4>
-
-                        <p className="text-[10px] text-white/50 mt-0.5 leading-tight">
-                          {soft.tag}
-                        </p>
-                      </div>
-                    )
-                  )}
+                  {softwareStack.map((soft, idx) => (
+                    <div
+                      key={idx}
+                      className="p-3 rounded-2xl bg-white/[0.03] border border-white/10 flex flex-col items-center text-center hover:border-[#B600A8]/60 transition-colors"
+                    >
+                      <span className="w-9 h-9 rounded-xl bg-[#B600A8]/20 border border-[#B600A8]/40 text-[#B600A8] font-black text-sm flex items-center justify-center mb-2">
+                        {soft.icon}
+                      </span>
+                      <h4 className="text-white text-xs font-semibold">{soft.name}</h4>
+                      <p className="text-[10px] text-white/50 mt-0.5 leading-tight">{soft.tag}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
             </FadeIn>
 
-            <FadeIn
-              delay={0.2}
-              className="md:col-span-5 bg-[#141414] border border-white/10 rounded-[32px] p-8 sm:p-10 flex flex-col justify-between h-full"
-            >
+            <FadeIn delay={0.2} className="md:col-span-5 bg-[#141414] border border-white/10 rounded-[32px] p-8 sm:p-10 flex flex-col justify-between h-full">
               <div>
                 <span className="text-xs uppercase tracking-widest text-[#B600A8] font-semibold">
                   Client Deliverables
@@ -1372,24 +1194,13 @@ export default function Home() {
                 </h4>
 
                 <div className="flex flex-wrap gap-2 mb-6">
-                  {[
-                    "Ahmed Abdelkareem",
-                    "Sameh Othman",
-                    "Maryam",
-                    "Sawsan",
-                    "Yasmine",
-                    "Rania",
-                    "Mai",
-                  ].map((client, idx) => (
+                  {["Ahmed Abdelkareem", "Sameh Othman", "Maryam", "Sawsan", "Yasmine", "Rania", "Mai"].map((client, idx) => (
                     <div
                       key={idx}
                       className="px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-[#D7E2EA]/90 flex items-center gap-1.5"
                     >
                       <span className="w-1.5 h-1.5 rounded-full bg-[#B600A8]" />
-
-                      <span>
-                        {client}
-                      </span>
+                      <span>{client}</span>
                     </div>
                   ))}
                 </div>
@@ -1414,33 +1225,20 @@ export default function Home() {
         className="py-24 px-5 sm:px-8 md:px-12 bg-[#0C0C0C] border-t border-white/5"
       >
         <div className="max-w-6xl mx-auto">
-          <FadeIn
-            delay={0}
-            y={30}
-            className="text-center mb-8"
-          >
+          <FadeIn delay={0} y={30} className="text-center mb-8">
             <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
               Interactive Video Portfolio
             </span>
 
             <div className="relative inline-block mt-3">
               <button
-                onClick={() =>
-                  setIsVideoMenuOpen(
-                    !isVideoMenuOpen
-                  )
-                }
+                onClick={() => setIsVideoMenuOpen(!isVideoMenuOpen)}
                 className="group inline-flex items-center gap-3 sm:gap-4 hero-heading font-black uppercase text-3xl sm:text-5xl md:text-6xl hover:opacity-90 transition-all cursor-pointer select-none"
               >
-                <span>
-                  Featured Video Cuts
-                </span>
-
+                <span>Featured Video Cuts</span>
                 <span
                   className={`text-2xl sm:text-4xl text-[#B600A8] transition-transform duration-300 ${
-                    isVideoMenuOpen
-                      ? "rotate-180"
-                      : "rotate-0"
+                    isVideoMenuOpen ? "rotate-180" : "rotate-0"
                   }`}
                 >
                   ▼
@@ -1449,59 +1247,33 @@ export default function Home() {
 
               <p className="text-[#D7E2EA]/60 text-xs sm:text-sm mt-2 tracking-wider">
                 {isVideoMenuOpen
-                  ? "Click any video to open Theater Mode • Use arrows to navigate"
+                  ? "Click any video to open Theater Mode • Hover to preview"
                   : "Click to reveal featured video reels & commercial campaigns"}
               </p>
 
               <AnimatePresence>
                 {isVideoMenuOpen && (
                   <motion.div
-                    initial={{
-                      opacity: 0,
-                      y: -10,
-                    }}
-                    animate={{
-                      opacity: 1,
-                      y: 0,
-                    }}
-                    exit={{
-                      opacity: 0,
-                      y: -10,
-                    }}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
                     className="flex justify-center flex-wrap gap-2 sm:gap-3 mt-6"
                   >
                     {[
-                      {
-                        id: "all",
-                        label: "All Videos (11)",
-                      },
-                      {
-                        id: "reels",
-                        label: "Reels & Hooks (6)",
-                      },
-                      {
-                        id: "commercial",
-                        label: "Commercial & Sports (3)",
-                      },
-                      {
-                        id: "cinematic",
-                        label: "Cinematic & Narrative (2)",
-                      },
+                      { id: "all", label: "All Videos (11)" },
+                      { id: "reels", label: "Reels & Hooks (6)" },
+                      { id: "commercial", label: "Commercial & Sports (3)" },
+                      { id: "cinematic", label: "Cinematic & Narrative (2)" },
                     ].map((tab) => (
                       <button
                         key={tab.id}
                         onClick={() =>
                           setSelectedVideoTab(
-                            tab.id as
-                              | "all"
-                              | "reels"
-                              | "commercial"
-                              | "cinematic"
+                            tab.id as "all" | "reels" | "commercial" | "cinematic"
                           )
                         }
                         className={`px-5 py-2 rounded-full text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all duration-200 border ${
-                          selectedVideoTab ===
-                          tab.id
+                          selectedVideoTab === tab.id
                             ? "bg-[#B600A8] text-white border-[#B600A8] shadow-lg shadow-[#B600A8]/30"
                             : "bg-white/5 text-[#D7E2EA]/70 border-white/10 hover:border-white/20 hover:text-white"
                         }`}
@@ -1519,30 +1291,19 @@ export default function Home() {
             {isVideoMenuOpen && (
               <motion.div
                 key={selectedVideoTab}
-                initial={{
-                  opacity: 0,
-                  y: 15,
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                exit={{
-                  opacity: 0,
-                  y: -15,
-                }}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12"
               >
-                {filteredVideos.map(
-                  (item, idx) => (
-                    <VideoCard
-                      key={item.id}
-                      item={item}
-                      index={idx}
-                      onOpen={openModal}
-                    />
-                  )
-                )}
+                {filteredVideos.map((item, idx) => (
+                  <VideoCard
+                    key={item.id}
+                    item={item}
+                    index={idx}
+                    onOpen={openModal}
+                  />
+                ))}
               </motion.div>
             )}
           </AnimatePresence>
@@ -1550,16 +1311,9 @@ export default function Home() {
       </section>
 
       {/* PRICING */}
-      <section
-        id="price"
-        className="py-24 px-5 sm:px-8 md:px-12 bg-[#0C0C0C]"
-      >
+      <section id="price" className="py-24 px-5 sm:px-8 md:px-12 bg-[#0C0C0C]">
         <div className="max-w-6xl mx-auto">
-          <FadeIn
-            delay={0}
-            y={30}
-            className="text-center mb-10"
-          >
+          <FadeIn delay={0} y={30} className="text-center mb-10">
             <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
               Video Editing Packages & Rates
             </span>
@@ -1573,16 +1327,10 @@ export default function Home() {
             </p>
           </FadeIn>
 
-          <FadeIn
-            delay={0.1}
-            y={20}
-            className="flex justify-center mb-16"
-          >
+          <FadeIn delay={0.1} y={20} className="flex justify-center mb-16">
             <div className="inline-flex items-center p-1 rounded-full bg-white/5 border border-white/10">
               <button
-                onClick={() =>
-                  setCurrencyMode("ALL")
-                }
+                onClick={() => setCurrencyMode("ALL")}
                 className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
                   currencyMode === "ALL"
                     ? "bg-[#B600A8] text-white"
@@ -1593,9 +1341,7 @@ export default function Home() {
               </button>
 
               <button
-                onClick={() =>
-                  setCurrencyMode("USD")
-                }
+                onClick={() => setCurrencyMode("USD")}
                 className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
                   currencyMode === "USD"
                     ? "bg-[#B600A8] text-white"
@@ -1606,9 +1352,7 @@ export default function Home() {
               </button>
 
               <button
-                onClick={() =>
-                  setCurrencyMode("EGP")
-                }
+                onClick={() => setCurrencyMode("EGP")}
                 className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
                   currencyMode === "EGP"
                     ? "bg-[#B600A8] text-white"
@@ -1621,205 +1365,132 @@ export default function Home() {
           </FadeIn>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch mb-20">
-            {packagesData.map(
-              (pkg, idx) => {
-                const selectedPriceText =
-                  currencyMode === "USD"
-                    ? pkg.priceUSD
-                    : currencyMode === "EGP"
-                    ? pkg.priceEGP
-                    : `${pkg.priceUSD} / ${pkg.priceEGP}`;
+            {packagesData.map((pkg, idx) => {
+              const selectedPriceText =
+                currencyMode === "USD"
+                  ? pkg.priceUSD
+                  : currencyMode === "EGP"
+                  ? pkg.priceEGP
+                  : `${pkg.priceUSD} / ${pkg.priceEGP}`;
 
-                const whatsappPreFilledLink =
-                  `https://wa.me/201211871199?text=${encodeURIComponent(
-                    `Hey Lil! I want to book the "${pkg.name}" package (${selectedPriceText} per video). Let's discuss the project details.`
-                  )}`;
+              const whatsappPreFilledLink = `https://wa.me/201211871199?text=${encodeURIComponent(
+                `Hey Lil! I want to book the "${pkg.name}" package (${selectedPriceText} per video). Let's discuss the project details.`
+              )}`;
 
-                return (
-                  <FadeIn
-                    key={pkg.id}
-                    delay={idx * 0.15}
-                    className="flex"
+              return (
+                <FadeIn key={pkg.id} delay={idx * 0.15} className="flex">
+                  <div
+                    className={`w-full rounded-[36px] p-8 flex flex-col justify-between transition-all duration-300 relative ${
+                      pkg.featured
+                        ? "bg-gradient-to-b from-[#18011F] to-[#121212] border-2 border-[#B600A8] shadow-[0_0_40px_rgba(182,0,168,0.25)]"
+                        : "bg-[#141414] border border-white/10 hover:border-white/20"
+                    }`}
                   >
-                    <div
-                      className={`w-full rounded-[36px] p-8 flex flex-col justify-between transition-all duration-300 relative ${
-                        pkg.featured
-                          ? "bg-gradient-to-b from-[#18011F] to-[#121212] border-2 border-[#B600A8] shadow-[0_0_40px_rgba(182,0,168,0.25)]"
-                          : "bg-[#141414] border border-white/10 hover:border-white/20"
-                      }`}
-                    >
-                      {pkg.featured && (
-                        <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#B600A8] text-white text-[11px] font-bold uppercase tracking-widest px-4 py-1 rounded-full shadow-lg">
-                          Most Popular
-                        </span>
-                      )}
+                    {pkg.featured && (
+                      <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#B600A8] text-white text-[11px] font-bold uppercase tracking-widest px-4 py-1 rounded-full shadow-lg">
+                        Most Popular
+                      </span>
+                    )}
 
-                      <div>
-                        <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <div className="flex justify-between items-start mb-4">
+                        <div>
+                          <h3 className="text-2xl font-bold text-white">{pkg.name}</h3>
+                          <p className="text-[#D7E2EA]/70 text-sm mt-1">{pkg.arabicName}</p>
+                        </div>
+                        <span className="font-mono text-white/30 text-lg font-bold">{pkg.id}</span>
+                      </div>
+
+                      <div className="my-6 pb-6 border-b border-white/10">
+                        {currencyMode === "ALL" && (
                           <div>
-                            <h3 className="text-2xl font-bold text-white">
-                              {pkg.name}
-                            </h3>
-
-                            <p className="text-[#D7E2EA]/70 text-sm mt-1">
-                              {pkg.arabicName}
-                            </p>
+                            <div className="flex items-baseline gap-2">
+                              <span className="text-4xl sm:text-5xl font-black text-white">{pkg.priceUSD}</span>
+                              <span className="text-sm uppercase tracking-wider text-[#D7E2EA]/60 font-medium">/ Video</span>
+                            </div>
+                            <div className="text-sm text-[#B600A8] font-bold mt-1">
+                              ≈ {pkg.priceEGP} / Video
+                            </div>
                           </div>
+                        )}
 
-                          <span className="font-mono text-white/30 text-lg font-bold">
-                            {pkg.id}
-                          </span>
-                        </div>
+                        {currencyMode === "USD" && (
+                          <div className="flex items-baseline gap-2">
+                            <span className="text-4xl sm:text-5xl font-black text-white">{pkg.priceUSD}</span>
+                            <span className="text-sm uppercase tracking-wider text-[#D7E2EA]/60 font-medium">/ Video</span>
+                          </div>
+                        )}
 
-                        <div className="my-6 pb-6 border-b border-white/10">
-                          {currencyMode ===
-                            "ALL" && (
-                            <div>
-                              <div className="flex items-baseline gap-2">
-                                <span className="text-4xl sm:text-5xl font-black text-white">
-                                  {pkg.priceUSD}
-                                </span>
-
-                                <span className="text-sm uppercase tracking-wider text-[#D7E2EA]/60 font-medium">
-                                  / Video
-                                </span>
-                              </div>
-
-                              <div className="text-sm text-[#B600A8] font-bold mt-1">
-                                ≈{" "}
-                                {
-                                  pkg.priceEGP
-                                }{" "}
-                                / Video
-                              </div>
-                            </div>
-                          )}
-
-                          {currencyMode ===
-                            "USD" && (
-                            <div className="flex items-baseline gap-2">
-                              <span className="text-4xl sm:text-5xl font-black text-white">
-                                {pkg.priceUSD}
-                              </span>
-
-                              <span className="text-sm uppercase tracking-wider text-[#D7E2EA]/60 font-medium">
-                                / Video
-                              </span>
-                            </div>
-                          )}
-
-                          {currencyMode ===
-                            "EGP" && (
-                            <div className="flex items-baseline gap-2">
-                              <span className="text-4xl sm:text-5xl font-black text-white">
-                                {pkg.priceEGP}
-                              </span>
-
-                              <span className="text-sm uppercase tracking-wider text-[#D7E2EA]/60 font-medium">
-                                / Video
-                              </span>
-                            </div>
-                          )}
-                        </div>
-
-                        <ul className="space-y-4 mb-8">
-                          {pkg.features.map(
-                            (feat, i) => (
-                              <li
-                                key={i}
-                                className="flex items-start gap-3 text-sm text-[#D7E2EA]/80 leading-relaxed"
-                              >
-                                <span className="text-[#B600A8] text-base mt-0.5 inline-block animate-spin [animation-duration:4s] select-none">
-                                  ✦
-                                </span>
-
-                                <span>
-                                  {feat}
-                                </span>
-                              </li>
-                            )
-                          )}
-                        </ul>
+                        {currencyMode === "EGP" && (
+                          <div className="flex items-baseline gap-2">
+                            <span className="text-4xl sm:text-5xl font-black text-white">{pkg.priceEGP}</span>
+                            <span className="text-sm uppercase tracking-wider text-[#D7E2EA]/60 font-medium">/ Video</span>
+                          </div>
+                        )}
                       </div>
 
-                      <div className="pt-6 border-t border-white/10 flex flex-col gap-3">
-                        <p className="text-xs text-[#D7E2EA]/50 text-center font-medium">
-                          {pkg.revisions}
-                        </p>
-
-                        <a
-                          href={
-                            pkg.driveLink
-                          }
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-full text-center py-2.5 rounded-full border border-[#B600A8]/60 hover:bg-[#B600A8]/20 text-xs uppercase font-bold tracking-wider text-[#D7E2EA] transition-colors"
-                        >
-                          ▶ Watch Video Sample
-                        </a>
-
-                        <a
-                          href={
-                            whatsappPreFilledLink
-                          }
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={`block w-full text-center rounded-full uppercase tracking-widest font-semibold py-3.5 text-sm transition-all duration-300 ${
-                            pkg.featured
-                              ? "bg-[#B600A8] hover:bg-[#9d0091] text-white shadow-lg shadow-[#B600A8]/30"
-                              : "border border-white/20 hover:bg-white/10 text-white"
-                          }`}
-                        >
-                          Order via WhatsApp
-                        </a>
-                      </div>
+                      <ul className="space-y-4 mb-8">
+                        {pkg.features.map((feat, i) => (
+                          <li key={i} className="flex items-start gap-3 text-sm text-[#D7E2EA]/80 leading-relaxed">
+                            <span className="text-[#B600A8] text-base mt-0.5 inline-block animate-spin [animation-duration:4s] select-none">✦</span>
+                            <span>{feat}</span>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
-                  </FadeIn>
-                );
-              }
-            )}
+
+                    <div className="pt-6 border-t border-white/10 flex flex-col gap-3">
+                      <p className="text-xs text-[#D7E2EA]/50 text-center font-medium">{pkg.revisions}</p>
+                      <a
+                        href={pkg.driveLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full text-center py-2.5 rounded-full border border-[#B600A8]/60 hover:bg-[#B600A8]/20 text-xs uppercase font-bold tracking-wider text-[#D7E2EA] transition-colors"
+                      >
+                        ▶ Watch Video Sample
+                      </a>
+
+                      <a
+                        href={whatsappPreFilledLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`block w-full text-center rounded-full uppercase tracking-widest font-semibold py-3.5 text-sm transition-all duration-300 ${
+                          pkg.featured
+                            ? "bg-[#B600A8] hover:bg-[#9d0091] text-white shadow-lg shadow-[#B600A8]/30"
+                            : "border border-white/20 hover:bg-white/10 text-white"
+                        }`}
+                      >
+                        Order via WhatsApp
+                      </a>
+                    </div>
+                  </div>
+                </FadeIn>
+              );
+            })}
           </div>
 
-          <FadeIn
-            delay={0.2}
-            y={30}
-          >
+          <FadeIn delay={0.2} y={30}>
             <div className="rounded-[36px] bg-[#121212] border border-white/10 p-8 sm:p-12">
               <div className="flex items-center gap-3 mb-8">
-                <span className="text-[#B600A8] text-xl">
-                  ✦
-                </span>
-
-                <h3 className="text-2xl sm:text-3xl font-bold text-white">
-                  General Terms & Production Flow
-                </h3>
+                <span className="text-[#B600A8] text-xl">✦</span>
+                <h3 className="text-2xl sm:text-3xl font-bold text-white">General Terms & Production Flow</h3>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-                {generalTerms.map(
-                  (term, i) => (
-                    <div
-                      key={i}
-                      className={`p-6 rounded-2xl bg-white/[0.02] border border-white/5 ${
-                        i === 0
-                          ? "md:col-span-2 border-[#B600A8]/30 bg-[#B600A8]/5"
-                          : ""
-                      }`}
-                    >
-                      <h4 className="text-lg font-semibold text-white mb-2 flex items-center gap-2">
-                        <span className="text-xs text-[#B600A8] font-mono">
-                          0{i + 1}.
-                        </span>
-
-                        {term.title}
-                      </h4>
-
-                      <p className="text-sm text-[#D7E2EA]/70 leading-relaxed">
-                        {term.desc}
-                      </p>
-                    </div>
-                  )
-                )}
+                {generalTerms.map((term, i) => (
+                  <div
+                    key={i}
+                    className={`p-6 rounded-2xl bg-white/[0.02] border border-white/5 ${
+                      i === 0 ? "md:col-span-2 border-[#B600A8]/30 bg-[#B600A8]/5" : ""
+                    }`}
+                  >
+                    <h4 className="text-lg font-semibold text-white mb-2 flex items-center gap-2">
+                      <span className="text-xs text-[#B600A8] font-mono">0{i + 1}.</span>
+                      {term.title}
+                    </h4>
+                    <p className="text-sm text-[#D7E2EA]/70 leading-relaxed">{term.desc}</p>
+                  </div>
+                ))}
               </div>
             </div>
           </FadeIn>
@@ -1827,113 +1498,63 @@ export default function Home() {
       </section>
 
       {/* REVIEWS */}
-      <section
-        id="reviews"
-        className="py-24 px-6 md:px-12 bg-[#0F0F0F] border-t border-white/5"
-      >
+      <section id="reviews" className="py-24 px-6 md:px-12 bg-[#0F0F0F] border-t border-white/5">
         <div className="max-w-6xl mx-auto">
-          <FadeIn
-            delay={0}
-            y={30}
-            className="text-center mb-16"
-          >
-            <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
-              Testimonials
-            </span>
-
-            <h2 className="hero-heading font-black uppercase text-4xl sm:text-6xl md:text-7xl mt-2">
-              Client Messages
-            </h2>
-
+          <FadeIn delay={0} y={30} className="text-center mb-16">
+            <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">Testimonials</span>
+            <h2 className="hero-heading font-black uppercase text-4xl sm:text-6xl md:text-7xl mt-2">Client Messages</h2>
             <p className="text-[#D7E2EA]/60 max-w-xl mx-auto mt-3 text-sm sm:text-base">
               Feedback from creators, entrepreneurs, and agencies I collaborate with
             </p>
           </FadeIn>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-            {clientReviews.map(
-              (rev, idx) => (
-                <FadeIn
-                  key={idx}
-                  delay={idx * 0.1}
-                >
-                  <div className="p-8 rounded-[32px] bg-[#141414] border border-white/10 flex flex-col justify-between h-full hover:border-[#B600A8]/40 transition-colors">
-                    <div>
-                      <div className="flex justify-between items-center mb-4">
-                        <span className="text-[#B600A8] text-sm tracking-widest font-mono">
-                          {rev.rating}
-                        </span>
-
-                        <span className="text-3xl text-white/20 font-serif leading-none">
-                          “
-                        </span>
-                      </div>
-
-                      <p className="text-[#D7E2EA]/85 text-base sm:text-lg leading-relaxed mb-6 font-light">
-                        &quot;
-                        {rev.quote}
-                        &quot;
-                      </p>
+            {clientReviews.map((rev, idx) => (
+              <FadeIn key={idx} delay={idx * 0.1}>
+                <div className="p-8 rounded-[32px] bg-[#141414] border border-white/10 flex flex-col justify-between h-full hover:border-[#B600A8]/40 transition-colors">
+                  <div>
+                    <div className="flex justify-between items-center mb-4">
+                      <span className="text-[#B600A8] text-sm tracking-widest font-mono">{rev.rating}</span>
+                      <span className="text-3xl text-white/20 font-serif leading-none">“</span>
                     </div>
+                    <p className="text-[#D7E2EA]/85 text-base sm:text-lg leading-relaxed mb-6 font-light">
+                      &quot;{rev.quote}&quot;
+                    </p>
+                  </div>
 
-                    <div className="pt-4 border-t border-white/10 flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#B600A8] to-[#7621B0] flex items-center justify-center font-bold text-white text-sm">
-                        {rev.client.charAt(
-                          0
-                        )}
-                      </div>
-
-                      <div>
-                        <h4 className="text-white font-semibold text-sm sm:text-base">
-                          {rev.client}
-                        </h4>
-
-                        <p className="text-xs text-[#D7E2EA]/60">
-                          {rev.role}
-                        </p>
-                      </div>
+                  <div className="pt-4 border-t border-white/10 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#B600A8] to-[#7621B0] flex items-center justify-center font-bold text-white text-sm">
+                      {rev.client.charAt(0)}
+                    </div>
+                    <div>
+                      <h4 className="text-white font-semibold text-sm sm:text-base">{rev.client}</h4>
+                      <p className="text-xs text-[#D7E2EA]/60">{rev.role}</p>
                     </div>
                   </div>
-                </FadeIn>
-              )
-            )}
+                </div>
+              </FadeIn>
+            ))}
           </div>
         </div>
       </section>
 
       {/* THUMBNAILS */}
-      <section
-        id="thumbnails"
-        className="py-24 px-5 sm:px-8 md:px-12 bg-[#0C0C0C]"
-      >
+      <section id="thumbnails" className="py-24 px-5 sm:px-8 md:px-12 bg-[#0C0C0C]">
         <div className="max-w-6xl mx-auto">
-          <FadeIn
-            delay={0}
-            y={30}
-            className="text-center mb-8"
-          >
+          <FadeIn delay={0} y={30} className="text-center mb-8">
             <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
               Graphic Covers & Visuals
             </span>
 
             <div className="relative inline-block mt-3">
               <button
-                onClick={() =>
-                  setIsThumbnailsMenuOpen(
-                    !isThumbnailsMenuOpen
-                  )
-                }
+                onClick={() => setIsThumbnailsMenuOpen(!isThumbnailsMenuOpen)}
                 className="group inline-flex items-center gap-3 sm:gap-4 hero-heading font-black uppercase text-3xl sm:text-5xl md:text-6xl hover:opacity-90 transition-all cursor-pointer select-none"
               >
-                <span>
-                  Thumbnails & Posters
-                </span>
-
+                <span>Thumbnails & Posters</span>
                 <span
                   className={`text-2xl sm:text-4xl text-[#B600A8] transition-transform duration-300 ${
-                    isThumbnailsMenuOpen
-                      ? "rotate-180"
-                      : "rotate-0"
+                    isThumbnailsMenuOpen ? "rotate-180" : "rotate-0"
                   }`}
                 >
                   ▼
@@ -1951,54 +1572,33 @@ export default function Home() {
           <AnimatePresence>
             {isThumbnailsMenuOpen && (
               <motion.div
-                initial={{
-                  opacity: 0,
-                  y: 20,
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                exit={{
-                  opacity: 0,
-                  y: -20,
-                }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
                 className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-12"
               >
-                {thumbnailsData.map(
-                  (thumb, index) => (
-                    <FadeIn
-                      key={index}
-                      delay={index * 0.1}
+                {thumbnailsData.map((thumb, index) => (
+                  <FadeIn key={index} delay={index * 0.1}>
+                    <motion.div
+                      whileHover={{ y: -8 }}
+                      className="bg-[#121212] border border-white/10 rounded-[28px] overflow-hidden shadow-2xl group hover:border-[#B600A8]/50 transition-colors duration-300"
                     >
-                      <motion.div
-                        whileHover={{
-                          y: -8,
-                        }}
-                        className="bg-[#121212] border border-white/10 rounded-[28px] overflow-hidden shadow-2xl group hover:border-[#B600A8]/50 transition-colors duration-300"
-                      >
-                        <div className="w-full aspect-[4/5] overflow-hidden bg-black/50">
-                          <img
-                            src={thumb.src}
-                            alt={thumb.title}
-                            loading="lazy"
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
-                        </div>
+                      <div className="w-full aspect-[4/5] overflow-hidden bg-black/50">
+                        <img
+                          src={thumb.src}
+                          alt={thumb.title}
+                          loading="lazy"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      </div>
 
-                        <div className="p-5 flex flex-col gap-1">
-                          <span className="text-xs uppercase tracking-widest text-[#B600A8] font-medium">
-                            {thumb.category}
-                          </span>
-
-                          <h3 className="text-[#D7E2EA] font-semibold text-lg sm:text-xl">
-                            {thumb.title}
-                          </h3>
-                        </div>
-                      </motion.div>
-                    </FadeIn>
-                  )
-                )}
+                      <div className="p-5 flex flex-col gap-1">
+                        <span className="text-xs uppercase tracking-widest text-[#B600A8] font-medium">{thumb.category}</span>
+                        <h3 className="text-[#D7E2EA] font-semibold text-lg sm:text-xl">{thumb.title}</h3>
+                      </div>
+                    </motion.div>
+                  </FadeIn>
+                ))}
               </motion.div>
             )}
           </AnimatePresence>
@@ -2006,64 +1606,39 @@ export default function Home() {
       </section>
 
       {/* SERVICES */}
-      <section
-        id="services"
-        className="bg-white rounded-t-[40px] sm:rounded-t-[60px] px-6 sm:px-10 py-24 text-[#0C0C0C]"
-      >
+      <section id="services" className="bg-white rounded-t-[40px] sm:rounded-t-[60px] px-6 sm:px-10 py-24 text-[#0C0C0C]">
         <div className="max-w-5xl mx-auto">
-          <FadeIn
-            delay={0}
-            y={30}
-          >
+          <FadeIn delay={0} y={30}>
             <h2 className="font-black uppercase text-center mb-16 sm:mb-24 text-4xl sm:text-6xl md:text-7xl text-[#0C0C0C]">
               Services
             </h2>
           </FadeIn>
 
           <div className="flex flex-col">
-            {servicesList.map(
-              (item, index) => (
-                <FadeIn
-                  key={item.num}
-                  delay={index * 0.1}
+            {servicesList.map((item, index) => (
+              <FadeIn key={item.num} delay={index * 0.1}>
+                <motion.div
+                  whileHover={{ x: 8 }}
+                  className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-t border-[rgba(12,12,12,0.15)] py-8 sm:py-10 gap-4 sm:gap-10"
                 >
-                  <motion.div
-                    whileHover={{
-                      x: 8,
-                    }}
-                    className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-t border-[rgba(12,12,12,0.15)] py-8 sm:py-10 gap-4 sm:gap-10"
-                  >
-                    <span className="font-black text-[#0C0C0C] text-5xl sm:text-7xl leading-none shrink-0">
-                      {item.num}
-                    </span>
+                  <span className="font-black text-[#0C0C0C] text-5xl sm:text-7xl leading-none shrink-0">
+                    {item.num}
+                  </span>
 
-                    <div className="flex flex-col gap-2">
-                      <h3 className="font-bold uppercase text-xl sm:text-2xl text-[#0C0C0C]">
-                        {item.name}
-                      </h3>
-
-                      <p className="font-normal leading-relaxed max-w-2xl text-[#0C0C0C]/70 text-sm sm:text-base">
-                        {item.desc}
-                      </p>
-                    </div>
-                  </motion.div>
-                </FadeIn>
-              )
-            )}
+                  <div className="flex flex-col gap-2">
+                    <h3 className="font-bold uppercase text-xl sm:text-2xl text-[#0C0C0C]">{item.name}</h3>
+                    <p className="font-normal leading-relaxed max-w-2xl text-[#0C0C0C]/70 text-sm sm:text-base">{item.desc}</p>
+                  </div>
+                </motion.div>
+              </FadeIn>
+            ))}
           </div>
         </div>
       </section>
 
       {/* CONTACT */}
-      <section
-        id="contact"
-        className="py-24 px-6 text-center bg-[#0C0C0C] border-t border-white/10"
-      >
-        <FadeIn
-          delay={0}
-          y={30}
-          className="max-w-3xl mx-auto"
-        >
+      <section id="contact" className="py-24 px-6 text-center bg-[#0C0C0C] border-t border-white/10">
+        <FadeIn delay={0} y={30} className="max-w-3xl mx-auto">
           <span className="text-xs uppercase tracking-[0.25em] text-[#B600A8] font-bold">
             Available for new projects
           </span>
@@ -2136,18 +1711,9 @@ export default function Home() {
       <AnimatePresence>
         {showScrollTop && (
           <motion.button
-            initial={{
-              opacity: 0,
-              scale: 0.8,
-            }}
-            animate={{
-              opacity: 1,
-              scale: 1,
-            }}
-            exit={{
-              opacity: 0,
-              scale: 0.8,
-            }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
             onClick={scrollToTop}
             aria-label="Scroll to top"
             className="fixed bottom-8 right-8 z-40 w-12 h-12 rounded-full bg-[#141414] border border-white/20 text-[#B600A8] hover:bg-[#B600A8] hover:text-white hover:border-[#B600A8] shadow-2xl flex items-center justify-center font-black transition-all duration-300"
