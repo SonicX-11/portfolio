@@ -154,7 +154,7 @@ const softwareStack = [
   },
 ];
 
-// قائمة الفيديوهات الـ 11 موحدة بنسبة ريلز رأسية portrait ومسارات مطابقة لـ Vercel
+// قائمة الفيديوهات موحدة جميعها كفيديوهات ريلز رأسية portrait ومسارات مطابقة لـ Vercel
 const videosData = [
   {
     id: "man-u",
@@ -524,7 +524,7 @@ function MarqueeCard({
   );
 }
 
-// --- VIDEO CARD (لقطة تلقائية من منتصف الفيديو لمنع الشاشة السوداء + نسبة ريلز 9:16) ---
+// --- VIDEO CARD (موحد بالكامل ريلز 9:16 + لقطة حية من منتصف المقطع لمنع الشاشة السوداء) ---
 
 function VideoCard({
   item,
@@ -539,7 +539,7 @@ function VideoCard({
   const videoRef = useRef<HTMLVideoElement>(null);
   const midPointRef = useRef<number>(1);
 
-  // التقاط لقطة حية من 35% من مدة الفيديو لمنع الشاشة السوداء في البداية
+  // التقاط فريم حي ملون من 35% من مدة الفيديو لضمان عدم ظهور شاشة سوداء
   const handleLoadedMetadata = () => {
     if (videoRef.current) {
       const midTime = videoRef.current.duration > 2 ? videoRef.current.duration * 0.35 : 1;
@@ -564,7 +564,7 @@ function VideoCard({
     setIsHovered(false);
     if (videoRef.current) {
       videoRef.current.pause();
-      videoRef.current.currentTime = midPointRef.current; // يعود للقطة الحية الجذابة
+      videoRef.current.currentTime = midPointRef.current;
     }
   };
 
@@ -575,14 +575,13 @@ function VideoCard({
         transition={{ duration: 0.25 }}
         className="bg-[#141414] border border-white/10 rounded-[28px] sm:rounded-[32px] overflow-hidden p-3 sm:p-3.5 shadow-2xl flex flex-col justify-between h-full group hover:border-[#B600A8]/50"
       >
-        {/* نسبة العرض موحدة 9:16 دائماً لجميع الكروت كحجم ريلز حقيقي */}
+        {/* تم تثبيت نسبة 9:16 دائماً لجميع الكروت بدون أي استثناء */}
         <div
           onMouseEnter={handleEnter}
           onMouseLeave={handleLeave}
           onClick={() => onOpen(item)}
           className="rounded-[20px] sm:rounded-[24px] overflow-hidden aspect-[9/16] w-full bg-black relative cursor-pointer"
         >
-          {/* الفيديو نفسه يعمل كـ Thumbnail أصلي يلتقط فريم جذاب من وسطه */}
           <video
             ref={videoRef}
             src={item.src}
@@ -842,7 +841,7 @@ export default function Home() {
         }}
       />
 
-      {/* VIDEO THEATER MODE - موحد بالكامل كشاشة ريلز رأسية */}
+      {/* VIDEO THEATER MODE - موحد بالكامل بنسبة ريلز 9:16 مع أبعاد شاشات الموبايل */}
       <AnimatePresence>
         {activeModalVideo && (
           <motion.div
@@ -904,7 +903,7 @@ export default function Home() {
               →
             </button>
 
-            {/* حاوية الفيديو موحدة كشاشة ريلز رأسية 9:16 لكافة الفيديوهات */}
+            {/* إطار المسرح موحد 9:16 رأسي لكافة المقاطع مع ملء كامل */}
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
