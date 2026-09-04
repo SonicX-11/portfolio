@@ -830,27 +830,37 @@ export default function Home() {
       dir="ltr"
       className="relative w-full min-h-screen bg-[#0C0C0C] text-[#D7E2EA] selection:bg-[#B600A8] selection:text-white"
     >
-      {/* CUSTOM CURSOR: السهم مع إضاءة وتوهج النيون */}
+      {/* CUSTOM CURSOR: سهم مفرغ وشفاف 100% بدون أي خلفية مع حواف وجلو نيون بنفسجي */}
       <div
-        className="pointer-events-none fixed z-[9999] -translate-x-1 -translate-y-1 transition-transform duration-75 hidden md:block"
+        className="pointer-events-none fixed z-[9999] -translate-x-1 -translate-y-1 hidden md:block"
         style={{
           left: `${mousePos.x}px`,
           top: `${mousePos.y}px`,
         }}
       >
-        <img
-          src="/images/cursor.png"
-          alt="cursor"
-          className="w-6 h-6 object-contain -rotate-45"
+        <svg
+          width="26"
+          height="26"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
           style={{
-            filter: "invert(1) drop-shadow(0 0 6px #B600A8) drop-shadow(0 0 16px #B600A8)",
+            filter: "drop-shadow(0 0 4px #B600A8) drop-shadow(0 0 14px #B600A8)",
           }}
-        />
+        >
+          <path
+            d="M3 3L10.5 21L13.5 13.5L21 10.5L3 3Z"
+            fill="#FFFFFF"
+            stroke="#B600A8"
+            strokeWidth="1.6"
+            strokeLinejoin="round"
+          />
+        </svg>
       </div>
 
-      {/* توهج النيون المحيط بالماوس */}
+      {/* هالة الضوء النيون المتوهجة التابعة لحركة الماوس */}
       <div
-        className="pointer-events-none fixed z-50 w-[450px] h-[450px] rounded-full blur-[140px] opacity-25 -translate-x-1/2 -translate-y-1/2 transition-opacity duration-500 hidden md:block"
+        className="pointer-events-none fixed z-50 w-[420px] h-[420px] rounded-full blur-[140px] opacity-25 -translate-x-1/2 -translate-y-1/2 hidden md:block"
         style={{
           left: `${mousePos.x}px`,
           top: `${mousePos.y}px`,
