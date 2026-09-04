@@ -154,7 +154,7 @@ const softwareStack = [
   },
 ];
 
-// مسارات مطابقة بالحرف لأسماء الملفات لديك
+// قائمة الفيديوهات الـ 11 موحدة بنسبة ريلز رأسية portrait ومسارات مطابقة لـ Vercel
 const videosData = [
   {
     id: "man-u",
@@ -174,7 +174,7 @@ const videosData = [
     src: "/video/The-Odyssey.mp4",
     description:
       "Cinematic storytelling edit combining pacing, atmosphere, sound design and visual continuity.",
-    orientation: "landscape",
+    orientation: "portrait",
   },
   {
     id: "mb22",
@@ -184,7 +184,7 @@ const videosData = [
     src: "/video/Mb22.mp4",
     description:
       "Commercial showcase built around product presentation, dynamic cuts and visual impact.",
-    orientation: "landscape",
+    orientation: "portrait",
   },
   {
     id: "color",
@@ -194,7 +194,7 @@ const videosData = [
     src: "/video/Color.mp4",
     description:
       "Color grading showcase demonstrating contrast, skin tones, mood and cinematic look development.",
-    orientation: "landscape",
+    orientation: "portrait",
   },
   {
     id: "reel-1",
@@ -524,7 +524,7 @@ function MarqueeCard({
   );
 }
 
-// --- VIDEO CARD (الفيديو نفسه هو الثامنيل) ---
+// --- VIDEO CARD (لقطة تلقائية من منتصف الفيديو لمنع الشاشة السوداء + نسبة ريلز 9:16) ---
 
 function VideoCard({
   item,
@@ -537,6 +537,16 @@ function VideoCard({
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const midPointRef = useRef<number>(1);
+
+  // التقاط لقطة حية من 35% من مدة الفيديو لمنع الشاشة السوداء في البداية
+  const handleLoadedMetadata = () => {
+    if (videoRef.current) {
+      const midTime = videoRef.current.duration > 2 ? videoRef.current.duration * 0.35 : 1;
+      midPointRef.current = midTime;
+      videoRef.current.currentTime = midTime;
+    }
+  };
 
   const handleEnter = () => {
     setIsHovered(true);
@@ -554,14 +564,9 @@ function VideoCard({
     setIsHovered(false);
     if (videoRef.current) {
       videoRef.current.pause();
-      videoRef.current.currentTime = 0;
+      videoRef.current.currentTime = midPointRef.current; // يعود للقطة الحية الجذابة
     }
   };
-
-  const aspectClass =
-    item.orientation === "landscape"
-      ? "aspect-video"
-      : "aspect-[9/16]";
 
   return (
     <FadeIn delay={index * 0.05}>
@@ -570,20 +575,22 @@ function VideoCard({
         transition={{ duration: 0.25 }}
         className="bg-[#141414] border border-white/10 rounded-[28px] sm:rounded-[32px] overflow-hidden p-3 sm:p-3.5 shadow-2xl flex flex-col justify-between h-full group hover:border-[#B600A8]/50"
       >
+        {/* نسبة العرض موحدة 9:16 دائماً لجميع الكروت كحجم ريلز حقيقي */}
         <div
           onMouseEnter={handleEnter}
           onMouseLeave={handleLeave}
           onClick={() => onOpen(item)}
-          className={`rounded-[20px] sm:rounded-[24px] overflow-hidden ${aspectClass} bg-black relative cursor-pointer`}
+          className="rounded-[20px] sm:rounded-[24px] overflow-hidden aspect-[9/16] w-full bg-black relative cursor-pointer"
         >
-          {/* الفيديو نفسه يعمل كـ Thumbnail أصلي مطابق للمحتوى 100% */}
+          {/* الفيديو نفسه يعمل كـ Thumbnail أصلي يلتقط فريم جذاب من وسطه */}
           <video
             ref={videoRef}
-            src={`${item.src}#t=0.001`}
+            src={item.src}
             muted
             loop
             playsInline
             preload="metadata"
+            onLoadedMetadata={handleLoadedMetadata}
             className="w-full h-full object-cover"
           />
 
@@ -835,7 +842,7 @@ export default function Home() {
         }}
       />
 
-      {/* VIDEO THEATER MODE - محسن بالكامل للموبايل والكمبيوتر */}
+      {/* VIDEO THEATER MODE - موحد بالكامل كشاشة ريلز رأسية */}
       <AnimatePresence>
         {activeModalVideo && (
           <motion.div
@@ -859,7 +866,7 @@ export default function Home() {
                     e.stopPropagation();
                     toggleSound();
                   }}
-                  className="px-3 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur-xl text-white text-xs font-bold hover:bg-[#B600A8] transition-all flex items-center gap-1.5"
+                  className="px-3.5 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur-xl text-white text-xs font-bold hover:bg-[#B600A8] transition-all flex items-center gap-1.5"
                 >
                   {isModalMuted ? "🔇 UNMUTE" : "🔊 MUTE"}
                 </button>
@@ -897,18 +904,14 @@ export default function Home() {
               →
             </button>
 
-            {/* حاوية الفيديو المصممة لشاشات الهواتف الرأسية بدقة dvh */}
+            {/* حاوية الفيديو موحدة كشاشة ريلز رأسية 9:16 لكافة الفيديوهات */}
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               transition={{ duration: 0.25 }}
               onClick={(e) => e.stopPropagation()}
-              className={`relative ${
-                activeModalVideo.orientation === "landscape"
-                  ? "w-full max-w-4xl aspect-video"
-                  : "w-full max-w-[380px] sm:max-w-sm h-[84dvh] sm:h-[88vh] aspect-[9/16]"
-              } bg-black rounded-[28px] sm:rounded-[36px] overflow-hidden border border-white/15 shadow-[0_0_60px_rgba(182,0,168,0.25)]`}
+              className="relative w-full max-w-[380px] sm:max-w-sm h-[84dvh] sm:h-[88vh] aspect-[9/16] bg-black rounded-[28px] sm:rounded-[36px] overflow-hidden border border-white/15 shadow-[0_0_60px_rgba(182,0,168,0.25)]"
             >
               <video
                 key={activeModalVideo.id}
@@ -921,11 +924,7 @@ export default function Home() {
                 preload="auto"
                 onPlay={() => setIsPlaying(true)}
                 onPause={() => setIsPlaying(false)}
-                className={`w-full h-full bg-black ${
-                  activeModalVideo.orientation === "landscape"
-                    ? "object-contain"
-                    : "object-cover"
-                }`}
+                className="w-full h-full object-cover bg-black"
               />
 
               <div className="absolute left-0 right-0 bottom-0 pointer-events-none p-4 sm:p-6 bg-gradient-to-t from-black via-black/80 to-transparent">
