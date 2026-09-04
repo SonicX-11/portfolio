@@ -9,21 +9,30 @@
 }
 
 html {
-  background: #0C0C0C;
+  background: #0A0A0A;
   scroll-behavior: auto;
 }
 
 body {
-  background-color: #0C0C0C;
+  background-color: #0A0A0A;
   color: #D7E2EA;
   font-family: var(--font-kanit), sans-serif;
   overscroll-behavior: none;
   overflow-x: clip;
 }
 
-/* إخفاء ماوس الويندوز تماماً على شاشات الكمبيوتر */
+/* إخفاء مؤشر ماوس الويندوز تماماً على شاشات الكمبيوتر */
 @media (min-width: 768px) {
-  html, body, *, *::before, *::after {
+  html,
+  body,
+  *,
+  *::before,
+  *::after,
+  a,
+  button,
+  video,
+  input,
+  [role="button"] {
     cursor: none !important;
   }
 }
@@ -44,7 +53,7 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #0C0C0C;
+  background: #0A0A0A;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -54,34 +63,4 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #7621B0;
-}
-
-.split-line {
-  overflow: hidden;
-  display: block;
-}
-
-.glass {
-  background: rgba(17, 17, 17, 0.55);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.container-x {
-  width: 100%;
-  max-width: 1440px;
-  margin-inline: auto;
-  padding-inline: clamp(1.25rem, 5vw, 5rem);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
-  }
 }

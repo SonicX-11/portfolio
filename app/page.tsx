@@ -65,6 +65,66 @@ const FadeIn: React.FC<FadeInProps> = ({
   );
 };
 
+// --- NATURAL MAGNETIC HOVER COMPONENT (حركة الصورة الطبيعية يمين وشمال مع الماوس) ---
+
+interface MagnetProps {
+  children: React.ReactNode;
+  padding?: number;
+  strength?: number;
+  className?: string;
+}
+
+const Magnet: React.FC<MagnetProps> = ({
+  children,
+  padding = 180,
+  strength = 3.5,
+  className = "",
+}) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!ref.current) return;
+      const rect = ref.current.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const dist = Math.hypot(e.clientX - centerX, e.clientY - centerY);
+
+      if (dist < rect.width / 2 + padding) {
+        setIsHovered(true);
+        setPosition({
+          x: (e.clientX - centerX) / strength,
+          y: (e.clientY - centerY) / strength,
+        });
+      } else {
+        setIsHovered(false);
+        setPosition({ x: 0, y: 0 });
+      }
+    };
+
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [padding, strength]);
+
+  return (
+    <div
+      ref={ref}
+      className={className}
+      style={{
+        transform: `translate3d(${position.x}px, ${position.y}px, 0)`,
+        transition: isHovered
+          ? "transform 0.25s cubic-bezier(0.25, 1, 0.5, 1)"
+          : "transform 0.7s cubic-bezier(0.25, 1, 0.5, 1)",
+        willChange: "transform",
+      }}
+    >
+      {children}
+    </div>
+  );
+};
+
 // --- DATA ---
 
 const softwareStack = [
@@ -794,7 +854,7 @@ export default function Home() {
       }}
       className="relative w-full min-h-screen bg-[#0A0A0A] text-[#D7E2EA] selection:bg-[#B600A8] selection:text-white"
     >
-      {/* --- CLEAN NEON ARROW CURSOR (سهم نقي بدون هالة خلفية) --- */}
+      {/* --- CLEAN NEON ARROW CURSOR (سهم نقي يلف طبيعي بدون أي هالة أو خلفية) --- */}
       <motion.div
         className="pointer-events-none fixed z-[9999] hidden md:block"
         style={{
@@ -1023,20 +1083,16 @@ export default function Home() {
           </FadeIn>
         </div>
 
-        {/* صورة الهيرو الأصلية النظيفة مع ظل سينمائي هادئ */}
+        {/* حركة الصورة المغناطيسية الطبيعية مع الماوس (Magnet) */}
         <div className="absolute left-1/2 -translate-x-1/2 z-10 bottom-16 sm:bottom-10 pointer-events-auto">
           <FadeIn delay={0.4} y={30}>
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.3 }}
-              className="relative flex items-center justify-center select-none"
-            >
+            <Magnet padding={180} strength={3.5}>
               <img
                 src="/images/avatar.png"
                 alt="Lil Portrait"
-                className="w-[260px] sm:w-[340px] md:w-[420px] lg:w-[480px] object-contain select-none pointer-events-none drop-shadow-[0_20px_40px_rgba(0,0,0,0.8)]"
+                className="w-[260px] sm:w-[340px] md:w-[420px] lg:w-[480px] object-contain select-none pointer-events-none drop-shadow-[0_20px_40px_rgba(0,0,0,0.85)]"
               />
-            </motion.div>
+            </Magnet>
           </FadeIn>
         </div>
 
