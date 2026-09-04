@@ -1,7 +1,15 @@
 "use client";
 
 import React, { useRef, useState, useEffect, useMemo, useCallback } from "react";
-import { motion, AnimatePresence, useSpring, useMotionValue } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useSpring,
+  useMotionValue,
+  useInView,
+  useScroll,
+  animate,
+} from "framer-motion";
 
 // --- SVG SOCIAL & SOFTWARE ICONS ---
 
@@ -122,6 +130,48 @@ const Magnet: React.FC<MagnetProps> = ({
     >
       {children}
     </div>
+  );
+};
+
+// --- ANIMATED COUNTER (0 → القيمة النهائية عند الوصول للـ section) ---
+
+interface CounterProps {
+  value: number;
+  suffix?: string;
+  prefix?: string;
+  duration?: number;
+  decimals?: number;
+}
+
+const Counter: React.FC<CounterProps> = ({
+  value,
+  suffix = "",
+  prefix = "",
+  duration = 2,
+  decimals = 0,
+}) => {
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    if (!isInView) return;
+
+    const controls = animate(0, value, {
+      duration,
+      ease: [0.16, 1, 0.3, 1],
+      onUpdate: (latest: number) => setDisplayValue(latest),
+    });
+
+    return () => controls.stop();
+  }, [isInView, value, duration]);
+
+  return (
+    <span ref={ref}>
+      {prefix}
+      {decimals > 0 ? displayValue.toFixed(decimals) : Math.floor(displayValue)}
+      {suffix}
+    </span>
   );
 };
 
@@ -465,6 +515,41 @@ const servicesList = [
   },
 ];
 
+const statsData = [
+  { value: 4, suffix: "+", decimals: 0, label: "Years Experience" },
+  { value: 350, suffix: "+", decimals: 0, label: "Videos Delivered" },
+  { value: 20, suffix: "+", decimals: 0, label: "Brands Worked With" },
+  { value: 45, suffix: "%", decimals: 0, label: "Retention Growth" },
+];
+
+const processSteps = [
+  {
+    num: "01",
+    title: "Brief",
+    desc: "We discuss your goals, target audience, tone and creative direction before anything is cut.",
+  },
+  {
+    num: "02",
+    title: "Footage Upload",
+    desc: "You share raw footage in full native resolution via a neatly organized Google Drive or WeTransfer link.",
+  },
+  {
+    num: "03",
+    title: "First Cut",
+    desc: "I deliver the first rough cut with pacing, subtitles, sound design and initial color correction.",
+  },
+  {
+    num: "04",
+    title: "Revision",
+    desc: "We refine the edit together based on your feedback, within the revision limit of your chosen package.",
+  },
+  {
+    num: "05",
+    title: "Final Delivery",
+    desc: "You receive the final, unwatermarked master export — ready to publish across every platform.",
+  },
+];
+
 // --- MARQUEE CARD ---
 
 function MarqueeCard({ item }: { item: (typeof marqueeItems)[0] }) {
@@ -628,6 +713,46 @@ function VideoCard({
         </div>
       </motion.div>
     </FadeIn>
+  );
+}
+
+// --- PROCESS TIMELINE (خط متحرك أثناء الـ Scroll) ---
+
+function ProcessTimeline() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start 75%", "end 55%"],
+  });
+
+  return (
+    <div ref={containerRef} className="relative max-w-2xl mx-auto">
+      {/* الخط الأساسي الثابت */}
+      <div className="absolute left-[27px] sm:left-[35px] top-2 bottom-2 w-[2px] bg-white/10" />
+
+      {/* الخط المتحرك اللي بيتملي أثناء الـ scroll */}
+      <motion.div
+        style={{ scaleY: scrollYProgress, transformOrigin: "top" }}
+        className="absolute left-[27px] sm:left-[35px] top-2 bottom-2 w-[2px] bg-gradient-to-b from-[#B600A8] to-[#7621B0] shadow-[0_0_12px_rgba(182,0,168,0.6)]"
+      />
+
+      <div className="flex flex-col gap-10 sm:gap-14">
+        {processSteps.map((step, idx) => (
+          <FadeIn key={step.num} delay={idx * 0.05} x={-16} y={0} className="relative pl-[76px] sm:pl-[96px]">
+            <div className="absolute left-0 top-0 w-14 h-14 sm:w-[70px] sm:h-[70px] rounded-2xl bg-[#141414] border border-white/15 flex items-center justify-center font-mono font-black text-lg sm:text-xl text-[#B600A8] shadow-xl">
+              {step.num}
+            </div>
+
+            <h3 className="text-white font-bold text-lg sm:text-xl mb-1.5 uppercase tracking-wide pt-2 sm:pt-3">
+              {step.title}
+            </h3>
+            <p className="text-[#D7E2EA]/70 text-sm sm:text-base leading-relaxed max-w-md">
+              {step.desc}
+            </p>
+          </FadeIn>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -1010,6 +1135,7 @@ export default function Home() {
             <nav className="flex justify-between items-center px-6 md:px-10 py-4 md:py-5 mt-4 mx-4 md:mx-10 rounded-3xl bg-white/[0.03] backdrop-blur-2xl border border-white/10 text-xs md:text-sm font-medium tracking-wider uppercase gap-6 shadow-2xl">
               <div className="flex gap-5 sm:gap-8 items-center flex-wrap">
                 <a href="#about" className="hover:text-[#B600A8] transition-colors">About</a>
+                <a href="#process" className="hover:text-[#B600A8] transition-colors">Process</a>
                 <a href="#videos" className="hover:text-[#B600A8] transition-colors">Videos</a>
                 <a href="#price" className="hover:text-[#B600A8] transition-colors">Pricing</a>
                 <a href="#reviews" className="hover:text-[#B600A8] transition-colors">Reviews</a>
@@ -1089,27 +1215,31 @@ export default function Home() {
             </FadeIn>
 
             <FadeIn delay={0.4} y={20} className="flex gap-3 items-center">
-              <a
-                href="#videos"
-                className="rounded-full border-2 border-white/20 bg-white/[0.04] backdrop-blur-xl text-[#D7E2EA] font-medium uppercase tracking-widest px-6 py-2.5 text-xs sm:text-sm hover:bg-white/15 transition-colors shadow-lg"
-              >
-                Watch Videos
-              </a>
+              <Magnet padding={50} strength={6}>
+                <a
+                  href="#videos"
+                  className="inline-block rounded-full border-2 border-white/20 bg-white/[0.04] backdrop-blur-xl text-[#D7E2EA] font-medium uppercase tracking-widest px-6 py-2.5 text-xs sm:text-sm hover:bg-white/15 transition-colors shadow-lg"
+                >
+                  Watch Videos
+                </a>
+              </Magnet>
 
-              <a
-                href="#contact"
-                className="rounded-full uppercase tracking-widest font-semibold text-white px-7 py-3 text-xs sm:text-sm transition-transform duration-300 hover:scale-105"
-                style={{
-                  background:
-                    "linear-gradient(123deg, #18011F 7%, #B600A8 37%, #7621B0 72%, #BE4C00 100%)",
-                  boxShadow:
-                    "0px 4px 4px rgba(181, 1, 167, 0.25), inset 4px 4px 12px #7721B1",
-                  outline: "2px solid #FFFFFF",
-                  outlineOffset: "-3px",
-                }}
-              >
-                Get in touch
-              </a>
+              <Magnet padding={50} strength={6}>
+                <a
+                  href="#contact"
+                  className="inline-block rounded-full uppercase tracking-widest font-semibold text-white px-7 py-3 text-xs sm:text-sm transition-transform duration-300 hover:scale-105"
+                  style={{
+                    background:
+                      "linear-gradient(123deg, #18011F 7%, #B600A8 37%, #7621B0 72%, #BE4C00 100%)",
+                    boxShadow:
+                      "0px 4px 4px rgba(181, 1, 167, 0.25), inset 4px 4px 12px #7721B1",
+                    outline: "2px solid #FFFFFF",
+                    outlineOffset: "-3px",
+                  }}
+                >
+                  Get in touch
+                </a>
+              </Magnet>
             </FadeIn>
           </div>
         </section>
@@ -1154,21 +1284,17 @@ export default function Home() {
                   Specialized in building high-retention visual assets that captivate audiences. With extensive experience across Adobe Premiere Pro, After Effects, and DaVinci Resolve, I bridge the gap between creative storytelling, surgical audio design, and conversion-driven marketing.
                 </p>
 
-                <div className="grid grid-cols-3 gap-4 pt-6 border-t border-white/10 text-center mb-8">
-                  <div>
-                    <div className="text-2xl sm:text-3xl font-black text-white">4+</div>
-                    <div className="text-[11px] sm:text-xs text-[#D7E2EA]/60 uppercase tracking-wider mt-1">Years Experience</div>
-                  </div>
-
-                  <div>
-                    <div className="text-2xl sm:text-3xl font-black text-white">350+</div>
-                    <div className="text-[11px] sm:text-xs text-[#D7E2EA]/60 uppercase tracking-wider mt-1">Videos Delivered</div>
-                  </div>
-
-                  <div>
-                    <div className="text-2xl sm:text-3xl font-black text-white">+45%</div>
-                    <div className="text-[11px] sm:text-xs text-[#D7E2EA]/60 uppercase tracking-wider mt-1">Retention Growth</div>
-                  </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-white/10 text-center mb-8">
+                  {statsData.map((stat, idx) => (
+                    <div key={idx}>
+                      <div className="text-2xl sm:text-3xl font-black text-white">
+                        <Counter value={stat.value} suffix={stat.suffix} decimals={stat.decimals} />
+                      </div>
+                      <div className="text-[11px] sm:text-xs text-[#D7E2EA]/60 uppercase tracking-wider mt-1">
+                        {stat.label}
+                      </div>
+                    </div>
+                  ))}
                 </div>
 
                 <div className="pt-6 border-t border-white/10">
@@ -1226,6 +1352,25 @@ export default function Home() {
                 </div>
               </FadeIn>
             </div>
+          </div>
+        </section>
+
+        {/* PROCESS */}
+        <section id="process" className="py-24 px-6 md:px-12 bg-[#0A0A0A] border-t border-white/5">
+          <div className="max-w-5xl mx-auto">
+            <FadeIn delay={0} y={30} className="text-center mb-16 sm:mb-20">
+              <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
+                How We Work Together
+              </span>
+              <h2 className="hero-heading font-black uppercase text-4xl sm:text-6xl md:text-7xl mt-2">
+                The Process
+              </h2>
+              <p className="text-[#D7E2EA]/60 max-w-xl mx-auto mt-3 text-sm sm:text-base">
+                A clear, streamlined workflow from first brief to final delivery
+              </p>
+            </FadeIn>
+
+            <ProcessTimeline />
           </div>
         </section>
 
@@ -1701,15 +1846,17 @@ export default function Home() {
               </a>
             </div>
 
-            <a
-              href="https://wa.me/201211871199?text=Hey%20Lil!%20I%20want%20to%20start%20a%20video%20editing%20project."
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#B600A8] hover:bg-[#9d0091] text-white uppercase tracking-widest text-xs font-bold transition-all duration-300 hover:scale-105 shadow-[0_0_30px_rgba(182,0,168,0.35)]"
-            >
-              Start a Project
-              <span>→</span>
-            </a>
+            <Magnet padding={60} strength={5} className="inline-block">
+              <a
+                href="https://wa.me/201211871199?text=Hey%20Lil!%20I%20want%20to%20start%20a%20video%20editing%20project."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#B600A8] hover:bg-[#9d0091] text-white uppercase tracking-widest text-xs font-bold transition-all duration-300 hover:scale-105 shadow-[0_0_30px_rgba(182,0,168,0.35)]"
+              >
+                Start a Project
+                <span>→</span>
+              </a>
+            </Magnet>
 
             <div className="text-xs text-white/40 mt-10">
               © 2026 Lil. All rights reserved.
