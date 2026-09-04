@@ -77,4 +77,10 @@ body {
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
+  /* إخفاء ماوس النظام تماماً على الشاشات التي تدعم مؤشراً */
+@media (min-width: 768px) {
+  html, body, *, *::before, *::after {
+    cursor: none !important;
+  }
+}
 }

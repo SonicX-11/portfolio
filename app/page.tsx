@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useRef, useState, useEffect, useMemo, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useSpring, useMotionValue } from "framer-motion";
+import Head from "next/head";
 
 // --- SVG SOCIAL & SOFTWARE ICONS ---
 
@@ -88,10 +89,7 @@ const Magnet: React.FC<MagnetProps> = ({
       const rect = ref.current.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
-      const dist = Math.hypot(
-        e.clientX - centerX,
-        e.clientY - centerY
-      );
+      const dist = Math.hypot(e.clientX - centerX, e.clientY - centerY);
 
       if (dist < rect.width / 2 + padding) {
         setIsHovered(true);
@@ -105,11 +103,8 @@ const Magnet: React.FC<MagnetProps> = ({
       }
     };
 
-    window.addEventListener("mousemove", handleMouseMove, {
-      passive: true,
-    });
-    return () =>
-      window.removeEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [padding, strength]);
 
   return (
@@ -154,7 +149,6 @@ const softwareStack = [
   },
 ];
 
-// قائمة الفيديوهات الـ 11 موحدة بنسبة ريلز رأسية portrait ومسارات مطابقة لـ Vercel
 const videosData = [
   {
     id: "man-u",
@@ -470,20 +464,16 @@ const servicesList = [
   },
 ];
 
-// --- MARQUEE CARD ---
+// --- MARQUEE CARD (GLASSY STYLE) ---
 
-function MarqueeCard({
-  item,
-}: {
-  item: (typeof marqueeItems)[0];
-}) {
+function MarqueeCard({ item }: { item: (typeof marqueeItems)[0] }) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
     <div
       onMouseEnter={() => item.video && setIsHovered(true)}
       onMouseLeave={() => item.video && setIsHovered(false)}
-      className="w-[240px] h-[340px] sm:w-[280px] sm:h-[390px] rounded-3xl border border-white/10 bg-[#141414] overflow-hidden shrink-0 shadow-xl group relative cursor-pointer"
+      className="w-[240px] h-[340px] sm:w-[280px] sm:h-[390px] rounded-3xl border border-white/15 bg-white/[0.03] backdrop-blur-xl overflow-hidden shrink-0 shadow-2xl group relative cursor-pointer"
     >
       {isHovered && item.video ? (
         <video
@@ -504,7 +494,7 @@ function MarqueeCard({
         />
       )}
 
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-5 pointer-events-none">
+      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent flex flex-col justify-end p-5 pointer-events-none">
         <span className="text-[11px] uppercase tracking-widest text-[#B600A8] font-bold">
           {item.category}
           {item.video && !isHovered ? " • Hover to Preview" : ""}
@@ -516,7 +506,7 @@ function MarqueeCard({
       </div>
 
       {item.video && (
-        <div className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/50 backdrop-blur-md border border-white/10 flex items-center justify-center text-white text-xs">
+        <div className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/60 backdrop-blur-md border border-white/20 flex items-center justify-center text-white text-xs">
           ▶
         </div>
       )}
@@ -524,7 +514,7 @@ function MarqueeCard({
   );
 }
 
-// --- VIDEO CARD (لقطة حية من منتصف الفيديو + نسبة 9:16 ريلز موحدة) ---
+// --- VIDEO CARD (9:16 + GLASSY + DYNAMIC THUMBNAIL) ---
 
 function VideoCard({
   item,
@@ -539,7 +529,6 @@ function VideoCard({
   const videoRef = useRef<HTMLVideoElement>(null);
   const midPointRef = useRef<number>(1);
 
-  // التقاط فريم حي ملون من 35% من مدة الفيديو لضمان عدم ظهور شاشة سوداء
   const handleLoadedMetadata = () => {
     if (videoRef.current) {
       const midTime = videoRef.current.duration > 2 ? videoRef.current.duration * 0.35 : 1;
@@ -571,11 +560,10 @@ function VideoCard({
   return (
     <FadeIn delay={index * 0.05}>
       <motion.div
-        whileHover={{ y: -6 }}
-        transition={{ duration: 0.25 }}
-        className="bg-[#141414] border border-white/10 rounded-[28px] sm:rounded-[32px] overflow-hidden p-3 sm:p-3.5 shadow-2xl flex flex-col justify-between h-full group hover:border-[#B600A8]/50"
+        whileHover={{ y: -8, scale: 1.01 }}
+        transition={{ duration: 0.3 }}
+        className="bg-white/[0.04] backdrop-blur-2xl border border-white/15 rounded-[28px] sm:rounded-[34px] overflow-hidden p-3 sm:p-3.5 shadow-[0_12px_40px_rgba(0,0,0,0.6)] flex flex-col justify-between h-full group hover:border-[#B600A8]/60 hover:shadow-[0_0_35px_rgba(182,0,168,0.25)] transition-all duration-300"
       >
-        {/* نسبة العرض موحدة 9:16 دائماً لجميع الكروت لتشبه الريلز بالكامل وتمنع الفراغ الأسود */}
         <div
           onMouseEnter={handleEnter}
           onMouseLeave={handleLeave}
@@ -595,31 +583,31 @@ function VideoCard({
 
           <div
             className={`absolute inset-0 transition-all duration-300 flex items-center justify-center pointer-events-none ${
-              isHovered ? "bg-black/10" : "bg-black/30"
+              isHovered ? "bg-black/10" : "bg-black/35"
             }`}
           >
             <motion.span
-              whileHover={{ scale: 1.12 }}
-              className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#B600A8]/90 text-white flex items-center justify-center text-lg sm:text-xl shadow-[0_0_30px_rgba(182,0,168,0.35)] backdrop-blur-md"
+              whileHover={{ scale: 1.15 }}
+              className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#B600A8]/90 text-white flex items-center justify-center text-lg sm:text-xl shadow-[0_0_35px_rgba(182,0,168,0.5)] backdrop-blur-xl border border-white/20"
             >
               ▶
             </motion.span>
           </div>
 
           <div className="absolute top-3 sm:top-4 left-3 sm:left-4 pointer-events-none">
-            <span className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[9px] sm:text-[10px] uppercase tracking-widest font-bold text-white">
+            <span className="px-3 py-1.5 rounded-full bg-black/65 backdrop-blur-xl border border-white/15 text-[9px] sm:text-[10px] uppercase tracking-widest font-bold text-white shadow-lg">
               {item.tab}
             </span>
           </div>
 
           <div className="absolute bottom-3 sm:bottom-4 right-3 sm:right-4 pointer-events-none">
-            <span className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[9px] sm:text-[10px] uppercase tracking-wider text-white/80">
+            <span className="px-3 py-1.5 rounded-full bg-black/65 backdrop-blur-xl border border-white/15 text-[9px] sm:text-[10px] uppercase tracking-wider text-white/90 shadow-lg">
               Click to watch
             </span>
           </div>
         </div>
 
-        <div className="p-3 sm:p-4 flex items-start justify-between gap-4">
+        <div className="p-3.5 sm:p-4 flex items-start justify-between gap-4">
           <div className="min-w-0">
             <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-[#B600A8] font-bold">
               {item.category}
@@ -651,7 +639,6 @@ export default function Home() {
   const [isThumbnailsMenuOpen, setIsThumbnailsMenuOpen] = useState(false);
   const [activeModalVideo, setActiveModalVideo] = useState<(typeof videosData)[0] | null>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [mousePos, setMousePos] = useState({ x: -200, y: -200 });
   const [typedText, setTypedText] = useState("");
   const marqueeRef = useRef<HTMLDivElement>(null);
   const [scrollOffset, setScrollOffset] = useState(0);
@@ -659,6 +646,24 @@ export default function Home() {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isModalMuted, setIsModalMuted] = useState(false);
+
+  // --- DYNAMIC MOTION-BLUR & TILT CURSOR LOGIC ---
+  const mouseX = useMotionValue(-100);
+  const mouseY = useMotionValue(-100);
+  const cursorRotation = useMotionValue(0);
+
+  const springConfig = { damping: 28, stiffness: 380, mass: 0.5 };
+  const smoothX = useSpring(mouseX, springConfig);
+  const smoothY = useSpring(mouseY, springConfig);
+
+  // هالة التتبع (Motion Blur Ghost Trailing)
+  const ghostSpringConfig = { damping: 40, stiffness: 180, mass: 1 };
+  const ghostX = useSpring(mouseX, ghostSpringConfig);
+  const ghostY = useSpring(mouseY, ghostSpringConfig);
+
+  const smoothRotation = useSpring(cursorRotation, { damping: 25, stiffness: 200 });
+
+  const prevMouseXRef = useRef(0);
 
   // Typewriter
   useEffect(() => {
@@ -677,13 +682,12 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  // Scroll + Mouse
+  // Mouse & Scroll Handling
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollTop(window.scrollY > 500);
 
       if (!marqueeRef.current) return;
-
       const rect = marqueeRef.current.getBoundingClientRect();
       const sectionTop = window.scrollY + rect.top;
       const offset = (window.scrollY - sectionTop + window.innerHeight) * 0.3;
@@ -691,7 +695,14 @@ export default function Home() {
     };
 
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
+      mouseX.set(e.clientX);
+      mouseY.set(e.clientY);
+
+      // حساب الميلان يميناً ويساراً حسب اتجاه وسرعة اليد
+      const deltaX = e.clientX - prevMouseXRef.current;
+      prevMouseXRef.current = e.clientX;
+      const targetRotation = Math.max(Math.min(deltaX * 1.5, 30), -30);
+      cursorRotation.set(targetRotation);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -702,7 +713,7 @@ export default function Home() {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("mousemove", handleMouseMove);
     };
-  }, []);
+  }, [mouseX, mouseY, cursorRotation]);
 
   const closeModal = useCallback(() => {
     if (modalVideoRef.current) {
@@ -740,19 +751,12 @@ export default function Home() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!activeModalVideo) return;
 
-      if (e.key === "Escape") {
-        closeModal();
-      }
-      if (e.key === "ArrowRight") {
-        goNext();
-      }
-      if (e.key === "ArrowLeft") {
-        goPrevious();
-      }
+      if (e.key === "Escape") closeModal();
+      if (e.key === "ArrowRight") goNext();
+      if (e.key === "ArrowLeft") goPrevious();
       if (e.key === " ") {
         e.preventDefault();
         if (!modalVideoRef.current) return;
-
         if (modalVideoRef.current.paused) {
           modalVideoRef.current.play().catch(() => {});
           setIsPlaying(true);
@@ -761,9 +765,7 @@ export default function Home() {
           setIsPlaying(false);
         }
       }
-      if (e.key.toLowerCase() === "f") {
-        toggleFullscreen();
-      }
+      if (e.key.toLowerCase() === "f") toggleFullscreen();
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -795,7 +797,6 @@ export default function Home() {
   const toggleFullscreen = async () => {
     try {
       if (!modalVideoRef.current) return;
-
       if (!document.fullscreenElement) {
         await modalVideoRef.current.requestFullscreen();
         setIsFullscreen(true);
@@ -809,17 +810,11 @@ export default function Home() {
   };
 
   const filteredVideos = useMemo(() => {
-    if (selectedVideoTab === "all") {
-      return videosData;
-    }
+    if (selectedVideoTab === "all") return videosData;
     return videosData.filter((video) => video.tab === selectedVideoTab);
   }, [selectedVideoTab]);
 
-  const tripleMarqueeItems = [
-    ...marqueeItems,
-    ...marqueeItems,
-    ...marqueeItems,
-  ];
+  const tripleMarqueeItems = [...marqueeItems, ...marqueeItems, ...marqueeItems];
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -828,14 +823,50 @@ export default function Home() {
   return (
     <main
       dir="ltr"
-      className="relative w-full min-h-screen bg-[#0C0C0C] text-[#D7E2EA] selection:bg-[#B600A8] selection:text-white"
+      className="relative w-full min-h-screen bg-[#0A0A0A] text-[#D7E2EA] selection:bg-[#B600A8] selection:text-white"
     >
-      {/* CUSTOM CURSOR: سهم مفرغ وشفاف 100% بدون أي خلفية مع حواف وجلو نيون بنفسجي */}
-      <div
-        className="pointer-events-none fixed z-[9999] -translate-x-1 -translate-y-1 hidden md:block"
+      {/* حقن أيقونة التايم لاين مباشرة وعالية الوضوح في الهيد */}
+      <Head>
+        <link
+          rel="icon"
+          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23121212%22/><rect x=%2210%22 y=%2225%22 width=%2280%22 height=%2215%22 rx=%224%22 fill=%22%23B600A8%22/><rect x=%2210%22 y=%2245%22 width=%2235%22 height=%2215%22 rx=%224%22 fill=%22%2300D2FF%22/><rect x=%2250%22 y=%2245%22 width=%2240%22 height=%2215%22 rx=%224%22 fill=%22%23BE4C00%22/><rect x=%2210%22 y=%2265%22 width=%2280%22 height=%2212%22 rx=%223%22 fill=%22%2352B788%22/><line x1=%2245%22 y1=%2215%22 x2=%2245%22 y2=%2285%22 stroke=%22%2300FFFF%22 stroke-width=%223%22/></svg>"
+        />
+      </Head>
+
+      {/* --- CUSTOM MOTION BLUR GHOST TRAILING --- */}
+      <motion.div
+        className="pointer-events-none fixed z-[9998] hidden md:block opacity-40 blur-[2px]"
         style={{
-          left: `${mousePos.x}px`,
-          top: `${mousePos.y}px`,
+          x: ghostX,
+          y: ghostY,
+          rotate: smoothRotation,
+          translateX: "-4px",
+          translateY: "-4px",
+        }}
+      >
+        <svg
+          width="26"
+          height="26"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M3 3L10.5 21L13.5 13.5L21 10.5L3 3Z"
+            fill="#B600A8"
+          />
+        </svg>
+      </motion.div>
+
+      {/* --- ACTIVE TILT NEON ARROW CURSOR --- */}
+      <motion.div
+        className="pointer-events-none fixed z-[9999] hidden md:block"
+        style={{
+          x: smoothX,
+          y: smoothY,
+          rotate: smoothRotation,
+          translateX: "-4px",
+          translateY: "-4px",
         }}
       >
         <svg
@@ -845,31 +876,33 @@ export default function Home() {
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           style={{
-            filter: "drop-shadow(0 0 4px #B600A8) drop-shadow(0 0 14px #B600A8)",
+            filter:
+              "drop-shadow(0 0 5px #B600A8) drop-shadow(0 0 14px #B600A8) drop-shadow(0 0 22px rgba(182,0,168,0.7))",
           }}
         >
           <path
             d="M3 3L10.5 21L13.5 13.5L21 10.5L3 3Z"
             fill="#FFFFFF"
             stroke="#B600A8"
-            strokeWidth="1.6"
+            strokeWidth="1.8"
             strokeLinejoin="round"
           />
         </svg>
-      </div>
+      </motion.div>
 
-      {/* هالة الضوء النيون المتوهجة التابعة لحركة الماوس */}
-      <div
-        className="pointer-events-none fixed z-50 w-[420px] h-[420px] rounded-full blur-[140px] opacity-25 -translate-x-1/2 -translate-y-1/2 hidden md:block"
+      {/* توهج النيون المحيط بالماوس */}
+      <motion.div
+        className="pointer-events-none fixed z-50 w-[450px] h-[450px] rounded-full blur-[140px] opacity-25 hidden md:block"
         style={{
-          left: `${mousePos.x}px`,
-          top: `${mousePos.y}px`,
-          background:
-            "radial-gradient(circle, #B600A8 0%, #7621B0 50%, transparent 80%)",
+          x: smoothX,
+          y: smoothY,
+          translateX: "-50%",
+          translateY: "-50%",
+          background: "radial-gradient(circle, #B600A8 0%, #7621B0 50%, transparent 80%)",
         }}
       />
 
-      {/* VIDEO THEATER MODE - موحد بالكامل بنسبة ريلز 9:16 مع أبعاد شاشات الموبايل */}
+      {/* VIDEO THEATER MODE (GLASSY & FULL 9:16) */}
       <AnimatePresence>
         {activeModalVideo && (
           <motion.div
@@ -877,30 +910,30 @@ export default function Home() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={closeModal}
-            className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-2 sm:p-6"
+            className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-3xl flex items-center justify-center p-2 sm:p-6"
           >
             {/* الشريط العلوي */}
             <div className="absolute top-3 sm:top-6 left-3 sm:left-6 right-3 sm:right-6 z-[130] flex items-center justify-between pointer-events-none">
               <div className="pointer-events-auto">
-                <span className="px-3 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur-xl text-[10px] sm:text-xs uppercase tracking-widest text-[#B600A8] font-bold">
+                <span className="px-3.5 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-2xl text-[10px] sm:text-xs uppercase tracking-widest text-[#B600A8] font-bold shadow-2xl">
                   {currentVideoIndex + 1} / {videosData.length}
                 </span>
               </div>
 
-              <div className="flex items-center gap-2 pointer-events-auto">
+              <div className="flex items-center gap-2.5 pointer-events-auto">
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     toggleSound();
                   }}
-                  className="px-3.5 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur-xl text-white text-xs font-bold hover:bg-[#B600A8] transition-all flex items-center gap-1.5"
+                  className="px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-2xl text-white text-xs font-bold hover:bg-[#B600A8] transition-all flex items-center gap-1.5 shadow-xl"
                 >
                   {isModalMuted ? "🔇 UNMUTE" : "🔊 MUTE"}
                 </button>
 
                 <button
                   onClick={closeModal}
-                  className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/10 border border-white/10 backdrop-blur-xl text-white flex items-center justify-center text-lg hover:bg-[#B600A8] transition-all"
+                  className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/10 border border-white/20 backdrop-blur-2xl text-white flex items-center justify-center text-lg hover:bg-[#B600A8] transition-all shadow-xl"
                   aria-label="Close video"
                 >
                   ✕
@@ -914,7 +947,7 @@ export default function Home() {
                 e.stopPropagation();
                 goPrevious();
               }}
-              className="absolute left-2 sm:left-6 z-[120] w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 border border-white/15 backdrop-blur-xl text-white flex items-center justify-center text-xl hover:bg-[#B600A8] transition-all"
+              className="absolute left-2 sm:left-6 z-[120] w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-black/60 border border-white/20 backdrop-blur-2xl text-white flex items-center justify-center text-xl hover:bg-[#B600A8] transition-all shadow-2xl"
               aria-label="Previous video"
             >
               ←
@@ -925,20 +958,20 @@ export default function Home() {
                 e.stopPropagation();
                 goNext();
               }}
-              className="absolute right-2 sm:right-6 z-[120] w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 border border-white/15 backdrop-blur-xl text-white flex items-center justify-center text-xl hover:bg-[#B600A8] transition-all"
+              className="absolute right-2 sm:right-6 z-[120] w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-black/60 border border-white/20 backdrop-blur-2xl text-white flex items-center justify-center text-xl hover:bg-[#B600A8] transition-all shadow-2xl"
               aria-label="Next video"
             >
               →
             </button>
 
-            {/* إطار المسرح موحد 9:16 رأسي لكافة المقاطع مع ملء كامل */}
+            {/* إطار المسرح الرأسي 9:16 */}
             <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
+              initial={{ scale: 0.94, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
+              exit={{ scale: 0.94, opacity: 0 }}
               transition={{ duration: 0.25 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-[380px] sm:max-w-sm h-[84dvh] sm:h-[88vh] aspect-[9/16] bg-black rounded-[28px] sm:rounded-[36px] overflow-hidden border border-white/15 shadow-[0_0_60px_rgba(182,0,168,0.25)]"
+              className="relative w-full max-w-[380px] sm:max-w-sm h-[84dvh] sm:h-[88vh] aspect-[9/16] bg-black rounded-[30px] sm:rounded-[38px] overflow-hidden border border-white/20 shadow-[0_0_80px_rgba(182,0,168,0.35)]"
             >
               <video
                 key={activeModalVideo.id}
@@ -954,7 +987,7 @@ export default function Home() {
                 className="w-full h-full object-cover bg-black"
               />
 
-              <div className="absolute left-0 right-0 bottom-0 pointer-events-none p-4 sm:p-6 bg-gradient-to-t from-black via-black/80 to-transparent">
+              <div className="absolute left-0 right-0 bottom-0 pointer-events-none p-5 sm:p-7 bg-gradient-to-t from-black via-black/85 to-transparent">
                 <div className="max-w-2xl">
                   <span className="text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] text-[#B600A8] font-bold">
                     {activeModalVideo.category}
@@ -964,7 +997,7 @@ export default function Home() {
                     {activeModalVideo.title}
                   </h3>
 
-                  <p className="hidden sm:block text-white/60 text-xs sm:text-sm mt-1.5 max-w-xl leading-relaxed">
+                  <p className="hidden sm:block text-white/70 text-xs sm:text-sm mt-1.5 max-w-xl leading-relaxed">
                     {activeModalVideo.description}
                   </p>
                 </div>
@@ -983,7 +1016,7 @@ export default function Home() {
                         setIsPlaying(false);
                       }
                     }}
-                    className="w-10 h-10 rounded-full bg-black/60 border border-white/10 backdrop-blur-md text-white flex items-center justify-center hover:bg-[#B600A8] transition-colors"
+                    className="w-10 h-10 rounded-full bg-black/60 border border-white/20 backdrop-blur-xl text-white flex items-center justify-center hover:bg-[#B600A8] transition-colors"
                     aria-label={isPlaying ? "Pause" : "Play"}
                   >
                     {isPlaying ? "Ⅱ" : "▶"}
@@ -992,7 +1025,7 @@ export default function Home() {
 
                 <button
                   onClick={toggleFullscreen}
-                  className="pointer-events-auto w-10 h-10 rounded-full bg-black/60 border border-white/10 backdrop-blur-md text-white flex items-center justify-center hover:bg-[#B600A8] transition-colors"
+                  className="pointer-events-auto w-10 h-10 rounded-full bg-black/60 border border-white/20 backdrop-blur-xl text-white flex items-center justify-center hover:bg-[#B600A8] transition-colors"
                   aria-label="Fullscreen"
                 >
                   ⛶
@@ -1003,10 +1036,10 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* HERO SECTION */}
-      <section className="relative min-h-screen flex flex-col justify-between overflow-x-clip bg-[#0C0C0C] pb-8">
+      {/* HERO SECTION (WITH GLASSY NAVBAR) */}
+      <section className="relative min-h-screen flex flex-col justify-between overflow-x-clip bg-[#0A0A0A] pb-8">
         <FadeIn delay={0} y={-20} className="w-full z-30">
-          <nav className="flex justify-between items-center px-6 md:px-10 pt-6 md:pt-8 text-sm md:text-base font-medium tracking-wider uppercase gap-6">
+          <nav className="flex justify-between items-center px-6 md:px-10 py-4 md:py-5 mt-4 mx-4 md:mx-10 rounded-3xl bg-white/[0.03] backdrop-blur-2xl border border-white/10 text-xs md:text-sm font-medium tracking-wider uppercase gap-6 shadow-2xl">
             <div className="flex gap-5 sm:gap-8 items-center flex-wrap">
               <a href="#about" className="hover:text-[#B600A8] transition-colors">About</a>
               <a href="#videos" className="hover:text-[#B600A8] transition-colors">Videos</a>
@@ -1022,7 +1055,7 @@ export default function Home() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
-                className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300"
+                className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300"
               >
                 <InstagramIcon />
               </a>
@@ -1032,7 +1065,7 @@ export default function Home() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Facebook"
-                className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300"
+                className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300"
               >
                 <FacebookIcon />
               </a>
@@ -1042,7 +1075,7 @@ export default function Home() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp"
-                className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:text-[#25D366] hover:border-[#25D366] hover:bg-[#25D366]/10 transition-all duration-300"
+                className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-[#25D366] hover:border-[#25D366] hover:bg-[#25D366]/10 transition-all duration-300"
               >
                 <WhatsAppIcon />
               </a>
@@ -1050,7 +1083,7 @@ export default function Home() {
               <a
                 href="mailto:ebrahimfadel8903@gmail.com"
                 aria-label="Email"
-                className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300"
+                className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300"
               >
                 <MailIcon />
               </a>
@@ -1089,7 +1122,7 @@ export default function Home() {
           <FadeIn delay={0.4} y={20} className="flex gap-3 items-center">
             <a
               href="#videos"
-              className="rounded-full border-2 border-[#D7E2EA] text-[#D7E2EA] font-medium uppercase tracking-widest px-6 py-2.5 text-xs sm:text-sm hover:bg-white/10 transition-colors"
+              className="rounded-full border-2 border-white/20 bg-white/[0.04] backdrop-blur-xl text-[#D7E2EA] font-medium uppercase tracking-widest px-6 py-2.5 text-xs sm:text-sm hover:bg-white/15 transition-colors shadow-lg"
             >
               Watch Videos
             </a>
@@ -1115,7 +1148,7 @@ export default function Home() {
       {/* MARQUEE */}
       <section
         ref={marqueeRef}
-        className="bg-[#0C0C0C] pt-16 pb-12 overflow-hidden flex flex-col gap-4 border-y border-white/5"
+        className="bg-[#0A0A0A] pt-16 pb-12 overflow-hidden flex flex-col gap-4 border-y border-white/5"
       >
         <div
           className="flex gap-4 whitespace-nowrap"
@@ -1130,8 +1163,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ABOUT */}
-      <section id="about" className="py-24 px-6 md:px-12 bg-[#0C0C0C]">
+      {/* ABOUT (GLASSY CARDS) */}
+      <section id="about" className="py-24 px-6 md:px-12 bg-[#0A0A0A]">
         <div className="max-w-5xl mx-auto">
           <FadeIn delay={0} y={30} className="text-center mb-16">
             <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
@@ -1143,7 +1176,7 @@ export default function Home() {
           </FadeIn>
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-            <FadeIn delay={0.1} className="md:col-span-7 bg-[#141414] border border-white/10 rounded-[32px] p-8 sm:p-10">
+            <FadeIn delay={0.1} className="md:col-span-7 bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[32px] p-8 sm:p-10 shadow-2xl">
               <h3 className="text-2xl font-bold text-white mb-4">
                 Hey, I&apos;m Lil — Senior Video Editor
               </h3>
@@ -1178,7 +1211,7 @@ export default function Home() {
                   {softwareStack.map((soft, idx) => (
                     <div
                       key={idx}
-                      className="p-3 rounded-2xl bg-white/[0.03] border border-white/10 flex flex-col items-center text-center hover:border-[#B600A8]/60 transition-colors"
+                      className="p-3 rounded-2xl bg-white/[0.02] border border-white/10 flex flex-col items-center text-center hover:border-[#B600A8]/60 transition-colors"
                     >
                       <span className="w-9 h-9 rounded-xl bg-[#B600A8]/20 border border-[#B600A8]/40 text-[#B600A8] font-black text-sm flex items-center justify-center mb-2">
                         {soft.icon}
@@ -1191,7 +1224,7 @@ export default function Home() {
               </div>
             </FadeIn>
 
-            <FadeIn delay={0.2} className="md:col-span-5 bg-[#141414] border border-white/10 rounded-[32px] p-8 sm:p-10 flex flex-col justify-between h-full">
+            <FadeIn delay={0.2} className="md:col-span-5 bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[32px] p-8 sm:p-10 flex flex-col justify-between h-full shadow-2xl">
               <div>
                 <span className="text-xs uppercase tracking-widest text-[#B600A8] font-semibold">
                   Client Deliverables
@@ -1217,7 +1250,7 @@ export default function Home() {
               <div className="pt-4 border-t border-white/10">
                 <a
                   href="#contact"
-                  className="block text-center w-full py-3 rounded-full bg-white/10 hover:bg-[#B600A8] text-white text-xs font-bold uppercase tracking-wider transition-colors"
+                  className="block text-center w-full py-3 rounded-full bg-white/10 hover:bg-[#B600A8] text-white text-xs font-bold uppercase tracking-wider transition-colors shadow-lg"
                 >
                   Book Your Project
                 </a>
@@ -1230,7 +1263,7 @@ export default function Home() {
       {/* FEATURED VIDEOS */}
       <section
         id="videos"
-        className="py-20 sm:py-24 px-4 sm:px-8 md:px-12 bg-[#0C0C0C] border-t border-white/5"
+        className="py-20 sm:py-24 px-4 sm:px-8 md:px-12 bg-[#0A0A0A] border-t border-white/5"
       >
         <div className="max-w-6xl mx-auto">
           <FadeIn delay={0} y={30} className="text-center mb-8">
@@ -1319,7 +1352,7 @@ export default function Home() {
       </section>
 
       {/* PRICING */}
-      <section id="price" className="py-24 px-5 sm:px-8 md:px-12 bg-[#0C0C0C]">
+      <section id="price" className="py-24 px-5 sm:px-8 md:px-12 bg-[#0A0A0A]">
         <div className="max-w-6xl mx-auto">
           <FadeIn delay={0} y={30} className="text-center mb-10">
             <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
@@ -1336,7 +1369,7 @@ export default function Home() {
           </FadeIn>
 
           <FadeIn delay={0.1} y={20} className="flex justify-center mb-16">
-            <div className="inline-flex items-center p-1 rounded-full bg-white/5 border border-white/10">
+            <div className="inline-flex items-center p-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl">
               <button
                 onClick={() => setCurrencyMode("ALL")}
                 className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
@@ -1388,10 +1421,10 @@ export default function Home() {
               return (
                 <FadeIn key={pkg.id} delay={idx * 0.15} className="flex">
                   <div
-                    className={`w-full rounded-[36px] p-8 flex flex-col justify-between transition-all duration-300 relative ${
+                    className={`w-full rounded-[36px] p-8 flex flex-col justify-between transition-all duration-300 relative backdrop-blur-2xl ${
                       pkg.featured
-                        ? "bg-gradient-to-b from-[#18011F] to-[#121212] border-2 border-[#B600A8] shadow-[0_0_40px_rgba(182,0,168,0.25)]"
-                        : "bg-[#141414] border border-white/10 hover:border-white/20"
+                        ? "bg-gradient-to-b from-[#18011F]/90 to-[#121212]/90 border-2 border-[#B600A8] shadow-[0_0_40px_rgba(182,0,168,0.25)]"
+                        : "bg-white/[0.03] border border-white/10 hover:border-white/25 shadow-2xl"
                     }`}
                   >
                     {pkg.featured && (
@@ -1440,7 +1473,7 @@ export default function Home() {
                       <ul className="space-y-4 mb-8">
                         {pkg.features.map((feat, i) => (
                           <li key={i} className="flex items-start gap-3 text-sm text-[#D7E2EA]/80 leading-relaxed">
-                            <span className="text-[#B600A8] text-base mt-0.5 inline-block animate-spin [animation-duration:4s] select-none">✦</span>
+                            <span className="text-[#B600A8] text-base mt-0.5 inline-block select-none">✦</span>
                             <span>{feat}</span>
                           </li>
                         ))}
@@ -1453,7 +1486,7 @@ export default function Home() {
                         href={pkg.driveLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-full text-center py-2.5 rounded-full border border-[#B600A8]/60 hover:bg-[#B600A8]/20 text-xs uppercase font-bold tracking-wider text-[#D7E2EA] transition-colors"
+                        className="w-full text-center py-2.5 rounded-full border border-[#B600A8]/60 hover:bg-[#B600A8]/20 text-xs uppercase font-bold tracking-wider text-[#D7E2EA] transition-colors shadow-md"
                       >
                         ▶ Watch Video Sample
                       </a>
@@ -1465,7 +1498,7 @@ export default function Home() {
                         className={`block w-full text-center rounded-full uppercase tracking-widest font-semibold py-3.5 text-sm transition-all duration-300 ${
                           pkg.featured
                             ? "bg-[#B600A8] hover:bg-[#9d0091] text-white shadow-lg shadow-[#B600A8]/30"
-                            : "border border-white/20 hover:bg-white/10 text-white"
+                            : "border border-white/20 hover:bg-white/10 text-white shadow-md"
                         }`}
                       >
                         Order via WhatsApp
@@ -1478,7 +1511,7 @@ export default function Home() {
           </div>
 
           <FadeIn delay={0.2} y={30}>
-            <div className="rounded-[36px] bg-[#121212] border border-white/10 p-8 sm:p-12">
+            <div className="rounded-[36px] bg-white/[0.02] backdrop-blur-2xl border border-white/10 p-8 sm:p-12 shadow-2xl">
               <div className="flex items-center gap-3 mb-8">
                 <span className="text-[#B600A8] text-xl">✦</span>
                 <h3 className="text-2xl sm:text-3xl font-bold text-white">General Terms & Production Flow</h3>
@@ -1505,8 +1538,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* REVIEWS */}
-      <section id="reviews" className="py-24 px-6 md:px-12 bg-[#0F0F0F] border-t border-white/5">
+      {/* REVIEWS (GLASSY) */}
+      <section id="reviews" className="py-24 px-6 md:px-12 bg-[#0A0A0A] border-t border-white/5">
         <div className="max-w-6xl mx-auto">
           <FadeIn delay={0} y={30} className="text-center mb-16">
             <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">Testimonials</span>
@@ -1519,7 +1552,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
             {clientReviews.map((rev, idx) => (
               <FadeIn key={idx} delay={idx * 0.1}>
-                <div className="p-8 rounded-[32px] bg-[#141414] border border-white/10 flex flex-col justify-between h-full hover:border-[#B600A8]/40 transition-colors">
+                <div className="p-8 rounded-[32px] bg-white/[0.03] backdrop-blur-2xl border border-white/10 flex flex-col justify-between h-full hover:border-[#B600A8]/40 transition-colors shadow-2xl">
                   <div>
                     <div className="flex justify-between items-center mb-4">
                       <span className="text-[#B600A8] text-sm tracking-widest font-mono">{rev.rating}</span>
@@ -1531,7 +1564,7 @@ export default function Home() {
                   </div>
 
                   <div className="pt-4 border-t border-white/10 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#B600A8] to-[#7621B0] flex items-center justify-center font-bold text-white text-sm">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#B600A8] to-[#7621B0] flex items-center justify-center font-bold text-white text-sm shadow-md">
                       {rev.client.charAt(0)}
                     </div>
                     <div>
@@ -1547,7 +1580,7 @@ export default function Home() {
       </section>
 
       {/* THUMBNAILS */}
-      <section id="thumbnails" className="py-24 px-5 sm:px-8 md:px-12 bg-[#0C0C0C]">
+      <section id="thumbnails" className="py-24 px-5 sm:px-8 md:px-12 bg-[#0A0A0A]">
         <div className="max-w-6xl mx-auto">
           <FadeIn delay={0} y={30} className="text-center mb-8">
             <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
@@ -1589,7 +1622,7 @@ export default function Home() {
                   <FadeIn key={index} delay={index * 0.1}>
                     <motion.div
                       whileHover={{ y: -8 }}
-                      className="bg-[#121212] border border-white/10 rounded-[28px] overflow-hidden shadow-2xl group hover:border-[#B600A8]/50 transition-colors duration-300"
+                      className="bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[28px] overflow-hidden shadow-2xl group hover:border-[#B600A8]/50 transition-colors duration-300"
                     >
                       <div className="w-full aspect-[4/5] overflow-hidden bg-black/50">
                         <img
@@ -1645,7 +1678,7 @@ export default function Home() {
       </section>
 
       {/* CONTACT */}
-      <section id="contact" className="py-24 px-6 text-center bg-[#0C0C0C] border-t border-white/10">
+      <section id="contact" className="py-24 px-6 text-center bg-[#0A0A0A] border-t border-white/10">
         <FadeIn delay={0} y={30} className="max-w-3xl mx-auto">
           <span className="text-xs uppercase tracking-[0.25em] text-[#B600A8] font-bold">
             Available for new projects
@@ -1665,7 +1698,7 @@ export default function Home() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
-              className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300 hover:scale-110"
+              className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300 hover:scale-110 shadow-xl"
             >
               <InstagramIcon />
             </a>
@@ -1675,7 +1708,7 @@ export default function Home() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Facebook"
-              className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300 hover:scale-110"
+              className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300 hover:scale-110 shadow-xl"
             >
               <FacebookIcon />
             </a>
@@ -1685,7 +1718,7 @@ export default function Home() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="WhatsApp"
-              className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:text-[#25D366] hover:border-[#25D366] hover:bg-[#25D366]/20 transition-all duration-300 hover:scale-110"
+              className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/70 hover:text-[#25D366] hover:border-[#25D366] hover:bg-[#25D366]/20 transition-all duration-300 hover:scale-110 shadow-xl"
             >
               <WhatsAppIcon />
             </a>
@@ -1693,7 +1726,7 @@ export default function Home() {
             <a
               href="mailto:ebrahimfadel8903@gmail.com"
               aria-label="Email"
-              className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300 hover:scale-110"
+              className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300 hover:scale-110 shadow-xl"
             >
               <MailIcon />
             </a>
@@ -1703,7 +1736,7 @@ export default function Home() {
             href="https://wa.me/201211871199?text=Hey%20Lil!%20I%20want%20to%20start%20a%20video%20editing%20project."
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#B600A8] hover:bg-[#9d0091] text-white uppercase tracking-widest text-xs font-bold transition-all duration-300 hover:scale-105 shadow-[0_0_30px_rgba(182,0,168,0.25)]"
+            className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#B600A8] hover:bg-[#9d0091] text-white uppercase tracking-widest text-xs font-bold transition-all duration-300 hover:scale-105 shadow-[0_0_30px_rgba(182,0,168,0.35)]"
           >
             Start a Project
             <span>→</span>
@@ -1724,7 +1757,7 @@ export default function Home() {
             exit={{ opacity: 0, scale: 0.8 }}
             onClick={scrollToTop}
             aria-label="Scroll to top"
-            className="fixed bottom-8 right-8 z-40 w-12 h-12 rounded-full bg-[#141414] border border-white/20 text-[#B600A8] hover:bg-[#B600A8] hover:text-white hover:border-[#B600A8] shadow-2xl flex items-center justify-center font-black transition-all duration-300"
+            className="fixed bottom-8 right-8 z-40 w-12 h-12 rounded-full bg-[#141414]/80 backdrop-blur-xl border border-white/20 text-[#B600A8] hover:bg-[#B600A8] hover:text-white hover:border-[#B600A8] shadow-2xl flex items-center justify-center font-black transition-all duration-300"
           >
             ↑
           </motion.button>
