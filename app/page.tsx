@@ -65,63 +65,88 @@ const FadeIn: React.FC<FadeInProps> = ({
   );
 };
 
-interface MagnetProps {
-  children: React.ReactNode;
-  padding?: number;
-  strength?: number;
-  className?: string;
-}
+// --- 3D INTERACTIVE AVATAR COMPONENT (PARALLAX TILT + GLOW) ---
 
-const Magnet: React.FC<MagnetProps> = ({
-  children,
-  padding = 150,
-  strength = 3,
-  className = "",
-}) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isHovered, setIsHovered] = useState(false);
+function TiltAvatar3D({ src, alt }: { src: string; alt: string }) {
+  const cardRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!ref.current) return;
-      const rect = ref.current.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      const dist = Math.hypot(e.clientX - centerX, e.clientY - centerY);
+  const rotateX = useMotionValue(0);
+  const rotateY = useMotionValue(0);
+  const glowX = useMotionValue(0);
+  const glowY = useMotionValue(0);
 
-      if (dist < rect.width / 2 + padding) {
-        setIsHovered(true);
-        setPosition({
-          x: (e.clientX - centerX) / strength,
-          y: (e.clientY - centerY) / strength,
-        });
-      } else {
-        setIsHovered(false);
-        setPosition({ x: 0, y: 0 });
-      }
-    };
+  const springConfig = { damping: 22, stiffness: 280, mass: 0.5 };
+  const smoothRotateX = useSpring(rotateX, springConfig);
+  const smoothRotateY = useSpring(rotateY, springConfig);
+  const smoothGlowX = useSpring(glowX, springConfig);
+  const smoothGlowY = useSpring(glowY, springConfig);
 
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [padding, strength]);
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    const mouseOffsetX = e.clientX - centerX;
+    const mouseOffsetY = e.clientY - centerY;
+
+    const rotX = -(mouseOffsetY / (rect.height / 2)) * 16;
+    const rotY = (mouseOffsetX / (rect.width / 2)) * 16;
+
+    rotateX.set(rotX);
+    rotateY.set(rotY);
+    glowX.set(mouseOffsetX * 0.35);
+    glowY.set(mouseOffsetY * 0.35);
+  };
+
+  const handleMouseLeave = () => {
+    rotateX.set(0);
+    rotateY.set(0);
+    glowX.set(0);
+    glowY.set(0);
+  };
 
   return (
     <div
-      ref={ref}
-      className={className}
-      style={{
-        transform: `translate3d(${position.x}px, ${position.y}px, 0)`,
-        transition: isHovered
-          ? "transform 0.3s ease-out"
-          : "transform 0.6s ease-in-out",
-        willChange: "transform",
-      }}
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="relative flex items-center justify-center cursor-pointer select-none"
+      style={{ perspective: "1000px" }}
     >
-      {children}
+      {/* هالة نيون بنفسجية ثلاثية الأبعاد تتحرك في عمق مختلف */}
+      <motion.div
+        className="absolute w-[240px] sm:w-[320px] md:w-[400px] h-[240px] sm:h-[320px] md:h-[400px] rounded-full blur-[90px] opacity-35 pointer-events-none"
+        style={{
+          x: smoothGlowX,
+          y: smoothGlowY,
+          background: "radial-gradient(circle, #B600A8 0%, #7621B0 60%, transparent 80%)",
+        }}
+      />
+
+      {/* المجسم ثلاثي الأبعاد للصورة الشخصية */}
+      <motion.div
+        style={{
+          rotateX: smoothRotateX,
+          rotateY: smoothRotateY,
+          transformStyle: "preserve-3d",
+        }}
+        whileHover={{ scale: 1.03 }}
+        transition={{ duration: 0.25 }}
+        className="relative z-10"
+      >
+        <img
+          src={src}
+          alt={alt}
+          className="w-[260px] sm:w-[340px] md:w-[420px] lg:w-[480px] object-contain select-none pointer-events-none drop-shadow-[0_25px_35px_rgba(0,0,0,0.85)]"
+          style={{
+            transform: "translateZ(45px)",
+          }}
+        />
+      </motion.div>
     </div>
   );
-};
+}
 
 // --- DATA ---
 
@@ -655,7 +680,6 @@ export default function Home() {
   const smoothX = useSpring(mouseX, springConfig);
   const smoothY = useSpring(mouseY, springConfig);
 
-  // هالة التتبع (Motion Blur Ghost)
   const ghostSpringConfig = { damping: 40, stiffness: 180, mass: 1 };
   const ghostX = useSpring(mouseX, ghostSpringConfig);
   const ghostY = useSpring(mouseY, ghostSpringConfig);
@@ -663,6 +687,28 @@ export default function Home() {
   const smoothRotation = useSpring(cursorRotation, { damping: 25, stiffness: 200 });
 
   const prevMouseXRef = useRef(0);
+
+  // إخفاء ماوس الويندوز إجبارياً برمجياً عبر الـ DOM
+  useEffect(() => {
+    document.documentElement.style.cursor = "none";
+    document.body.style.cursor = "none";
+
+    const styleEl = document.createElement("style");
+    styleEl.innerHTML = `
+      @media (min-width: 768px) {
+        *, *::before, *::after, html, body, a, button, [role="button"], video, input {
+          cursor: none !important;
+        }
+      }
+    `;
+    document.head.appendChild(styleEl);
+
+    return () => {
+      document.documentElement.style.cursor = "auto";
+      document.body.style.cursor = "auto";
+      if (styleEl.parentNode) styleEl.parentNode.removeChild(styleEl);
+    };
+  }, []);
 
   // Typewriter
   useEffect(() => {
@@ -697,7 +743,6 @@ export default function Home() {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
 
-      // حساب زاوية الميلان يميناً ويساراً حسب اتجاه حركة اليد
       const deltaX = e.clientX - prevMouseXRef.current;
       prevMouseXRef.current = e.clientX;
       const targetRotation = Math.max(Math.min(deltaX * 1.5, 30), -30);
@@ -824,12 +869,6 @@ export default function Home() {
       dir="ltr"
       className="relative w-full min-h-screen bg-[#0A0A0A] text-[#D7E2EA] selection:bg-[#B600A8] selection:text-white"
     >
-      {/* حقن أيقونة التايم لاين الاحترافية الملونة بدقة مباشرة في المتصفح */}
-      <link
-        rel="icon"
-        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23121212%22/><rect x=%2210%22 y=%2225%22 width=%2280%22 height=%2215%22 rx=%224%22 fill=%22%23B600A8%22/><rect x=%2210%22 y=%2245%22 width=%2235%22 height=%2215%22 rx=%224%22 fill=%22%2300D2FF%22/><rect x=%2250%22 y=%2245%22 width=%2240%22 height=%2215%22 rx=%224%22 fill=%22%23BE4C00%22/><rect x=%2210%22 y=%2265%22 width=%2280%22 height=%2212%22 rx=%223%22 fill=%22%2352B788%22/><line x1=%2245%22 y1=%2215%22 x2=%2245%22 y2=%2285%22 stroke=%22%2300FFFF%22 stroke-width=%224%22/></svg>"
-      />
-
       {/* --- MOTION BLUR GHOST TRAILING --- */}
       <motion.div
         className="pointer-events-none fixed z-[9998] hidden md:block opacity-35 blur-[2px]"
@@ -1088,15 +1127,10 @@ export default function Home() {
           </FadeIn>
         </div>
 
+        {/* الصورة ثلاثية الأبعاد التفاعلية في منتصف الهيرو */}
         <div className="absolute left-1/2 -translate-x-1/2 z-10 bottom-16 sm:bottom-10 pointer-events-auto">
           <FadeIn delay={0.4} y={30}>
-            <Magnet padding={150} strength={3}>
-              <img
-                src="/images/avatar.png"
-                alt="Lil Portrait"
-                className="w-[260px] sm:w-[340px] md:w-[420px] lg:w-[480px] object-contain select-none pointer-events-none drop-shadow-2xl"
-              />
-            </Magnet>
+            <TiltAvatar3D src="/images/avatar.png" alt="Lil Portrait" />
           </FadeIn>
         </div>
 
