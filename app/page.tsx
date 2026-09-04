@@ -217,39 +217,6 @@ const softwareStack = [
   { name: "Photoshop", tag: "High-CTR Thumbnails", icon: "Ps" },
 ];
 
-const processSteps = [
-  {
-    num: "01",
-    title: "Project Brief & Creative Vision",
-    arabic: "الاتفاق وفهم فكرة الفيديو",
-    desc: "Understanding target audience, platform format, desired pacing, tone, and visual references.",
-  },
-  {
-    num: "02",
-    title: "Footage Upload & Assembly",
-    arabic: "رفع الماتريال والفرز السريع",
-    desc: "Seamless footage reception via Drive/WeTransfer, organizing media and building initial rough cuts.",
-  },
-  {
-    num: "03",
-    title: "The First Cut & Sound Design",
-    arabic: "المونتاج، التقطيع والمؤثرات",
-    desc: "Applying dynamic cuts, animated pop-up subtitles, visual hooks, sound Foley, and color balancing.",
-  },
-  {
-    num: "04",
-    title: "Feedback & Revisions",
-    arabic: "المراجعة والتعديلات السريعة",
-    desc: "Fine-tuning rhythm, subtitle cues, and visual flow based on your precise notes and vision.",
-  },
-  {
-    num: "05",
-    title: "Final 4K Master Delivery",
-    arabic: "التسليم النهائي بأعلى جودة",
-    desc: "Delivering crisp, native 4K/1080p high-bitrate master exports optimized for TikTok, Reels, and YouTube.",
-  },
-];
-
 const videosData = [
   {
     id: "man-u",
@@ -547,7 +514,7 @@ const servicesList = [
   },
 ];
 
-// --- MARQUEE CARD (نظيف تماماً بدون أيقونات زرقاء) ---
+// --- MARQUEE CARD ---
 
 function MarqueeCard({ item }: { item: (typeof marqueeItems)[0] }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -591,7 +558,7 @@ function MarqueeCard({ item }: { item: (typeof marqueeItems)[0] }) {
   );
 }
 
-// --- VIDEO CARD (نظيف بنسبة 9:16 وبدون أيقونات زرقاء) ---
+// --- VIDEO CARD ---
 
 function VideoCard({
   item,
@@ -717,7 +684,7 @@ export default function Home() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isModalMuted, setIsModalMuted] = useState(false);
 
-  // --- CLEAN & FAST MOUSE TRACKING ---
+  // --- FAST & DIRECT MOUSE TRACKING ---
   const mouseX = useMotionValue(-200);
   const mouseY = useMotionValue(-200);
   const cursorRotation = useMotionValue(0);
@@ -905,7 +872,7 @@ export default function Home() {
 
   return (
     <>
-      {/* مؤشر الماوس النيون المستقل تماماً */}
+      {/* مؤشر الماوس النيون المستقل */}
       <motion.div
         className="pointer-events-none fixed top-0 left-0 z-[999999] hidden md:block"
         style={{
@@ -1077,7 +1044,6 @@ export default function Home() {
             <nav className="flex justify-between items-center px-6 md:px-10 py-4 md:py-5 mt-4 mx-4 md:mx-10 rounded-3xl bg-white/[0.03] backdrop-blur-2xl border border-white/10 text-xs md:text-sm font-medium tracking-wider uppercase gap-6 shadow-2xl">
               <div className="flex gap-5 sm:gap-8 items-center flex-wrap">
                 <a href="#about" className="hover:text-[#B600A8] transition-colors">About</a>
-                <a href="#process" className="hover:text-[#B600A8] transition-colors">Process</a>
                 <a href="#videos" className="hover:text-[#B600A8] transition-colors">Videos</a>
                 <a href="#price" className="hover:text-[#B600A8] transition-colors">Pricing</a>
                 <a href="#reviews" className="hover:text-[#B600A8] transition-colors">Reviews</a>
@@ -1303,54 +1269,6 @@ export default function Home() {
                   </MagneticButton>
                 </div>
               </FadeIn>
-            </div>
-          </div>
-        </section>
-
-        {/* 6. PROCESS SECTION (WORKFLOW TIMELINE) */}
-        <section id="process" className="py-24 px-5 sm:px-8 md:px-12 bg-[#0C0C0C] border-t border-white/5">
-          <div className="max-w-4xl mx-auto">
-            <FadeIn delay={0} y={30} className="text-center mb-16">
-              <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
-                How We Collaborate
-              </span>
-              <h2 className="hero-heading font-black uppercase text-4xl sm:text-6xl md:text-7xl mt-2">
-                Editing Workflow
-              </h2>
-              <p className="text-[#D7E2EA]/60 max-w-xl mx-auto mt-3 text-sm sm:text-base">
-                A seamless 5-step post-production pipeline from raw footage to high-impact export
-              </p>
-            </FadeIn>
-
-            <div className="relative border-l-2 border-white/10 ml-4 sm:ml-8 pl-6 sm:pl-10 space-y-12">
-              {processSteps.map((step, idx) => (
-                <FadeIn key={step.num} delay={idx * 0.1}>
-                  <div className="relative group">
-                    <div className="absolute -left-[31px] sm:-left-[47px] top-1.5 w-6 h-6 rounded-full bg-[#0A0A0A] border-2 border-[#B600A8] flex items-center justify-center shadow-[0_0_15px_rgba(182,0,168,0.6)] group-hover:scale-125 transition-transform">
-                      <div className="w-2 h-2 rounded-full bg-white" />
-                    </div>
-
-                    <div className="p-6 sm:p-8 rounded-[28px] bg-white/[0.03] backdrop-blur-xl border border-white/10 hover:border-[#B600A8]/50 transition-all duration-300 shadow-xl">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                        <div className="flex items-center gap-3">
-                          <span className="text-xs font-mono text-[#B600A8] font-bold px-2.5 py-1 rounded-md bg-[#B600A8]/20 border border-[#B600A8]/40">
-                            STEP {step.num}
-                          </span>
-                          <h3 className="text-lg sm:text-xl font-bold text-white">
-                            {step.title}
-                          </h3>
-                        </div>
-                        <span className="text-xs text-[#D7E2EA]/60 font-medium">
-                          {step.arabic}
-                        </span>
-                      </div>
-                      <p className="text-sm text-[#D7E2EA]/75 leading-relaxed mt-2">
-                        {step.desc}
-                      </p>
-                    </div>
-                  </div>
-                </FadeIn>
-              ))}
             </div>
           </div>
         </section>
