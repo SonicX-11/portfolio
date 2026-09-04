@@ -1,15 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect, useMemo, useCallback } from "react";
-import {
-  motion,
-  AnimatePresence,
-  useSpring,
-  useMotionValue,
-  useInView,
-  useScroll,
-  animate,
-} from "framer-motion";
+import { motion, AnimatePresence, useSpring, useMotionValue, useInView } from "framer-motion";
 
 // --- SVG SOCIAL & SOFTWARE ICONS ---
 
@@ -35,6 +27,15 @@ const MailIcon = () => (
   <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
     <path d="M0 3v18h24v-18h-24zm6.623 7.929l-4.623 5.712v-9.458l4.623 3.746zm-4.141-5.929h19.035l-9.517 7.713-9.518-7.713zm5.694 7.188l3.824 3.099 3.83-3.104 5.612 6.817h-18.779l5.513-6.812zm9.208-1.264l4.616-3.741v9.348l-4.616-5.607z" />
   </svg>
+);
+
+// --- BLUE SQUARE PLAY BADGE ---
+const PlayBadge = () => (
+  <div className="w-5 h-5 rounded-[6px] bg-[#3B82F6] flex items-center justify-center shadow-sm">
+    <svg className="w-2.5 h-2.5 fill-white translate-x-[0.5px]" viewBox="0 0 24 24">
+      <path d="M5 3l14 9-14 9V3z" />
+    </svg>
+  </div>
 );
 
 // --- REUSABLE ANIMATION COMPONENTS ---
@@ -73,8 +74,91 @@ const FadeIn: React.FC<FadeInProps> = ({
   );
 };
 
-// --- MAGNETIC HOVER COMPONENT (حركة الصورة الطبيعية مع الماوس) ---
+// --- COUNT UP ANIMATION (0 -> Number) ---
+function CountUp({ target, suffix = "+" }: { target: number; suffix?: string }) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
 
+  useEffect(() => {
+    if (!isInView) return;
+    let start = 0;
+    const duration = 1600;
+    const stepTime = 20;
+    const steps = duration / stepTime;
+    const increment = target / steps;
+
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= target) {
+        setCount(target);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(start));
+      }
+    }, stepTime);
+
+    return () => clearInterval(timer);
+  }, [isInView, target]);
+
+  return (
+    <span ref={ref}>
+      {count}
+      {suffix}
+    </span>
+  );
+}
+
+// --- MAGNETIC BUTTON COMPONENT ---
+function MagneticButton({
+  children,
+  href,
+  className = "",
+  style = {},
+  onClick,
+}: {
+  children: React.ReactNode;
+  href?: string;
+  className?: string;
+  style?: React.CSSProperties;
+  onClick?: () => void;
+}) {
+  const btnRef = useRef<HTMLAnchorElement>(null);
+  const [pos, setPos] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!btnRef.current) return;
+    const { left, top, width, height } = btnRef.current.getBoundingClientRect();
+    const centerX = left + width / 2;
+    const centerY = top + height / 2;
+    setPos({
+      x: (e.clientX - centerX) * 0.35,
+      y: (e.clientY - centerY) * 0.35,
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setPos({ x: 0, y: 0 });
+  };
+
+  return (
+    <motion.a
+      ref={btnRef}
+      href={href}
+      onClick={onClick}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      animate={{ x: pos.x, y: pos.y }}
+      transition={{ type: "spring", stiffness: 250, damping: 15, mass: 0.1 }}
+      className={`inline-block ${className}`}
+      style={style}
+    >
+      {children}
+    </motion.a>
+  );
+}
+
+// --- MAGNETIC AVATAR COMPONENT ---
 interface MagnetProps {
   children: React.ReactNode;
   padding?: number;
@@ -133,70 +217,45 @@ const Magnet: React.FC<MagnetProps> = ({
   );
 };
 
-// --- ANIMATED COUNTER (0 → القيمة النهائية عند الوصول للـ section) ---
-
-interface CounterProps {
-  value: number;
-  suffix?: string;
-  prefix?: string;
-  duration?: number;
-  decimals?: number;
-}
-
-const Counter: React.FC<CounterProps> = ({
-  value,
-  suffix = "",
-  prefix = "",
-  duration = 2,
-  decimals = 0,
-}) => {
-  const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
-  const [displayValue, setDisplayValue] = useState(0);
-
-  useEffect(() => {
-    if (!isInView) return;
-
-    const controls = animate(0, value, {
-      duration,
-      ease: [0.16, 1, 0.3, 1],
-      onUpdate: (latest: number) => setDisplayValue(latest),
-    });
-
-    return () => controls.stop();
-  }, [isInView, value, duration]);
-
-  return (
-    <span ref={ref}>
-      {prefix}
-      {decimals > 0 ? displayValue.toFixed(decimals) : Math.floor(displayValue)}
-      {suffix}
-    </span>
-  );
-};
-
 // --- DATA ---
 
 const softwareStack = [
+  { name: "Premiere Pro", tag: "Post-Production & Cutting", icon: "Pr" },
+  { name: "After Effects", tag: "Transitions & Text Animation", icon: "Ae" },
+  { name: "DaVinci Resolve", tag: "Color Grading & Mastering", icon: "Da" },
+  { name: "Photoshop", tag: "High-CTR Thumbnails", icon: "Ps" },
+];
+
+const processSteps = [
   {
-    name: "Premiere Pro",
-    tag: "Post-Production & Cutting",
-    icon: "Pr",
+    num: "01",
+    title: "Project Brief & Creative Vision",
+    arabic: "الاتفاق وفهم فكرة الفيديو",
+    desc: "Understanding target audience, platform format, desired pacing, tone, and visual references.",
   },
   {
-    name: "After Effects",
-    tag: "Transitions & Text Animation",
-    icon: "Ae",
+    num: "02",
+    title: "Footage Upload & Assembly",
+    arabic: "رفع الماتريال والفرز السريع",
+    desc: "Seamless footage reception via Drive/WeTransfer, organizing media and building initial rough cuts.",
   },
   {
-    name: "DaVinci Resolve",
-    tag: "Color Grading & Mastering",
-    icon: "Da",
+    num: "03",
+    title: "The First Cut & Sound Design",
+    arabic: "المونتاج، التقطيع والمؤثرات",
+    desc: "Applying dynamic cuts, animated pop-up subtitles, visual hooks, sound Foley, and color balancing.",
   },
   {
-    name: "Photoshop",
-    tag: "High-CTR Thumbnails",
-    icon: "Ps",
+    num: "04",
+    title: "Feedback & Revisions",
+    arabic: "المراجعة والتعديلات السريعة",
+    desc: "Fine-tuning rhythm, subtitle cues, and visual flow based on your precise notes and vision.",
+  },
+  {
+    num: "05",
+    title: "Final 4K Master Delivery",
+    arabic: "التسليم النهائي بأعلى جودة",
+    desc: "Delivering crisp, native 4K/1080p high-bitrate master exports optimized for TikTok, Reels, and YouTube.",
   },
 ];
 
@@ -207,8 +266,7 @@ const videosData = [
     category: "Sports",
     tab: "commercial",
     src: "/video/Man-U.mp4",
-    description:
-      "Fast-paced football edit focused on rhythm, impact, typography and music synchronization.",
+    description: "Fast-paced football edit focused on rhythm, impact, typography and music synchronization.",
     orientation: "portrait",
   },
   {
@@ -217,8 +275,7 @@ const videosData = [
     category: "Cinematic Narrative",
     tab: "cinematic",
     src: "/video/The-Odyssey.mp4",
-    description:
-      "Cinematic storytelling edit combining pacing, atmosphere, sound design and visual continuity.",
+    description: "Cinematic storytelling edit combining pacing, atmosphere, sound design and visual continuity.",
     orientation: "portrait",
   },
   {
@@ -227,8 +284,7 @@ const videosData = [
     category: "Brand Campaign",
     tab: "commercial",
     src: "/video/Mb22.mp4",
-    description:
-      "Commercial showcase built around product presentation, dynamic cuts and visual impact.",
+    description: "Commercial showcase built around product presentation, dynamic cuts and visual impact.",
     orientation: "portrait",
   },
   {
@@ -237,8 +293,7 @@ const videosData = [
     category: "Color Correction",
     tab: "commercial",
     src: "/video/Color.mp4",
-    description:
-      "Color grading showcase demonstrating contrast, skin tones, mood and cinematic look development.",
+    description: "Color grading showcase demonstrating contrast, skin tones, mood and cinematic look development.",
     orientation: "portrait",
   },
   {
@@ -247,8 +302,7 @@ const videosData = [
     category: "TikTok / Reels",
     tab: "reels",
     src: "/video/1.mp4",
-    description:
-      "Short-form edit designed around strong hooks, rapid pacing and audience retention.",
+    description: "Short-form edit designed around strong hooks, rapid pacing and audience retention.",
     orientation: "portrait",
   },
   {
@@ -257,8 +311,7 @@ const videosData = [
     category: "Pop-Up Subtitles",
     tab: "reels",
     src: "/video/2.mp4",
-    description:
-      "Business-focused short-form edit using animated subtitles, visual emphasis and sound effects.",
+    description: "Business-focused short-form edit using animated subtitles, visual emphasis and sound effects.",
     orientation: "portrait",
   },
   {
@@ -267,8 +320,7 @@ const videosData = [
     category: "Fast Paced",
     tab: "reels",
     src: "/video/3.mp4",
-    description:
-      "High-energy social edit focused on hooks, fast transitions and visual storytelling.",
+    description: "High-energy social edit focused on hooks, fast transitions and visual storytelling.",
     orientation: "portrait",
   },
   {
@@ -277,8 +329,7 @@ const videosData = [
     category: "Fast Paced Cuts",
     tab: "reels",
     src: "/video/4.mp4",
-    description:
-      "Engagement-first edit with rhythmic cuts, zooms, subtitles and layered sound design.",
+    description: "Engagement-first edit with rhythmic cuts, zooms, subtitles and layered sound design.",
     orientation: "portrait",
   },
   {
@@ -287,8 +338,7 @@ const videosData = [
     category: "Commercial Cut",
     tab: "reels",
     src: "/video/5.mp4",
-    description:
-      "Brand storytelling reel combining clean editing, narrative structure and visual consistency.",
+    description: "Brand storytelling reel combining clean editing, narrative structure and visual consistency.",
     orientation: "portrait",
   },
   {
@@ -297,8 +347,7 @@ const videosData = [
     category: "Short-Form Reel",
     tab: "reels",
     src: "/video/12.mp4",
-    description:
-      "Short-form social media edit built to grab attention immediately and maintain momentum.",
+    description: "Short-form social media edit built to grab attention immediately and maintain momentum.",
     orientation: "portrait",
   },
   {
@@ -307,8 +356,7 @@ const videosData = [
     category: "Cinematic Sound Design",
     tab: "cinematic",
     src: "/video/Habib-Ayamy.mp4",
-    description:
-      "Emotional cinematic edit with music synchronization, atmosphere and detailed sound design.",
+    description: "Emotional cinematic edit with music synchronization, atmosphere and detailed sound design.",
     orientation: "portrait",
   },
 ];
@@ -394,8 +442,7 @@ const packagesData = [
     priceEGP: "500 EGP",
     featured: false,
     revisions: "1 Free Revision per video based on feedback",
-    driveLink:
-      "https://drive.google.com/file/d/1Y97S6qk9JqmONHOk-BQcj1XO1piaa0KT/view?usp=drive_link",
+    driveLink: "https://drive.google.com/file/d/1Y97S6qk9JqmONHOk-BQcj1XO1piaa0KT/view?usp=drive_link",
     features: [
       "Dynamic cutting eliminating dead spaces to ensure fluid rhythm",
       "Clean, readable, color-coded subtitles matching voice tempo",
@@ -410,8 +457,7 @@ const packagesData = [
     priceEGP: "850 EGP",
     featured: true,
     revisions: "Up to 2 Revisions per video",
-    driveLink:
-      "https://drive.google.com/file/d/1WtLRXTR_r5RQPndULSfyAwIqst8j7YYX/view?usp=drive_link",
+    driveLink: "https://drive.google.com/file/d/1WtLRXTR_r5RQPndULSfyAwIqst8j7YYX/view?usp=drive_link",
     features: [
       "Retention-first pacing calculated to maximize completion rates",
       "Dynamic Pop-up Subtitles reacting rhythmically to vocal emphasis",
@@ -427,8 +473,7 @@ const packagesData = [
     priceEGP: "1,200 EGP",
     featured: false,
     revisions: "Up to 3 Revisions per video",
-    driveLink:
-      "https://drive.google.com/file/d/19usAUA3dCWM4rYtLkX557m793uyGFLnW/view?usp=drive_link",
+    driveLink: "https://drive.google.com/file/d/19usAUA3dCWM4rYtLkX557m793uyGFLnW/view?usp=drive_link",
     features: [
       "Bespoke cinematic pacing tailored for corporate brands and creators",
       "Full brand identity adaptation (typography, vectors, palette)",
@@ -463,29 +508,25 @@ const generalTerms = [
 
 const clientReviews = [
   {
-    quote:
-      "Lil transformed our raw footage into high-retention commercial reels. The pacing, audio sync, and pop-up subtitles significantly boosted our engagement.",
+    quote: "Lil transformed our raw footage into high-retention commercial reels. The pacing, audio sync, and pop-up subtitles significantly boosted our engagement.",
     client: "Ahmed Abdelkareem",
     role: "Content Creator & Entrepreneur",
     rating: "★★★★★",
   },
   {
-    quote:
-      "Exceptional turnaround and aesthetic sense. He understands video storytelling deeply, delivering flawless color grading and slick pacing without endless revisions.",
+    quote: "Exceptional turnaround and aesthetic sense. He understands video storytelling deeply, delivering flawless color grading and slick pacing without endless revisions.",
     client: "Sameh Othman",
     role: "Business Consultant",
     rating: "★★★★★",
   },
   {
-    quote:
-      "The retention on our educational campaigns jumped noticeably after hiring Lil. The edits are razor sharp and the communication is clear and professional.",
+    quote: "The retention on our educational campaigns jumped noticeably after hiring Lil. The edits are razor sharp and the communication is clear and professional.",
     client: "Rania",
     role: "E-Learning Academy Lead",
     rating: "★★★★★",
   },
   {
-    quote:
-      "Reliable, creative, and fast. His sound design and B-roll selection gave our commercial launches a truly cinematic presence.",
+    quote: "Reliable, creative, and fast. His sound design and B-roll selection gave our commercial launches a truly cinematic presence.",
     client: "Maryam",
     role: "Commercial Brand Manager",
     rating: "★★★★★",
@@ -512,41 +553,6 @@ const servicesList = [
     num: "04",
     name: "Layered Foley Sound Design",
     desc: "Layered Foley sound design, impacts, risers, and music mixing that immerse viewers into the scene.",
-  },
-];
-
-const statsData = [
-  { value: 4, suffix: "+", decimals: 0, label: "Years Experience" },
-  { value: 350, suffix: "+", decimals: 0, label: "Videos Delivered" },
-  { value: 20, suffix: "+", decimals: 0, label: "Brands Worked With" },
-  { value: 45, suffix: "%", decimals: 0, label: "Retention Growth" },
-];
-
-const processSteps = [
-  {
-    num: "01",
-    title: "Brief",
-    desc: "We discuss your goals, target audience, tone and creative direction before anything is cut.",
-  },
-  {
-    num: "02",
-    title: "Footage Upload",
-    desc: "You share raw footage in full native resolution via a neatly organized Google Drive or WeTransfer link.",
-  },
-  {
-    num: "03",
-    title: "First Cut",
-    desc: "I deliver the first rough cut with pacing, subtitles, sound design and initial color correction.",
-  },
-  {
-    num: "04",
-    title: "Revision",
-    desc: "We refine the edit together based on your feedback, within the revision limit of your chosen package.",
-  },
-  {
-    num: "05",
-    title: "Final Delivery",
-    desc: "You receive the final, unwatermarked master export — ready to publish across every platform.",
   },
 ];
 
@@ -592,15 +598,15 @@ function MarqueeCard({ item }: { item: (typeof marqueeItems)[0] }) {
       </div>
 
       {item.video && (
-        <div className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/60 backdrop-blur-md border border-white/20 flex items-center justify-center text-white text-xs">
-          ▶
+        <div className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/60 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-lg">
+          <PlayBadge />
         </div>
       )}
     </div>
   );
 }
 
-// --- VIDEO CARD (9:16 + GLASSY + DYNAMIC THUMBNAIL) ---
+// --- VIDEO CARD (9:16 + GLASSY + ORIGINAL BADGE) ---
 
 function VideoCard({
   item,
@@ -672,12 +678,16 @@ function VideoCard({
               isHovered ? "bg-black/10" : "bg-black/35"
             }`}
           >
-            <motion.span
+            <motion.div
               whileHover={{ scale: 1.15 }}
-              className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#B600A8]/90 text-white flex items-center justify-center text-lg sm:text-xl shadow-[0_0_35px_rgba(182,0,168,0.5)] backdrop-blur-xl border border-white/20"
+              className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#B600A8] flex items-center justify-center shadow-[0_0_30px_rgba(182,0,168,0.5)] border border-white/10"
             >
-              ▶
-            </motion.span>
+              <div className="w-6 h-6 rounded-[7px] bg-[#3B82F6] flex items-center justify-center shadow-md">
+                <svg className="w-3 h-3 fill-white translate-x-[0.5px]" viewBox="0 0 24 24">
+                  <path d="M5 3l14 9-14 9V3z" />
+                </svg>
+              </div>
+            </motion.div>
           </div>
 
           <div className="absolute top-3 sm:top-4 left-3 sm:left-4 pointer-events-none">
@@ -716,46 +726,6 @@ function VideoCard({
   );
 }
 
-// --- PROCESS TIMELINE (خط متحرك أثناء الـ Scroll) ---
-
-function ProcessTimeline() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start 75%", "end 55%"],
-  });
-
-  return (
-    <div ref={containerRef} className="relative max-w-2xl mx-auto">
-      {/* الخط الأساسي الثابت */}
-      <div className="absolute left-[27px] sm:left-[35px] top-2 bottom-2 w-[2px] bg-white/10" />
-
-      {/* الخط المتحرك اللي بيتملي أثناء الـ scroll */}
-      <motion.div
-        style={{ scaleY: scrollYProgress, transformOrigin: "top" }}
-        className="absolute left-[27px] sm:left-[35px] top-2 bottom-2 w-[2px] bg-gradient-to-b from-[#B600A8] to-[#7621B0] shadow-[0_0_12px_rgba(182,0,168,0.6)]"
-      />
-
-      <div className="flex flex-col gap-10 sm:gap-14">
-        {processSteps.map((step, idx) => (
-          <FadeIn key={step.num} delay={idx * 0.05} x={-16} y={0} className="relative pl-[76px] sm:pl-[96px]">
-            <div className="absolute left-0 top-0 w-14 h-14 sm:w-[70px] sm:h-[70px] rounded-2xl bg-[#141414] border border-white/15 flex items-center justify-center font-mono font-black text-lg sm:text-xl text-[#B600A8] shadow-xl">
-              {step.num}
-            </div>
-
-            <h3 className="text-white font-bold text-lg sm:text-xl mb-1.5 uppercase tracking-wide pt-2 sm:pt-3">
-              {step.title}
-            </h3>
-            <p className="text-[#D7E2EA]/70 text-sm sm:text-base leading-relaxed max-w-md">
-              {step.desc}
-            </p>
-          </FadeIn>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 // --- MAIN COMPONENT ---
 
 export default function Home() {
@@ -773,7 +743,7 @@ export default function Home() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isModalMuted, setIsModalMuted] = useState(false);
 
-  // --- FAST & DIRECT MOUSE POSITION (بدون أي بطء أو موشن بلور) ---
+  // --- CLEAN & FAST MOUSE TRACKING ---
   const mouseX = useMotionValue(-200);
   const mouseY = useMotionValue(-200);
   const cursorRotation = useMotionValue(0);
@@ -784,7 +754,6 @@ export default function Home() {
 
   const prevMouseXRef = useRef(0);
 
-  // إخفاء ماوس الويندوز إجبارياً برمجياً عبر الـ DOM لضمان اختفائه في كامل الصفحة
   useEffect(() => {
     document.documentElement.style.cursor = "none";
     document.body.style.cursor = "none";
@@ -836,7 +805,6 @@ export default function Home() {
     };
 
     const handleMouseMove = (e: MouseEvent) => {
-      // استخدام ClientX و ClientY لتثبيت الماوس بالنسبة للـ Viewport تماماً حتى نهاية الصفحة
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
 
@@ -963,7 +931,7 @@ export default function Home() {
 
   return (
     <>
-      {/* --- مؤشر الماوس النيون المستقل تماماً (ظاهر دائماً في أعلى وأسفل الصفحة فوق كل الطبقات) --- */}
+      {/* مؤشر الماوس النيون المستقل */}
       <motion.div
         className="pointer-events-none fixed top-0 left-0 z-[999999] hidden md:block"
         style={{
@@ -998,7 +966,7 @@ export default function Home() {
         dir="ltr"
         className="relative w-full min-h-screen bg-[#0A0A0A] text-[#D7E2EA] selection:bg-[#B600A8] selection:text-white overflow-x-hidden"
       >
-        {/* VIDEO THEATER MODE (GLASSY & FULL 9:16) */}
+        {/* VIDEO THEATER MODE */}
         <AnimatePresence>
           {activeModalVideo && (
             <motion.div
@@ -1215,31 +1183,26 @@ export default function Home() {
             </FadeIn>
 
             <FadeIn delay={0.4} y={20} className="flex gap-3 items-center">
-              <Magnet padding={50} strength={6}>
-                <a
-                  href="#videos"
-                  className="inline-block rounded-full border-2 border-white/20 bg-white/[0.04] backdrop-blur-xl text-[#D7E2EA] font-medium uppercase tracking-widest px-6 py-2.5 text-xs sm:text-sm hover:bg-white/15 transition-colors shadow-lg"
-                >
-                  Watch Videos
-                </a>
-              </Magnet>
+              {/* MAGNETIC BUTTONS */}
+              <MagneticButton
+                href="#videos"
+                className="rounded-full border-2 border-white/20 bg-white/[0.04] backdrop-blur-xl text-[#D7E2EA] font-medium uppercase tracking-widest px-6 py-2.5 text-xs sm:text-sm hover:bg-white/15 transition-colors shadow-lg"
+              >
+                Watch Videos
+              </MagneticButton>
 
-              <Magnet padding={50} strength={6}>
-                <a
-                  href="#contact"
-                  className="inline-block rounded-full uppercase tracking-widest font-semibold text-white px-7 py-3 text-xs sm:text-sm transition-transform duration-300 hover:scale-105"
-                  style={{
-                    background:
-                      "linear-gradient(123deg, #18011F 7%, #B600A8 37%, #7621B0 72%, #BE4C00 100%)",
-                    boxShadow:
-                      "0px 4px 4px rgba(181, 1, 167, 0.25), inset 4px 4px 12px #7721B1",
-                    outline: "2px solid #FFFFFF",
-                    outlineOffset: "-3px",
-                  }}
-                >
-                  Get in touch
-                </a>
-              </Magnet>
+              <MagneticButton
+                href="#contact"
+                className="rounded-full uppercase tracking-widest font-semibold text-white px-7 py-3 text-xs sm:text-sm shadow-xl"
+                style={{
+                  background: "linear-gradient(123deg, #18011F 7%, #B600A8 37%, #7621B0 72%, #BE4C00 100%)",
+                  boxShadow: "0px 4px 4px rgba(181, 1, 167, 0.25), inset 4px 4px 12px #7721B1",
+                  outline: "2px solid #FFFFFF",
+                  outlineOffset: "-3px",
+                }}
+              >
+                Get in touch
+              </MagneticButton>
             </FadeIn>
           </div>
         </section>
@@ -1262,7 +1225,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ABOUT */}
+        {/* ABOUT (WITH LIVE COUNTER ANIMATION) */}
         <section id="about" className="py-24 px-6 md:px-12 bg-[#0A0A0A]">
           <div className="max-w-5xl mx-auto">
             <FadeIn delay={0} y={30} className="text-center mb-16">
@@ -1284,17 +1247,35 @@ export default function Home() {
                   Specialized in building high-retention visual assets that captivate audiences. With extensive experience across Adobe Premiere Pro, After Effects, and DaVinci Resolve, I bridge the gap between creative storytelling, surgical audio design, and conversion-driven marketing.
                 </p>
 
+                {/* 4 COUNTERS WITH REAL-TIME TRIGGER */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-white/10 text-center mb-8">
-                  {statsData.map((stat, idx) => (
-                    <div key={idx}>
-                      <div className="text-2xl sm:text-3xl font-black text-white">
-                        <Counter value={stat.value} suffix={stat.suffix} decimals={stat.decimals} />
-                      </div>
-                      <div className="text-[11px] sm:text-xs text-[#D7E2EA]/60 uppercase tracking-wider mt-1">
-                        {stat.label}
-                      </div>
+                  <div>
+                    <div className="text-2xl sm:text-3xl font-black text-white font-mono">
+                      <CountUp target={4} suffix="+" />
                     </div>
-                  ))}
+                    <div className="text-[10px] sm:text-[11px] text-[#D7E2EA]/60 uppercase tracking-wider mt-1">Years Experience</div>
+                  </div>
+
+                  <div>
+                    <div className="text-2xl sm:text-3xl font-black text-white font-mono">
+                      <CountUp target={350} suffix="+" />
+                    </div>
+                    <div className="text-[10px] sm:text-[11px] text-[#D7E2EA]/60 uppercase tracking-wider mt-1">Videos Delivered</div>
+                  </div>
+
+                  <div>
+                    <div className="text-2xl sm:text-3xl font-black text-white font-mono">
+                      <CountUp target={20} suffix="+" />
+                    </div>
+                    <div className="text-[10px] sm:text-[11px] text-[#D7E2EA]/60 uppercase tracking-wider mt-1">Brands & Creators</div>
+                  </div>
+
+                  <div>
+                    <div className="text-2xl sm:text-3xl font-black text-white font-mono">
+                      <CountUp target={45} suffix="%" />
+                    </div>
+                    <div className="text-[10px] sm:text-[11px] text-[#D7E2EA]/60 uppercase tracking-wider mt-1">Retention Growth</div>
+                  </div>
                 </div>
 
                 <div className="pt-6 border-t border-white/10">
@@ -1343,34 +1324,64 @@ export default function Home() {
                 </div>
 
                 <div className="pt-4 border-t border-white/10">
-                  <a
+                  <MagneticButton
                     href="#contact"
                     className="block text-center w-full py-3 rounded-full bg-white/10 hover:bg-[#B600A8] text-white text-xs font-bold uppercase tracking-wider transition-colors shadow-lg"
                   >
                     Book Your Project
-                  </a>
+                  </MagneticButton>
                 </div>
               </FadeIn>
             </div>
           </div>
         </section>
 
-        {/* PROCESS */}
-        <section id="process" className="py-24 px-6 md:px-12 bg-[#0A0A0A] border-t border-white/5">
-          <div className="max-w-5xl mx-auto">
-            <FadeIn delay={0} y={30} className="text-center mb-16 sm:mb-20">
+        {/* 🧑‍💻 6. PROCESS SECTION (INTERACTIVE TIMELINE) */}
+        <section id="process" className="py-24 px-5 sm:px-8 md:px-12 bg-[#0C0C0C] border-t border-white/5">
+          <div className="max-w-4xl mx-auto">
+            <FadeIn delay={0} y={30} className="text-center mb-16">
               <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
-                How We Work Together
+                How We Collaborate
               </span>
               <h2 className="hero-heading font-black uppercase text-4xl sm:text-6xl md:text-7xl mt-2">
-                The Process
+                Editing Workflow
               </h2>
               <p className="text-[#D7E2EA]/60 max-w-xl mx-auto mt-3 text-sm sm:text-base">
-                A clear, streamlined workflow from first brief to final delivery
+                A seamless 5-step post-production pipeline from raw footage to high-impact export
               </p>
             </FadeIn>
 
-            <ProcessTimeline />
+            <div className="relative border-l-2 border-white/10 ml-4 sm:ml-8 pl-6 sm:pl-10 space-y-12">
+              {processSteps.map((step, idx) => (
+                <FadeIn key={step.num} delay={idx * 0.1}>
+                  <div className="relative group">
+                    {/* Glowing Timeline Dot */}
+                    <div className="absolute -left-[31px] sm:-left-[47px] top-1.5 w-6 h-6 rounded-full bg-[#0A0A0A] border-2 border-[#B600A8] flex items-center justify-center shadow-[0_0_15px_rgba(182,0,168,0.6)] group-hover:scale-125 transition-transform">
+                      <div className="w-2 h-2 rounded-full bg-white" />
+                    </div>
+
+                    <div className="p-6 sm:p-8 rounded-[28px] bg-white/[0.03] backdrop-blur-xl border border-white/10 hover:border-[#B600A8]/50 transition-all duration-300 shadow-xl">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                        <div className="flex items-center gap-3">
+                          <span className="text-xs font-mono text-[#B600A8] font-bold px-2.5 py-1 rounded-md bg-[#B600A8]/20 border border-[#B600A8]/40">
+                            STEP {step.num}
+                          </span>
+                          <h3 className="text-lg sm:text-xl font-bold text-white">
+                            {step.title}
+                          </h3>
+                        </div>
+                        <span className="text-xs text-[#D7E2EA]/60 font-medium">
+                          {step.arabic}
+                        </span>
+                      </div>
+                      <p className="text-sm text-[#D7E2EA]/75 leading-relaxed mt-2">
+                        {step.desc}
+                      </p>
+                    </div>
+                  </div>
+                </FadeIn>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -1605,10 +1616,9 @@ export default function Home() {
                           ▶ Watch Video Sample
                         </a>
 
-                        <a
+                        {/* MAGNETIC BUTTON FOR ORDER */}
+                        <MagneticButton
                           href={whatsappPreFilledLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
                           className={`block w-full text-center rounded-full uppercase tracking-widest font-semibold py-3.5 text-sm transition-all duration-300 ${
                             pkg.featured
                               ? "bg-[#B600A8] hover:bg-[#9d0091] text-white shadow-lg shadow-[#B600A8]/30"
@@ -1616,7 +1626,7 @@ export default function Home() {
                           }`}
                         >
                           Order via WhatsApp
-                        </a>
+                        </MagneticButton>
                       </div>
                     </div>
                   </FadeIn>
@@ -1846,17 +1856,14 @@ export default function Home() {
               </a>
             </div>
 
-            <Magnet padding={60} strength={5} className="inline-block">
-              <a
-                href="https://wa.me/201211871199?text=Hey%20Lil!%20I%20want%20to%20start%20a%20video%20editing%20project."
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#B600A8] hover:bg-[#9d0091] text-white uppercase tracking-widest text-xs font-bold transition-all duration-300 hover:scale-105 shadow-[0_0_30px_rgba(182,0,168,0.35)]"
-              >
-                Start a Project
-                <span>→</span>
-              </a>
-            </Magnet>
+            {/* MAGNETIC CTA BUTTON */}
+            <MagneticButton
+              href="https://wa.me/201211871199?text=Hey%20Lil!%20I%20want%20to%20start%20a%20video%20editing%20project."
+              className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#B600A8] hover:bg-[#9d0091] text-white uppercase tracking-widest text-xs font-bold transition-all duration-300 shadow-[0_0_30px_rgba(182,0,168,0.35)]"
+            >
+              Start a Project
+              <span>→</span>
+            </MagneticButton>
 
             <div className="text-xs text-white/40 mt-10">
               © 2026 Lil. All rights reserved.
