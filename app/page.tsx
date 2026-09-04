@@ -29,15 +29,6 @@ const MailIcon = () => (
   </svg>
 );
 
-// --- BLUE SQUARE PLAY BADGE ---
-const PlayBadge = () => (
-  <div className="w-5 h-5 rounded-[6px] bg-[#3B82F6] flex items-center justify-center shadow-sm">
-    <svg className="w-2.5 h-2.5 fill-white translate-x-[0.5px]" viewBox="0 0 24 24">
-      <path d="M5 3l14 9-14 9V3z" />
-    </svg>
-  </div>
-);
-
 // --- REUSABLE ANIMATION COMPONENTS ---
 
 interface FadeInProps {
@@ -556,7 +547,7 @@ const servicesList = [
   },
 ];
 
-// --- MARQUEE CARD ---
+// --- MARQUEE CARD (نظيف تماماً بدون أيقونات زرقاء) ---
 
 function MarqueeCard({ item }: { item: (typeof marqueeItems)[0] }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -596,17 +587,11 @@ function MarqueeCard({ item }: { item: (typeof marqueeItems)[0] }) {
           {item.title}
         </h4>
       </div>
-
-      {item.video && (
-        <div className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/60 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-lg">
-          <PlayBadge />
-        </div>
-      )}
     </div>
   );
 }
 
-// --- VIDEO CARD (9:16 + GLASSY + ORIGINAL BADGE) ---
+// --- VIDEO CARD (نظيف بنسبة 9:16 وبدون أيقونات زرقاء) ---
 
 function VideoCard({
   item,
@@ -675,20 +660,9 @@ function VideoCard({
 
           <div
             className={`absolute inset-0 transition-all duration-300 flex items-center justify-center pointer-events-none ${
-              isHovered ? "bg-black/10" : "bg-black/35"
+              isHovered ? "bg-black/0" : "bg-black/20"
             }`}
-          >
-            <motion.div
-              whileHover={{ scale: 1.15 }}
-              className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#B600A8] flex items-center justify-center shadow-[0_0_30px_rgba(182,0,168,0.5)] border border-white/10"
-            >
-              <div className="w-6 h-6 rounded-[7px] bg-[#3B82F6] flex items-center justify-center shadow-md">
-                <svg className="w-3 h-3 fill-white translate-x-[0.5px]" viewBox="0 0 24 24">
-                  <path d="M5 3l14 9-14 9V3z" />
-                </svg>
-              </div>
-            </motion.div>
-          </div>
+          />
 
           <div className="absolute top-3 sm:top-4 left-3 sm:left-4 pointer-events-none">
             <span className="px-3 py-1.5 rounded-full bg-black/65 backdrop-blur-xl border border-white/15 text-[9px] sm:text-[10px] uppercase tracking-widest font-bold text-white shadow-lg">
@@ -931,7 +905,7 @@ export default function Home() {
 
   return (
     <>
-      {/* مؤشر الماوس النيون المستقل */}
+      {/* مؤشر الماوس النيون المستقل تماماً */}
       <motion.div
         className="pointer-events-none fixed top-0 left-0 z-[999999] hidden md:block"
         style={{
@@ -1162,7 +1136,6 @@ export default function Home() {
             </FadeIn>
           </div>
 
-          {/* حركة الصورة المغناطيسية الأصلية مع الماوس */}
           <div className="absolute left-1/2 -translate-x-1/2 z-10 bottom-16 sm:bottom-10 pointer-events-auto">
             <FadeIn delay={0.4} y={30}>
               <Magnet padding={180} strength={3.5}>
@@ -1183,7 +1156,6 @@ export default function Home() {
             </FadeIn>
 
             <FadeIn delay={0.4} y={20} className="flex gap-3 items-center">
-              {/* MAGNETIC BUTTONS */}
               <MagneticButton
                 href="#videos"
                 className="rounded-full border-2 border-white/20 bg-white/[0.04] backdrop-blur-xl text-[#D7E2EA] font-medium uppercase tracking-widest px-6 py-2.5 text-xs sm:text-sm hover:bg-white/15 transition-colors shadow-lg"
@@ -1247,7 +1219,6 @@ export default function Home() {
                   Specialized in building high-retention visual assets that captivate audiences. With extensive experience across Adobe Premiere Pro, After Effects, and DaVinci Resolve, I bridge the gap between creative storytelling, surgical audio design, and conversion-driven marketing.
                 </p>
 
-                {/* 4 COUNTERS WITH REAL-TIME TRIGGER */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-white/10 text-center mb-8">
                   <div>
                     <div className="text-2xl sm:text-3xl font-black text-white font-mono">
@@ -1336,7 +1307,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* 🧑‍💻 6. PROCESS SECTION (INTERACTIVE TIMELINE) */}
+        {/* 6. PROCESS SECTION (WORKFLOW TIMELINE) */}
         <section id="process" className="py-24 px-5 sm:px-8 md:px-12 bg-[#0C0C0C] border-t border-white/5">
           <div className="max-w-4xl mx-auto">
             <FadeIn delay={0} y={30} className="text-center mb-16">
@@ -1355,7 +1326,6 @@ export default function Home() {
               {processSteps.map((step, idx) => (
                 <FadeIn key={step.num} delay={idx * 0.1}>
                   <div className="relative group">
-                    {/* Glowing Timeline Dot */}
                     <div className="absolute -left-[31px] sm:-left-[47px] top-1.5 w-6 h-6 rounded-full bg-[#0A0A0A] border-2 border-[#B600A8] flex items-center justify-center shadow-[0_0_15px_rgba(182,0,168,0.6)] group-hover:scale-125 transition-transform">
                       <div className="w-2 h-2 rounded-full bg-white" />
                     </div>
@@ -1616,7 +1586,6 @@ export default function Home() {
                           ▶ Watch Video Sample
                         </a>
 
-                        {/* MAGNETIC BUTTON FOR ORDER */}
                         <MagneticButton
                           href={whatsappPreFilledLink}
                           className={`block w-full text-center rounded-full uppercase tracking-widest font-semibold py-3.5 text-sm transition-all duration-300 ${
@@ -1856,7 +1825,6 @@ export default function Home() {
               </a>
             </div>
 
-            {/* MAGNETIC CTA BUTTON */}
             <MagneticButton
               href="https://wa.me/201211871199?text=Hey%20Lil!%20I%20want%20to%20start%20a%20video%20editing%20project."
               className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#B600A8] hover:bg-[#9d0091] text-white uppercase tracking-widest text-xs font-bold transition-all duration-300 shadow-[0_0_30px_rgba(182,0,168,0.35)]"
