@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect, useMemo, useCallback } from "react";
-import { motion, AnimatePresence, useSpring, useMotionValue, useScroll, useVelocity, useTransform } from "framer-motion";
+import { motion, AnimatePresence, useSpring, useMotionValue } from "framer-motion";
 
 // --- SVG SOCIAL & SOFTWARE ICONS ---
 
@@ -43,15 +43,15 @@ interface FadeInProps {
 const FadeIn: React.FC<FadeInProps> = ({
   children,
   delay = 0,
-  duration = 0.6,
+  duration = 0.5,
   x = 0,
-  y = 30,
+  y = 25,
   className = "",
 }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, x, y, filter: "blur(6px)" }}
-      whileInView={{ opacity: 1, x: 0, y: 0, filter: "blur(0px)" }}
+      initial={{ opacity: 0, x, y }}
+      whileInView={{ opacity: 1, x: 0, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{
         duration,
@@ -65,7 +65,7 @@ const FadeIn: React.FC<FadeInProps> = ({
   );
 };
 
-// --- NATURAL MAGNETIC HOVER COMPONENT (حركة الصورة الطبيعية يمين وشمال مع الماوس) ---
+// --- MAGNETIC HOVER COMPONENT (حركة الصورة الطبيعية مع الماوس) ---
 
 interface MagnetProps {
   children: React.ReactNode;
@@ -648,27 +648,18 @@ export default function Home() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isModalMuted, setIsModalMuted] = useState(false);
 
-  // --- MOTION BLUR EFFECT ON THE ENTIRE PAGE DURING FAST SCROLLING ---
-  const { scrollY } = useScroll();
-  const scrollVelocity = useVelocity(scrollY);
-  const smoothVelocity = useSpring(scrollVelocity, { damping: 30, stiffness: 200 });
-
-  const pageBlur = useTransform(smoothVelocity, [-2000, 0, 2000], [4, 0, 4]);
-  const pageScaleY = useTransform(smoothVelocity, [-2000, 0, 2000], [1.02, 1, 1.02]);
-  const pageFilter = useTransform(pageBlur, (v) => `blur(${Math.min(v, 4)}px)`);
-
-  // --- CLEAN & FAST MOUSE TRACKING ---
-  const mouseX = useMotionValue(-100);
-  const mouseY = useMotionValue(-100);
+  // --- FAST & DIRECT MOUSE POSITION (بدون أي بطء أو موشن بلور) ---
+  const mouseX = useMotionValue(-200);
+  const mouseY = useMotionValue(-200);
   const cursorRotation = useMotionValue(0);
 
-  const smoothX = useSpring(mouseX, { damping: 35, stiffness: 600, mass: 0.2 });
-  const smoothY = useSpring(mouseY, { damping: 35, stiffness: 600, mass: 0.2 });
-  const smoothRotation = useSpring(cursorRotation, { damping: 28, stiffness: 350 });
+  const smoothX = useSpring(mouseX, { damping: 45, stiffness: 1000, mass: 0.1 });
+  const smoothY = useSpring(mouseY, { damping: 45, stiffness: 1000, mass: 0.1 });
+  const smoothRotation = useSpring(cursorRotation, { damping: 25, stiffness: 400 });
 
   const prevMouseXRef = useRef(0);
 
-  // إخفاء ماوس الويندوز إجبارياً برمجياً عبر الـ DOM
+  // إخفاء ماوس الويندوز إجبارياً برمجياً عبر الـ DOM لضمان اختفائه في كامل الصفحة
   useEffect(() => {
     document.documentElement.style.cursor = "none";
     document.body.style.cursor = "none";
@@ -720,12 +711,13 @@ export default function Home() {
     };
 
     const handleMouseMove = (e: MouseEvent) => {
+      // استخدام ClientX و ClientY لتثبيت الماوس بالنسبة للـ Viewport تماماً حتى نهاية الصفحة
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
 
       const deltaX = e.clientX - prevMouseXRef.current;
       prevMouseXRef.current = e.clientX;
-      const targetRotation = Math.max(Math.min(deltaX * 0.8, 20), -20);
+      const targetRotation = Math.max(Math.min(deltaX * 0.7, 20), -20);
       cursorRotation.set(targetRotation);
     };
 
@@ -845,18 +837,10 @@ export default function Home() {
   };
 
   return (
-    <motion.main
-      dir="ltr"
-      style={{
-        filter: pageFilter,
-        scaleY: pageScaleY,
-        transformOrigin: "center center",
-      }}
-      className="relative w-full min-h-screen bg-[#0A0A0A] text-[#D7E2EA] selection:bg-[#B600A8] selection:text-white"
-    >
-      {/* --- CLEAN NEON ARROW CURSOR (سهم نقي يلف طبيعي بدون أي هالة أو خلفية) --- */}
+    <>
+      {/* --- مؤشر الماوس النيون المستقل تماماً (ظاهر دائماً في أعلى وأسفل الصفحة فوق كل الطبقات) --- */}
       <motion.div
-        className="pointer-events-none fixed z-[9999] hidden md:block"
+        className="pointer-events-none fixed top-0 left-0 z-[999999] hidden md:block"
         style={{
           x: smoothX,
           y: smoothY,
@@ -885,160 +869,805 @@ export default function Home() {
         </svg>
       </motion.div>
 
-      {/* VIDEO THEATER MODE (GLASSY & FULL 9:16) */}
-      <AnimatePresence>
-        {activeModalVideo && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={closeModal}
-            className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-3xl flex items-center justify-center p-2 sm:p-6"
-          >
-            {/* الشريط العلوي */}
-            <div className="absolute top-3 sm:top-6 left-3 sm:left-6 right-3 sm:right-6 z-[130] flex items-center justify-between pointer-events-none">
-              <div className="pointer-events-auto">
-                <span className="px-3.5 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-2xl text-[10px] sm:text-xs uppercase tracking-widest text-[#B600A8] font-bold shadow-2xl">
-                  {currentVideoIndex + 1} / {videosData.length}
-                </span>
-              </div>
-
-              <div className="flex items-center gap-2.5 pointer-events-auto">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleSound();
-                  }}
-                  className="px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-2xl text-white text-xs font-bold hover:bg-[#B600A8] transition-all flex items-center gap-1.5 shadow-xl"
-                >
-                  {isModalMuted ? "🔇 UNMUTE" : "🔊 MUTE"}
-                </button>
-
-                <button
-                  onClick={closeModal}
-                  className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/10 border border-white/20 backdrop-blur-2xl text-white flex items-center justify-center text-lg hover:bg-[#B600A8] transition-all shadow-xl"
-                  aria-label="Close video"
-                >
-                  ✕
-                </button>
-              </div>
-            </div>
-
-            {/* أزرار التنقل */}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                goPrevious();
-              }}
-              className="absolute left-2 sm:left-6 z-[120] w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-black/60 border border-white/20 backdrop-blur-2xl text-white flex items-center justify-center text-xl hover:bg-[#B600A8] transition-all shadow-2xl"
-              aria-label="Previous video"
-            >
-              ←
-            </button>
-
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                goNext();
-              }}
-              className="absolute right-2 sm:right-6 z-[120] w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-black/60 border border-white/20 backdrop-blur-2xl text-white flex items-center justify-center text-xl hover:bg-[#B600A8] transition-all shadow-2xl"
-              aria-label="Next video"
-            >
-              →
-            </button>
-
-            {/* إطار المسرح الرأسي 9:16 */}
+      <main
+        dir="ltr"
+        className="relative w-full min-h-screen bg-[#0A0A0A] text-[#D7E2EA] selection:bg-[#B600A8] selection:text-white overflow-x-hidden"
+      >
+        {/* VIDEO THEATER MODE (GLASSY & FULL 9:16) */}
+        <AnimatePresence>
+          {activeModalVideo && (
             <motion.div
-              initial={{ scale: 0.94, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.94, opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-[380px] sm:max-w-sm h-[84dvh] sm:h-[88vh] aspect-[9/16] bg-black rounded-[30px] sm:rounded-[38px] overflow-hidden border border-white/20 shadow-[0_0_80px_rgba(182,0,168,0.35)]"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={closeModal}
+              className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-3xl flex items-center justify-center p-2 sm:p-6"
             >
-              <video
-                key={activeModalVideo.id}
-                ref={modalVideoRef}
-                src={activeModalVideo.src}
-                autoPlay
-                controls
-                playsInline
-                loop
-                preload="auto"
-                onPlay={() => setIsPlaying(true)}
-                onPause={() => setIsPlaying(false)}
-                className="w-full h-full object-cover bg-black"
-              />
-
-              <div className="absolute left-0 right-0 bottom-0 pointer-events-none p-5 sm:p-7 bg-gradient-to-t from-black via-black/85 to-transparent">
-                <div className="max-w-2xl">
-                  <span className="text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] text-[#B600A8] font-bold">
-                    {activeModalVideo.category}
+              <div className="absolute top-3 sm:top-6 left-3 sm:left-6 right-3 sm:right-6 z-[130] flex items-center justify-between pointer-events-none">
+                <div className="pointer-events-auto">
+                  <span className="px-3.5 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-2xl text-[10px] sm:text-xs uppercase tracking-widest text-[#B600A8] font-bold shadow-2xl">
+                    {currentVideoIndex + 1} / {videosData.length}
                   </span>
-
-                  <h3 className="text-white font-bold text-base sm:text-xl mt-0.5 leading-snug">
-                    {activeModalVideo.title}
-                  </h3>
-
-                  <p className="hidden sm:block text-white/70 text-xs sm:text-sm mt-1.5 max-w-xl leading-relaxed">
-                    {activeModalVideo.description}
-                  </p>
                 </div>
-              </div>
 
-              <div className="absolute top-4 left-4 right-4 flex justify-between pointer-events-none">
-                <div className="flex gap-2 pointer-events-auto">
+                <div className="flex items-center gap-2.5 pointer-events-auto">
                   <button
-                    onClick={() => {
-                      if (!modalVideoRef.current) return;
-                      if (modalVideoRef.current.paused) {
-                        modalVideoRef.current.play().catch(() => {});
-                        setIsPlaying(true);
-                      } else {
-                        modalVideoRef.current.pause();
-                        setIsPlaying(false);
-                      }
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleSound();
                     }}
-                    className="w-10 h-10 rounded-full bg-black/60 border border-white/20 backdrop-blur-xl text-white flex items-center justify-center hover:bg-[#B600A8] transition-colors"
-                    aria-label={isPlaying ? "Pause" : "Play"}
+                    className="px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-2xl text-white text-xs font-bold hover:bg-[#B600A8] transition-all flex items-center gap-1.5 shadow-xl"
                   >
-                    {isPlaying ? "Ⅱ" : "▶"}
+                    {isModalMuted ? "🔇 UNMUTE" : "🔊 MUTE"}
+                  </button>
+
+                  <button
+                    onClick={closeModal}
+                    className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/10 border border-white/20 backdrop-blur-2xl text-white flex items-center justify-center text-lg hover:bg-[#B600A8] transition-all shadow-xl"
+                    aria-label="Close video"
+                  >
+                    ✕
                   </button>
                 </div>
+              </div>
+
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  goPrevious();
+                }}
+                className="absolute left-2 sm:left-6 z-[120] w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-black/60 border border-white/20 backdrop-blur-2xl text-white flex items-center justify-center text-xl hover:bg-[#B600A8] transition-all shadow-2xl"
+                aria-label="Previous video"
+              >
+                ←
+              </button>
+
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  goNext();
+                }}
+                className="absolute right-2 sm:right-6 z-[120] w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-black/60 border border-white/20 backdrop-blur-2xl text-white flex items-center justify-center text-xl hover:bg-[#B600A8] transition-all shadow-2xl"
+                aria-label="Next video"
+              >
+                →
+              </button>
+
+              <motion.div
+                initial={{ scale: 0.94, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.94, opacity: 0 }}
+                transition={{ duration: 0.25 }}
+                onClick={(e) => e.stopPropagation()}
+                className="relative w-full max-w-[380px] sm:max-w-sm h-[84dvh] sm:h-[88vh] aspect-[9/16] bg-black rounded-[30px] sm:rounded-[38px] overflow-hidden border border-white/20 shadow-[0_0_80px_rgba(182,0,168,0.35)]"
+              >
+                <video
+                  key={activeModalVideo.id}
+                  ref={modalVideoRef}
+                  src={activeModalVideo.src}
+                  autoPlay
+                  controls
+                  playsInline
+                  loop
+                  preload="auto"
+                  onPlay={() => setIsPlaying(true)}
+                  onPause={() => setIsPlaying(false)}
+                  className="w-full h-full object-cover bg-black"
+                />
+
+                <div className="absolute left-0 right-0 bottom-0 pointer-events-none p-5 sm:p-7 bg-gradient-to-t from-black via-black/85 to-transparent">
+                  <div className="max-w-2xl">
+                    <span className="text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] text-[#B600A8] font-bold">
+                      {activeModalVideo.category}
+                    </span>
+
+                    <h3 className="text-white font-bold text-base sm:text-xl mt-0.5 leading-snug">
+                      {activeModalVideo.title}
+                    </h3>
+
+                    <p className="hidden sm:block text-white/70 text-xs sm:text-sm mt-1.5 max-w-xl leading-relaxed">
+                      {activeModalVideo.description}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="absolute top-4 left-4 right-4 flex justify-between pointer-events-none">
+                  <div className="flex gap-2 pointer-events-auto">
+                    <button
+                      onClick={() => {
+                        if (!modalVideoRef.current) return;
+                        if (modalVideoRef.current.paused) {
+                          modalVideoRef.current.play().catch(() => {});
+                          setIsPlaying(true);
+                        } else {
+                          modalVideoRef.current.pause();
+                          setIsPlaying(false);
+                        }
+                      }}
+                      className="w-10 h-10 rounded-full bg-black/60 border border-white/20 backdrop-blur-xl text-white flex items-center justify-center hover:bg-[#B600A8] transition-colors"
+                      aria-label={isPlaying ? "Pause" : "Play"}
+                    >
+                      {isPlaying ? "Ⅱ" : "▶"}
+                    </button>
+                  </div>
+
+                  <button
+                    onClick={toggleFullscreen}
+                    className="pointer-events-auto w-10 h-10 rounded-full bg-black/60 border border-white/20 backdrop-blur-xl text-white flex items-center justify-center hover:bg-[#B600A8] transition-colors"
+                    aria-label="Fullscreen"
+                  >
+                    ⛶
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* HERO SECTION */}
+        <section className="relative min-h-screen flex flex-col justify-between overflow-x-clip bg-[#0A0A0A] pb-8">
+          <FadeIn delay={0} y={-20} className="w-full z-30">
+            <nav className="flex justify-between items-center px-6 md:px-10 py-4 md:py-5 mt-4 mx-4 md:mx-10 rounded-3xl bg-white/[0.03] backdrop-blur-2xl border border-white/10 text-xs md:text-sm font-medium tracking-wider uppercase gap-6 shadow-2xl">
+              <div className="flex gap-5 sm:gap-8 items-center flex-wrap">
+                <a href="#about" className="hover:text-[#B600A8] transition-colors">About</a>
+                <a href="#videos" className="hover:text-[#B600A8] transition-colors">Videos</a>
+                <a href="#price" className="hover:text-[#B600A8] transition-colors">Pricing</a>
+                <a href="#reviews" className="hover:text-[#B600A8] transition-colors">Reviews</a>
+                <a href="#thumbnails" className="hover:text-[#B600A8] transition-colors">Thumbnails</a>
+                <a href="#services" className="hover:text-[#B600A8] transition-colors">Services</a>
+              </div>
+
+              <div className="flex items-center gap-3 shrink-0">
+                <a
+                  href="https://www.instagram.com/ebrahimfadel_8/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                  className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300"
+                >
+                  <InstagramIcon />
+                </a>
+
+                <a
+                  href="https://www.facebook.com/EbrahimFadel8"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300"
+                >
+                  <FacebookIcon />
+                </a>
+
+                <a
+                  href="https://wa.me/201211871199"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="WhatsApp"
+                  className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-[#25D366] hover:border-[#25D366] hover:bg-[#25D366]/10 transition-all duration-300"
+                >
+                  <WhatsAppIcon />
+                </a>
+
+                <a
+                  href="mailto:ebrahimfadel8903@gmail.com"
+                  aria-label="Email"
+                  className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300"
+                >
+                  <MailIcon />
+                </a>
+              </div>
+            </nav>
+          </FadeIn>
+
+          <div className="overflow-hidden w-full select-none my-auto">
+            <FadeIn delay={0.15} y={40}>
+              <h1 className="hero-heading font-black uppercase tracking-tight leading-none whitespace-nowrap w-full text-center text-[15vw] sm:text-[16vw] md:text-[18vw] inline-flex items-center justify-center">
+                <span>{typedText}</span>
+                <span className="text-[#B600A8] animate-pulse ml-2 font-light">|</span>
+              </h1>
+            </FadeIn>
+          </div>
+
+          {/* حركة الصورة المغناطيسية الأصلية مع الماوس */}
+          <div className="absolute left-1/2 -translate-x-1/2 z-10 bottom-16 sm:bottom-10 pointer-events-auto">
+            <FadeIn delay={0.4} y={30}>
+              <Magnet padding={180} strength={3.5}>
+                <img
+                  src="/images/avatar.png"
+                  alt="Lil Portrait"
+                  className="w-[260px] sm:w-[340px] md:w-[420px] lg:w-[480px] object-contain select-none pointer-events-none drop-shadow-[0_20px_40px_rgba(0,0,0,0.85)]"
+                />
+              </Magnet>
+            </FadeIn>
+          </div>
+
+          <div className="flex flex-col sm:flex-row justify-between items-center sm:items-end px-6 md:px-10 gap-6 z-20 mt-12 sm:mt-0">
+            <FadeIn delay={0.3} y={20}>
+              <p className="text-[#D7E2EA] font-light leading-snug max-w-[280px] text-center sm:text-start text-xs sm:text-sm md:text-base opacity-80 uppercase tracking-wide">
+                Senior video editor shaping memorable visual stories
+              </p>
+            </FadeIn>
+
+            <FadeIn delay={0.4} y={20} className="flex gap-3 items-center">
+              <a
+                href="#videos"
+                className="rounded-full border-2 border-white/20 bg-white/[0.04] backdrop-blur-xl text-[#D7E2EA] font-medium uppercase tracking-widest px-6 py-2.5 text-xs sm:text-sm hover:bg-white/15 transition-colors shadow-lg"
+              >
+                Watch Videos
+              </a>
+
+              <a
+                href="#contact"
+                className="rounded-full uppercase tracking-widest font-semibold text-white px-7 py-3 text-xs sm:text-sm transition-transform duration-300 hover:scale-105"
+                style={{
+                  background:
+                    "linear-gradient(123deg, #18011F 7%, #B600A8 37%, #7621B0 72%, #BE4C00 100%)",
+                  boxShadow:
+                    "0px 4px 4px rgba(181, 1, 167, 0.25), inset 4px 4px 12px #7721B1",
+                  outline: "2px solid #FFFFFF",
+                  outlineOffset: "-3px",
+                }}
+              >
+                Get in touch
+              </a>
+            </FadeIn>
+          </div>
+        </section>
+
+        {/* MARQUEE */}
+        <section
+          ref={marqueeRef}
+          className="bg-[#0A0A0A] pt-16 pb-12 overflow-hidden flex flex-col gap-4 border-y border-white/5"
+        >
+          <div
+            className="flex gap-4 whitespace-nowrap"
+            style={{
+              transform: `translateX(${scrollOffset - 150}px)`,
+              willChange: "transform",
+            }}
+          >
+            {tripleMarqueeItems.map((item, i) => (
+              <MarqueeCard key={i} item={item} />
+            ))}
+          </div>
+        </section>
+
+        {/* ABOUT */}
+        <section id="about" className="py-24 px-6 md:px-12 bg-[#0A0A0A]">
+          <div className="max-w-5xl mx-auto">
+            <FadeIn delay={0} y={30} className="text-center mb-16">
+              <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
+                Background & Track Record
+              </span>
+              <h2 className="hero-heading font-black uppercase text-4xl sm:text-6xl md:text-7xl mt-2">
+                Who Am I
+              </h2>
+            </FadeIn>
+
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+              <FadeIn delay={0.1} className="md:col-span-7 bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[32px] p-8 sm:p-10 shadow-2xl">
+                <h3 className="text-2xl font-bold text-white mb-4">
+                  Hey, I&apos;m Lil — Senior Video Editor
+                </h3>
+
+                <p className="text-[#D7E2EA]/80 leading-relaxed text-base sm:text-lg mb-6">
+                  Specialized in building high-retention visual assets that captivate audiences. With extensive experience across Adobe Premiere Pro, After Effects, and DaVinci Resolve, I bridge the gap between creative storytelling, surgical audio design, and conversion-driven marketing.
+                </p>
+
+                <div className="grid grid-cols-3 gap-4 pt-6 border-t border-white/10 text-center mb-8">
+                  <div>
+                    <div className="text-2xl sm:text-3xl font-black text-white">4+</div>
+                    <div className="text-[11px] sm:text-xs text-[#D7E2EA]/60 uppercase tracking-wider mt-1">Years Experience</div>
+                  </div>
+
+                  <div>
+                    <div className="text-2xl sm:text-3xl font-black text-white">350+</div>
+                    <div className="text-[11px] sm:text-xs text-[#D7E2EA]/60 uppercase tracking-wider mt-1">Videos Delivered</div>
+                  </div>
+
+                  <div>
+                    <div className="text-2xl sm:text-3xl font-black text-white">+45%</div>
+                    <div className="text-[11px] sm:text-xs text-[#D7E2EA]/60 uppercase tracking-wider mt-1">Retention Growth</div>
+                  </div>
+                </div>
+
+                <div className="pt-6 border-t border-white/10">
+                  <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold block mb-4">
+                    Primary Software Suite
+                  </span>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    {softwareStack.map((soft, idx) => (
+                      <div
+                        key={idx}
+                        className="p-3 rounded-2xl bg-white/[0.02] border border-white/10 flex flex-col items-center text-center hover:border-[#B600A8]/60 transition-colors"
+                      >
+                        <span className="w-9 h-9 rounded-xl bg-[#B600A8]/20 border border-[#B600A8]/40 text-[#B600A8] font-black text-sm flex items-center justify-center mb-2">
+                          {soft.icon}
+                        </span>
+                        <h4 className="text-white text-xs font-semibold">{soft.name}</h4>
+                        <p className="text-[10px] text-white/50 mt-0.5 leading-tight">{soft.tag}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </FadeIn>
+
+              <FadeIn delay={0.2} className="md:col-span-5 bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[32px] p-8 sm:p-10 flex flex-col justify-between h-full shadow-2xl">
+                <div>
+                  <span className="text-xs uppercase tracking-widest text-[#B600A8] font-semibold">
+                    Client Deliverables
+                  </span>
+
+                  <h4 className="text-xl font-bold text-white mt-1 mb-4">
+                    Creators & Brands I&apos;ve Edited For
+                  </h4>
+
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {["Ahmed Abdelkareem", "Sameh Othman", "Maryam", "Sawsan", "Yasmine", "Rania", "Mai"].map((client, idx) => (
+                      <div
+                        key={idx}
+                        className="px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-[#D7E2EA]/90 flex items-center gap-1.5"
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#B600A8]" />
+                        <span>{client}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-white/10">
+                  <a
+                    href="#contact"
+                    className="block text-center w-full py-3 rounded-full bg-white/10 hover:bg-[#B600A8] text-white text-xs font-bold uppercase tracking-wider transition-colors shadow-lg"
+                  >
+                    Book Your Project
+                  </a>
+                </div>
+              </FadeIn>
+            </div>
+          </div>
+        </section>
+
+        {/* FEATURED VIDEOS */}
+        <section
+          id="videos"
+          className="py-20 sm:py-24 px-4 sm:px-8 md:px-12 bg-[#0A0A0A] border-t border-white/5"
+        >
+          <div className="max-w-6xl mx-auto">
+            <FadeIn delay={0} y={30} className="text-center mb-8">
+              <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
+                Interactive Video Portfolio
+              </span>
+
+              <div className="relative inline-block mt-3">
+                <button
+                  onClick={() => setIsVideoMenuOpen(!isVideoMenuOpen)}
+                  className="group inline-flex items-center gap-3 sm:gap-4 hero-heading font-black uppercase text-2xl sm:text-5xl md:text-6xl hover:opacity-90 transition-all cursor-pointer select-none"
+                >
+                  <span>Featured Video Cuts</span>
+                  <span
+                    className={`text-xl sm:text-4xl text-[#B600A8] transition-transform duration-300 ${
+                      isVideoMenuOpen ? "rotate-180" : "rotate-0"
+                    }`}
+                  >
+                    ▼
+                  </span>
+                </button>
+
+                <p className="text-[#D7E2EA]/60 text-xs sm:text-sm mt-2 tracking-wider">
+                  {isVideoMenuOpen
+                    ? "Click any video to open Theater Mode • Hover to preview"
+                    : "Click to reveal featured video reels & commercial campaigns"}
+                </p>
+
+                <AnimatePresence>
+                  {isVideoMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="flex justify-center flex-wrap gap-2 sm:gap-3 mt-6"
+                    >
+                      {[
+                        { id: "all", label: "All Videos (11)" },
+                        { id: "reels", label: "Reels & Hooks (6)" },
+                        { id: "commercial", label: "Commercial & Sports (3)" },
+                        { id: "cinematic", label: "Cinematic & Narrative (2)" },
+                      ].map((tab) => (
+                        <button
+                          key={tab.id}
+                          onClick={() =>
+                            setSelectedVideoTab(
+                              tab.id as "all" | "reels" | "commercial" | "cinematic"
+                            )
+                          }
+                          className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all duration-200 border ${
+                            selectedVideoTab === tab.id
+                              ? "bg-[#B600A8] text-white border-[#B600A8] shadow-lg shadow-[#B600A8]/30"
+                              : "bg-white/5 text-[#D7E2EA]/70 border-white/10 hover:border-white/20 hover:text-white"
+                          }`}
+                        >
+                          {tab.label}
+                        </button>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </FadeIn>
+
+            <AnimatePresence mode="wait">
+              {isVideoMenuOpen && (
+                <motion.div
+                  key={selectedVideoTab}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-12"
+                >
+                  {filteredVideos.map((item, idx) => (
+                    <VideoCard
+                      key={item.id}
+                      item={item}
+                      index={idx}
+                      onOpen={openModal}
+                    />
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </section>
+
+        {/* PRICING */}
+        <section id="price" className="py-24 px-5 sm:px-8 md:px-12 bg-[#0A0A0A]">
+          <div className="max-w-6xl mx-auto">
+            <FadeIn delay={0} y={30} className="text-center mb-10">
+              <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
+                Video Editing Packages & Rates
+              </span>
+
+              <h2 className="hero-heading font-black uppercase text-4xl sm:text-6xl md:text-7xl mt-2">
+                Rates & Packages
+              </h2>
+
+              <p className="text-[#D7E2EA]/60 max-w-xl mx-auto mt-3 text-sm sm:text-base">
+                Transparent video production rates in USD and EGP with milestone delivery
+              </p>
+            </FadeIn>
+
+            <FadeIn delay={0.1} y={20} className="flex justify-center mb-16">
+              <div className="inline-flex items-center p-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl">
+                <button
+                  onClick={() => setCurrencyMode("ALL")}
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
+                    currencyMode === "ALL"
+                      ? "bg-[#B600A8] text-white"
+                      : "text-white/60 hover:text-white"
+                  }`}
+                >
+                  USD & EGP
+                </button>
 
                 <button
-                  onClick={toggleFullscreen}
-                  className="pointer-events-auto w-10 h-10 rounded-full bg-black/60 border border-white/20 backdrop-blur-xl text-white flex items-center justify-center hover:bg-[#B600A8] transition-colors"
-                  aria-label="Fullscreen"
+                  onClick={() => setCurrencyMode("USD")}
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
+                    currencyMode === "USD"
+                      ? "bg-[#B600A8] text-white"
+                      : "text-white/60 hover:text-white"
+                  }`}
                 >
-                  ⛶
+                  USD ($)
+                </button>
+
+                <button
+                  onClick={() => setCurrencyMode("EGP")}
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
+                    currencyMode === "EGP"
+                      ? "bg-[#B600A8] text-white"
+                      : "text-white/60 hover:text-white"
+                  }`}
+                >
+                  EGP (ج.م)
                 </button>
               </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </FadeIn>
 
-      {/* HERO SECTION */}
-      <section className="relative min-h-screen flex flex-col justify-between overflow-x-clip bg-[#0A0A0A] pb-8">
-        <FadeIn delay={0} y={-20} className="w-full z-30">
-          <nav className="flex justify-between items-center px-6 md:px-10 py-4 md:py-5 mt-4 mx-4 md:mx-10 rounded-3xl bg-white/[0.03] backdrop-blur-2xl border border-white/10 text-xs md:text-sm font-medium tracking-wider uppercase gap-6 shadow-2xl">
-            <div className="flex gap-5 sm:gap-8 items-center flex-wrap">
-              <a href="#about" className="hover:text-[#B600A8] transition-colors">About</a>
-              <a href="#videos" className="hover:text-[#B600A8] transition-colors">Videos</a>
-              <a href="#price" className="hover:text-[#B600A8] transition-colors">Pricing</a>
-              <a href="#reviews" className="hover:text-[#B600A8] transition-colors">Reviews</a>
-              <a href="#thumbnails" className="hover:text-[#B600A8] transition-colors">Thumbnails</a>
-              <a href="#services" className="hover:text-[#B600A8] transition-colors">Services</a>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch mb-20">
+              {packagesData.map((pkg, idx) => {
+                const selectedPriceText =
+                  currencyMode === "USD"
+                    ? pkg.priceUSD
+                    : currencyMode === "EGP"
+                    ? pkg.priceEGP
+                    : `${pkg.priceUSD} / ${pkg.priceEGP}`;
+
+                const whatsappPreFilledLink = `https://wa.me/201211871199?text=${encodeURIComponent(
+                  `Hey Lil! I want to book the "${pkg.name}" package (${selectedPriceText} per video). Let's discuss the project details.`
+                )}`;
+
+                return (
+                  <FadeIn key={pkg.id} delay={idx * 0.15} className="flex">
+                    <div
+                      className={`w-full rounded-[36px] p-8 flex flex-col justify-between transition-all duration-300 relative backdrop-blur-2xl ${
+                        pkg.featured
+                          ? "bg-gradient-to-b from-[#18011F]/90 to-[#121212]/90 border-2 border-[#B600A8] shadow-[0_0_40px_rgba(182,0,168,0.25)]"
+                          : "bg-white/[0.03] border border-white/10 hover:border-white/25 shadow-2xl"
+                      }`}
+                    >
+                      {pkg.featured && (
+                        <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#B600A8] text-white text-[11px] font-bold uppercase tracking-widest px-4 py-1 rounded-full shadow-lg">
+                          Most Popular
+                        </span>
+                      )}
+
+                      <div>
+                        <div className="flex justify-between items-start mb-4">
+                          <div>
+                            <h3 className="text-2xl font-bold text-white">{pkg.name}</h3>
+                            <p className="text-[#D7E2EA]/70 text-sm mt-1">{pkg.arabicName}</p>
+                          </div>
+                          <span className="font-mono text-white/30 text-lg font-bold">{pkg.id}</span>
+                        </div>
+
+                        <div className="my-6 pb-6 border-b border-white/10">
+                          {currencyMode === "ALL" && (
+                            <div>
+                              <div className="flex items-baseline gap-2">
+                                <span className="text-4xl sm:text-5xl font-black text-white">{pkg.priceUSD}</span>
+                                <span className="text-sm uppercase tracking-wider text-[#D7E2EA]/60 font-medium">/ Video</span>
+                              </div>
+                              <div className="text-sm text-[#B600A8] font-bold mt-1">
+                                ≈ {pkg.priceEGP} / Video
+                              </div>
+                            </div>
+                          )}
+
+                          {currencyMode === "USD" && (
+                            <div className="flex items-baseline gap-2">
+                              <span className="text-4xl sm:text-5xl font-black text-white">{pkg.priceUSD}</span>
+                              <span className="text-sm uppercase tracking-wider text-[#D7E2EA]/60 font-medium">/ Video</span>
+                            </div>
+                          )}
+
+                          {currencyMode === "EGP" && (
+                            <div className="flex items-baseline gap-2">
+                              <span className="text-4xl sm:text-5xl font-black text-white">{pkg.priceEGP}</span>
+                              <span className="text-sm uppercase tracking-wider text-[#D7E2EA]/60 font-medium">/ Video</span>
+                            </div>
+                          )}
+                        </div>
+
+                        <ul className="space-y-4 mb-8">
+                          {pkg.features.map((feat, i) => (
+                            <li key={i} className="flex items-start gap-3 text-sm text-[#D7E2EA]/80 leading-relaxed">
+                              <span className="text-[#B600A8] text-base mt-0.5 inline-block select-none">✦</span>
+                              <span>{feat}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div className="pt-6 border-t border-white/10 flex flex-col gap-3">
+                        <p className="text-xs text-[#D7E2EA]/50 text-center font-medium">{pkg.revisions}</p>
+                        <a
+                          href={pkg.driveLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full text-center py-2.5 rounded-full border border-[#B600A8]/60 hover:bg-[#B600A8]/20 text-xs uppercase font-bold tracking-wider text-[#D7E2EA] transition-colors shadow-md"
+                        >
+                          ▶ Watch Video Sample
+                        </a>
+
+                        <a
+                          href={whatsappPreFilledLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`block w-full text-center rounded-full uppercase tracking-widest font-semibold py-3.5 text-sm transition-all duration-300 ${
+                            pkg.featured
+                              ? "bg-[#B600A8] hover:bg-[#9d0091] text-white shadow-lg shadow-[#B600A8]/30"
+                              : "border border-white/20 hover:bg-white/10 text-white shadow-md"
+                          }`}
+                        >
+                          Order via WhatsApp
+                        </a>
+                      </div>
+                    </div>
+                  </FadeIn>
+                );
+              })}
             </div>
 
-            <div className="flex items-center gap-3 shrink-0">
+            <FadeIn delay={0.2} y={30}>
+              <div className="rounded-[36px] bg-white/[0.02] backdrop-blur-2xl border border-white/10 p-8 sm:p-12 shadow-2xl">
+                <div className="flex items-center gap-3 mb-8">
+                  <span className="text-[#B600A8] text-xl">✦</span>
+                  <h3 className="text-2xl sm:text-3xl font-bold text-white">General Terms & Production Flow</h3>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+                  {generalTerms.map((term, i) => (
+                    <div
+                      key={i}
+                      className={`p-6 rounded-2xl bg-white/[0.02] border border-white/5 ${
+                        i === 0 ? "md:col-span-2 border-[#B600A8]/30 bg-[#B600A8]/5" : ""
+                      }`}
+                    >
+                      <h4 className="text-lg font-semibold text-white mb-2 flex items-center gap-2">
+                        <span className="text-xs text-[#B600A8] font-mono">0{i + 1}.</span>
+                        {term.title}
+                      </h4>
+                      <p className="text-sm text-[#D7E2EA]/70 leading-relaxed">{term.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </FadeIn>
+          </div>
+        </section>
+
+        {/* REVIEWS */}
+        <section id="reviews" className="py-24 px-6 md:px-12 bg-[#0A0A0A] border-t border-white/5">
+          <div className="max-w-6xl mx-auto">
+            <FadeIn delay={0} y={30} className="text-center mb-16">
+              <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">Testimonials</span>
+              <h2 className="hero-heading font-black uppercase text-4xl sm:text-6xl md:text-7xl mt-2">Client Messages</h2>
+              <p className="text-[#D7E2EA]/60 max-w-xl mx-auto mt-3 text-sm sm:text-base">
+                Feedback from creators, entrepreneurs, and agencies I collaborate with
+              </p>
+            </FadeIn>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+              {clientReviews.map((rev, idx) => (
+                <FadeIn key={idx} delay={idx * 0.1}>
+                  <div className="p-8 rounded-[32px] bg-white/[0.03] backdrop-blur-2xl border border-white/10 flex flex-col justify-between h-full hover:border-[#B600A8]/40 transition-colors shadow-2xl">
+                    <div>
+                      <div className="flex justify-between items-center mb-4">
+                        <span className="text-[#B600A8] text-sm tracking-widest font-mono">{rev.rating}</span>
+                        <span className="text-3xl text-white/20 font-serif leading-none">“</span>
+                      </div>
+                      <p className="text-[#D7E2EA]/85 text-base sm:text-lg leading-relaxed mb-6 font-light">
+                        &quot;{rev.quote}&quot;
+                      </p>
+                    </div>
+
+                    <div className="pt-4 border-t border-white/10 flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#B600A8] to-[#7621B0] flex items-center justify-center font-bold text-white text-sm shadow-md">
+                        {rev.client.charAt(0)}
+                      </div>
+                      <div>
+                        <h4 className="text-white font-semibold text-sm sm:text-base">{rev.client}</h4>
+                        <p className="text-xs text-[#D7E2EA]/60">{rev.role}</p>
+                      </div>
+                    </div>
+                  </div>
+                </FadeIn>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* THUMBNAILS */}
+        <section id="thumbnails" className="py-24 px-5 sm:px-8 md:px-12 bg-[#0A0A0A]">
+          <div className="max-w-6xl mx-auto">
+            <FadeIn delay={0} y={30} className="text-center mb-8">
+              <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
+                Graphic Covers & Visuals
+              </span>
+
+              <div className="relative inline-block mt-3">
+                <button
+                  onClick={() => setIsThumbnailsMenuOpen(!isThumbnailsMenuOpen)}
+                  className="group inline-flex items-center gap-3 sm:gap-4 hero-heading font-black uppercase text-3xl sm:text-5xl md:text-6xl hover:opacity-90 transition-all cursor-pointer select-none"
+                >
+                  <span>Thumbnails & Posters</span>
+                  <span
+                    className={`text-2xl sm:text-4xl text-[#B600A8] transition-transform duration-300 ${
+                      isThumbnailsMenuOpen ? "rotate-180" : "rotate-0"
+                    }`}
+                  >
+                    ▼
+                  </span>
+                </button>
+
+                <p className="text-[#D7E2EA]/60 text-xs sm:text-sm mt-2 tracking-wider">
+                  {isThumbnailsMenuOpen
+                    ? "Click title to collapse gallery"
+                    : "Click to reveal high-CTR YouTube covers and commercial posters"}
+                </p>
+              </div>
+            </FadeIn>
+
+            <AnimatePresence>
+              {isThumbnailsMenuOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-12"
+                >
+                  {thumbnailsData.map((thumb, index) => (
+                    <FadeIn key={index} delay={index * 0.1}>
+                      <motion.div
+                        whileHover={{ y: -8 }}
+                        className="bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[28px] overflow-hidden shadow-2xl group hover:border-[#B600A8]/50 transition-colors duration-300"
+                      >
+                        <div className="w-full aspect-[4/5] overflow-hidden bg-black/50">
+                          <img
+                            src={thumb.src}
+                            alt={thumb.title}
+                            loading="lazy"
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                        </div>
+
+                        <div className="p-5 flex flex-col gap-1">
+                          <span className="text-xs uppercase tracking-widest text-[#B600A8] font-medium">{thumb.category}</span>
+                          <h3 className="text-[#D7E2EA] font-semibold text-lg sm:text-xl">{thumb.title}</h3>
+                        </div>
+                      </motion.div>
+                    </FadeIn>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </section>
+
+        {/* SERVICES */}
+        <section id="services" className="bg-white rounded-t-[40px] sm:rounded-t-[60px] px-6 sm:px-10 py-24 text-[#0C0C0C]">
+          <div className="max-w-5xl mx-auto">
+            <FadeIn delay={0} y={30}>
+              <h2 className="font-black uppercase text-center mb-16 sm:mb-24 text-4xl sm:text-6xl md:text-7xl text-[#0C0C0C]">
+                Services
+              </h2>
+            </FadeIn>
+
+            <div className="flex flex-col">
+              {servicesList.map((item, index) => (
+                <FadeIn key={item.num} delay={index * 0.1}>
+                  <motion.div
+                    whileHover={{ x: 8 }}
+                    className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-t border-[rgba(12,12,12,0.15)] py-8 sm:py-10 gap-4 sm:gap-10"
+                  >
+                    <span className="font-black text-[#0C0C0C] text-5xl sm:text-7xl leading-none shrink-0">
+                      {item.num}
+                    </span>
+
+                    <div className="flex flex-col gap-2">
+                      <h3 className="font-bold uppercase text-xl sm:text-2xl text-[#0C0C0C]">{item.name}</h3>
+                      <p className="font-normal leading-relaxed max-w-2xl text-[#0C0C0C]/70 text-sm sm:text-base">{item.desc}</p>
+                    </div>
+                  </motion.div>
+                </FadeIn>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* CONTACT */}
+        <section id="contact" className="py-24 px-6 text-center bg-[#0A0A0A] border-t border-white/10">
+          <FadeIn delay={0} y={30} className="max-w-3xl mx-auto">
+            <span className="text-xs uppercase tracking-[0.25em] text-[#B600A8] font-bold">
+              Available for new projects
+            </span>
+
+            <h2 className="hero-heading font-black uppercase text-4xl sm:text-6xl mb-4 mt-3">
+              Let&apos;s Create Together
+            </h2>
+
+            <p className="text-[#D7E2EA]/70 mb-10 max-w-xl mx-auto text-sm sm:text-base">
+              Available for commercial campaigns, ongoing reels retainers, and high-retention video post-production.
+            </p>
+
+            <div className="flex justify-center items-center gap-4 mb-10">
               <a
                 href="https://www.instagram.com/ebrahimfadel_8/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
-                className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300"
+                className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300 hover:scale-110 shadow-xl"
               >
                 <InstagramIcon />
               </a>
@@ -1048,7 +1677,7 @@ export default function Home() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Facebook"
-                className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300"
+                className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300 hover:scale-110 shadow-xl"
               >
                 <FacebookIcon />
               </a>
@@ -1058,7 +1687,7 @@ export default function Home() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp"
-                className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-[#25D366] hover:border-[#25D366] hover:bg-[#25D366]/10 transition-all duration-300"
+                className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/70 hover:text-[#25D366] hover:border-[#25D366] hover:bg-[#25D366]/20 transition-all duration-300 hover:scale-110 shadow-xl"
               >
                 <WhatsAppIcon />
               </a>
@@ -1066,687 +1695,44 @@ export default function Home() {
               <a
                 href="mailto:ebrahimfadel8903@gmail.com"
                 aria-label="Email"
-                className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300"
+                className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300 hover:scale-110 shadow-xl"
               >
                 <MailIcon />
               </a>
             </div>
-          </nav>
-        </FadeIn>
-
-        <div className="overflow-hidden w-full select-none my-auto">
-          <FadeIn delay={0.15} y={40}>
-            <h1 className="hero-heading font-black uppercase tracking-tight leading-none whitespace-nowrap w-full text-center text-[15vw] sm:text-[16vw] md:text-[18vw] inline-flex items-center justify-center">
-              <span>{typedText}</span>
-              <span className="text-[#B600A8] animate-pulse ml-2 font-light">|</span>
-            </h1>
-          </FadeIn>
-        </div>
-
-        {/* حركة الصورة المغناطيسية الطبيعية مع الماوس (Magnet) */}
-        <div className="absolute left-1/2 -translate-x-1/2 z-10 bottom-16 sm:bottom-10 pointer-events-auto">
-          <FadeIn delay={0.4} y={30}>
-            <Magnet padding={180} strength={3.5}>
-              <img
-                src="/images/avatar.png"
-                alt="Lil Portrait"
-                className="w-[260px] sm:w-[340px] md:w-[420px] lg:w-[480px] object-contain select-none pointer-events-none drop-shadow-[0_20px_40px_rgba(0,0,0,0.85)]"
-              />
-            </Magnet>
-          </FadeIn>
-        </div>
-
-        <div className="flex flex-col sm:flex-row justify-between items-center sm:items-end px-6 md:px-10 gap-6 z-20 mt-12 sm:mt-0">
-          <FadeIn delay={0.3} y={20}>
-            <p className="text-[#D7E2EA] font-light leading-snug max-w-[280px] text-center sm:text-start text-xs sm:text-sm md:text-base opacity-80 uppercase tracking-wide">
-              Senior video editor shaping memorable visual stories
-            </p>
-          </FadeIn>
-
-          <FadeIn delay={0.4} y={20} className="flex gap-3 items-center">
-            <a
-              href="#videos"
-              className="rounded-full border-2 border-white/20 bg-white/[0.04] backdrop-blur-xl text-[#D7E2EA] font-medium uppercase tracking-widest px-6 py-2.5 text-xs sm:text-sm hover:bg-white/15 transition-colors shadow-lg"
-            >
-              Watch Videos
-            </a>
 
             <a
-              href="#contact"
-              className="rounded-full uppercase tracking-widest font-semibold text-white px-7 py-3 text-xs sm:text-sm transition-transform duration-300 hover:scale-105"
-              style={{
-                background:
-                  "linear-gradient(123deg, #18011F 7%, #B600A8 37%, #7621B0 72%, #BE4C00 100%)",
-                boxShadow:
-                  "0px 4px 4px rgba(181, 1, 167, 0.25), inset 4px 4px 12px #7721B1",
-                outline: "2px solid #FFFFFF",
-                outlineOffset: "-3px",
-              }}
-            >
-              Get in touch
-            </a>
-          </FadeIn>
-        </div>
-      </section>
-
-      {/* MARQUEE */}
-      <section
-        ref={marqueeRef}
-        className="bg-[#0A0A0A] pt-16 pb-12 overflow-hidden flex flex-col gap-4 border-y border-white/5"
-      >
-        <div
-          className="flex gap-4 whitespace-nowrap"
-          style={{
-            transform: `translateX(${scrollOffset - 150}px)`,
-            willChange: "transform",
-          }}
-        >
-          {tripleMarqueeItems.map((item, i) => (
-            <MarqueeCard key={i} item={item} />
-          ))}
-        </div>
-      </section>
-
-      {/* ABOUT */}
-      <section id="about" className="py-24 px-6 md:px-12 bg-[#0A0A0A]">
-        <div className="max-w-5xl mx-auto">
-          <FadeIn delay={0} y={30} className="text-center mb-16">
-            <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
-              Background & Track Record
-            </span>
-            <h2 className="hero-heading font-black uppercase text-4xl sm:text-6xl md:text-7xl mt-2">
-              Who Am I
-            </h2>
-          </FadeIn>
-
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-            <FadeIn delay={0.1} className="md:col-span-7 bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[32px] p-8 sm:p-10 shadow-2xl">
-              <h3 className="text-2xl font-bold text-white mb-4">
-                Hey, I&apos;m Lil — Senior Video Editor
-              </h3>
-
-              <p className="text-[#D7E2EA]/80 leading-relaxed text-base sm:text-lg mb-6">
-                Specialized in building high-retention visual assets that captivate audiences. With extensive experience across Adobe Premiere Pro, After Effects, and DaVinci Resolve, I bridge the gap between creative storytelling, surgical audio design, and conversion-driven marketing.
-              </p>
-
-              <div className="grid grid-cols-3 gap-4 pt-6 border-t border-white/10 text-center mb-8">
-                <div>
-                  <div className="text-2xl sm:text-3xl font-black text-white">4+</div>
-                  <div className="text-[11px] sm:text-xs text-[#D7E2EA]/60 uppercase tracking-wider mt-1">Years Experience</div>
-                </div>
-
-                <div>
-                  <div className="text-2xl sm:text-3xl font-black text-white">350+</div>
-                  <div className="text-[11px] sm:text-xs text-[#D7E2EA]/60 uppercase tracking-wider mt-1">Videos Delivered</div>
-                </div>
-
-                <div>
-                  <div className="text-2xl sm:text-3xl font-black text-white">+45%</div>
-                  <div className="text-[11px] sm:text-xs text-[#D7E2EA]/60 uppercase tracking-wider mt-1">Retention Growth</div>
-                </div>
-              </div>
-
-              <div className="pt-6 border-t border-white/10">
-                <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold block mb-4">
-                  Primary Software Suite
-                </span>
-
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {softwareStack.map((soft, idx) => (
-                    <div
-                      key={idx}
-                      className="p-3 rounded-2xl bg-white/[0.02] border border-white/10 flex flex-col items-center text-center hover:border-[#B600A8]/60 transition-colors"
-                    >
-                      <span className="w-9 h-9 rounded-xl bg-[#B600A8]/20 border border-[#B600A8]/40 text-[#B600A8] font-black text-sm flex items-center justify-center mb-2">
-                        {soft.icon}
-                      </span>
-                      <h4 className="text-white text-xs font-semibold">{soft.name}</h4>
-                      <p className="text-[10px] text-white/50 mt-0.5 leading-tight">{soft.tag}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </FadeIn>
-
-            <FadeIn delay={0.2} className="md:col-span-5 bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[32px] p-8 sm:p-10 flex flex-col justify-between h-full shadow-2xl">
-              <div>
-                <span className="text-xs uppercase tracking-widest text-[#B600A8] font-semibold">
-                  Client Deliverables
-                </span>
-
-                <h4 className="text-xl font-bold text-white mt-1 mb-4">
-                  Creators & Brands I&apos;ve Edited For
-                </h4>
-
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {["Ahmed Abdelkareem", "Sameh Othman", "Maryam", "Sawsan", "Yasmine", "Rania", "Mai"].map((client, idx) => (
-                    <div
-                      key={idx}
-                      className="px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-[#D7E2EA]/90 flex items-center gap-1.5"
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#B600A8]" />
-                      <span>{client}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-white/10">
-                <a
-                  href="#contact"
-                  className="block text-center w-full py-3 rounded-full bg-white/10 hover:bg-[#B600A8] text-white text-xs font-bold uppercase tracking-wider transition-colors shadow-lg"
-                >
-                  Book Your Project
-                </a>
-              </div>
-            </FadeIn>
-          </div>
-        </div>
-      </section>
-
-      {/* FEATURED VIDEOS */}
-      <section
-        id="videos"
-        className="py-20 sm:py-24 px-4 sm:px-8 md:px-12 bg-[#0A0A0A] border-t border-white/5"
-      >
-        <div className="max-w-6xl mx-auto">
-          <FadeIn delay={0} y={30} className="text-center mb-8">
-            <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
-              Interactive Video Portfolio
-            </span>
-
-            <div className="relative inline-block mt-3">
-              <button
-                onClick={() => setIsVideoMenuOpen(!isVideoMenuOpen)}
-                className="group inline-flex items-center gap-3 sm:gap-4 hero-heading font-black uppercase text-2xl sm:text-5xl md:text-6xl hover:opacity-90 transition-all cursor-pointer select-none"
-              >
-                <span>Featured Video Cuts</span>
-                <span
-                  className={`text-xl sm:text-4xl text-[#B600A8] transition-transform duration-300 ${
-                    isVideoMenuOpen ? "rotate-180" : "rotate-0"
-                  }`}
-                >
-                  ▼
-                </span>
-              </button>
-
-              <p className="text-[#D7E2EA]/60 text-xs sm:text-sm mt-2 tracking-wider">
-                {isVideoMenuOpen
-                  ? "Click any video to open Theater Mode • Hover to preview"
-                  : "Click to reveal featured video reels & commercial campaigns"}
-              </p>
-
-              <AnimatePresence>
-                {isVideoMenuOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="flex justify-center flex-wrap gap-2 sm:gap-3 mt-6"
-                  >
-                    {[
-                      { id: "all", label: "All Videos (11)" },
-                      { id: "reels", label: "Reels & Hooks (6)" },
-                      { id: "commercial", label: "Commercial & Sports (3)" },
-                      { id: "cinematic", label: "Cinematic & Narrative (2)" },
-                    ].map((tab) => (
-                      <button
-                        key={tab.id}
-                        onClick={() =>
-                          setSelectedVideoTab(
-                            tab.id as "all" | "reels" | "commercial" | "cinematic"
-                          )
-                        }
-                        className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all duration-200 border ${
-                          selectedVideoTab === tab.id
-                            ? "bg-[#B600A8] text-white border-[#B600A8] shadow-lg shadow-[#B600A8]/30"
-                            : "bg-white/5 text-[#D7E2EA]/70 border-white/10 hover:border-white/20 hover:text-white"
-                        }`}
-                      >
-                        {tab.label}
-                      </button>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </FadeIn>
-
-          <AnimatePresence mode="wait">
-            {isVideoMenuOpen && (
-              <motion.div
-                key={selectedVideoTab}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -15 }}
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-12"
-              >
-                {filteredVideos.map((item, idx) => (
-                  <VideoCard
-                    key={item.id}
-                    item={item}
-                    index={idx}
-                    onOpen={openModal}
-                  />
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </section>
-
-      {/* PRICING */}
-      <section id="price" className="py-24 px-5 sm:px-8 md:px-12 bg-[#0A0A0A]">
-        <div className="max-w-6xl mx-auto">
-          <FadeIn delay={0} y={30} className="text-center mb-10">
-            <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
-              Video Editing Packages & Rates
-            </span>
-
-            <h2 className="hero-heading font-black uppercase text-4xl sm:text-6xl md:text-7xl mt-2">
-              Rates & Packages
-            </h2>
-
-            <p className="text-[#D7E2EA]/60 max-w-xl mx-auto mt-3 text-sm sm:text-base">
-              Transparent video production rates in USD and EGP with milestone delivery
-            </p>
-          </FadeIn>
-
-          <FadeIn delay={0.1} y={20} className="flex justify-center mb-16">
-            <div className="inline-flex items-center p-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl">
-              <button
-                onClick={() => setCurrencyMode("ALL")}
-                className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
-                  currencyMode === "ALL"
-                    ? "bg-[#B600A8] text-white"
-                    : "text-white/60 hover:text-white"
-                }`}
-              >
-                USD & EGP
-              </button>
-
-              <button
-                onClick={() => setCurrencyMode("USD")}
-                className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
-                  currencyMode === "USD"
-                    ? "bg-[#B600A8] text-white"
-                    : "text-white/60 hover:text-white"
-                }`}
-              >
-                USD ($)
-              </button>
-
-              <button
-                onClick={() => setCurrencyMode("EGP")}
-                className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
-                  currencyMode === "EGP"
-                    ? "bg-[#B600A8] text-white"
-                    : "text-white/60 hover:text-white"
-                }`}
-              >
-                EGP (ج.م)
-              </button>
-            </div>
-          </FadeIn>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch mb-20">
-            {packagesData.map((pkg, idx) => {
-              const selectedPriceText =
-                currencyMode === "USD"
-                  ? pkg.priceUSD
-                  : currencyMode === "EGP"
-                  ? pkg.priceEGP
-                  : `${pkg.priceUSD} / ${pkg.priceEGP}`;
-
-              const whatsappPreFilledLink = `https://wa.me/201211871199?text=${encodeURIComponent(
-                `Hey Lil! I want to book the "${pkg.name}" package (${selectedPriceText} per video). Let's discuss the project details.`
-              )}`;
-
-              return (
-                <FadeIn key={pkg.id} delay={idx * 0.15} className="flex">
-                  <div
-                    className={`w-full rounded-[36px] p-8 flex flex-col justify-between transition-all duration-300 relative backdrop-blur-2xl ${
-                      pkg.featured
-                        ? "bg-gradient-to-b from-[#18011F]/90 to-[#121212]/90 border-2 border-[#B600A8] shadow-[0_0_40px_rgba(182,0,168,0.25)]"
-                        : "bg-white/[0.03] border border-white/10 hover:border-white/25 shadow-2xl"
-                    }`}
-                  >
-                    {pkg.featured && (
-                      <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#B600A8] text-white text-[11px] font-bold uppercase tracking-widest px-4 py-1 rounded-full shadow-lg">
-                        Most Popular
-                      </span>
-                    )}
-
-                    <div>
-                      <div className="flex justify-between items-start mb-4">
-                        <div>
-                          <h3 className="text-2xl font-bold text-white">{pkg.name}</h3>
-                          <p className="text-[#D7E2EA]/70 text-sm mt-1">{pkg.arabicName}</p>
-                        </div>
-                        <span className="font-mono text-white/30 text-lg font-bold">{pkg.id}</span>
-                      </div>
-
-                      <div className="my-6 pb-6 border-b border-white/10">
-                        {currencyMode === "ALL" && (
-                          <div>
-                            <div className="flex items-baseline gap-2">
-                              <span className="text-4xl sm:text-5xl font-black text-white">{pkg.priceUSD}</span>
-                              <span className="text-sm uppercase tracking-wider text-[#D7E2EA]/60 font-medium">/ Video</span>
-                            </div>
-                            <div className="text-sm text-[#B600A8] font-bold mt-1">
-                              ≈ {pkg.priceEGP} / Video
-                            </div>
-                          </div>
-                        )}
-
-                        {currencyMode === "USD" && (
-                          <div className="flex items-baseline gap-2">
-                            <span className="text-4xl sm:text-5xl font-black text-white">{pkg.priceUSD}</span>
-                            <span className="text-sm uppercase tracking-wider text-[#D7E2EA]/60 font-medium">/ Video</span>
-                          </div>
-                        )}
-
-                        {currencyMode === "EGP" && (
-                          <div className="flex items-baseline gap-2">
-                            <span className="text-4xl sm:text-5xl font-black text-white">{pkg.priceEGP}</span>
-                            <span className="text-sm uppercase tracking-wider text-[#D7E2EA]/60 font-medium">/ Video</span>
-                          </div>
-                        )}
-                      </div>
-
-                      <ul className="space-y-4 mb-8">
-                        {pkg.features.map((feat, i) => (
-                          <li key={i} className="flex items-start gap-3 text-sm text-[#D7E2EA]/80 leading-relaxed">
-                            <span className="text-[#B600A8] text-base mt-0.5 inline-block select-none">✦</span>
-                            <span>{feat}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    <div className="pt-6 border-t border-white/10 flex flex-col gap-3">
-                      <p className="text-xs text-[#D7E2EA]/50 text-center font-medium">{pkg.revisions}</p>
-                      <a
-                        href={pkg.driveLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full text-center py-2.5 rounded-full border border-[#B600A8]/60 hover:bg-[#B600A8]/20 text-xs uppercase font-bold tracking-wider text-[#D7E2EA] transition-colors shadow-md"
-                      >
-                        ▶ Watch Video Sample
-                      </a>
-
-                      <a
-                        href={whatsappPreFilledLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`block w-full text-center rounded-full uppercase tracking-widest font-semibold py-3.5 text-sm transition-all duration-300 ${
-                          pkg.featured
-                            ? "bg-[#B600A8] hover:bg-[#9d0091] text-white shadow-lg shadow-[#B600A8]/30"
-                            : "border border-white/20 hover:bg-white/10 text-white shadow-md"
-                        }`}
-                      >
-                        Order via WhatsApp
-                      </a>
-                    </div>
-                  </div>
-                </FadeIn>
-              );
-            })}
-          </div>
-
-          <FadeIn delay={0.2} y={30}>
-            <div className="rounded-[36px] bg-white/[0.02] backdrop-blur-2xl border border-white/10 p-8 sm:p-12 shadow-2xl">
-              <div className="flex items-center gap-3 mb-8">
-                <span className="text-[#B600A8] text-xl">✦</span>
-                <h3 className="text-2xl sm:text-3xl font-bold text-white">General Terms & Production Flow</h3>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-                {generalTerms.map((term, i) => (
-                  <div
-                    key={i}
-                    className={`p-6 rounded-2xl bg-white/[0.02] border border-white/5 ${
-                      i === 0 ? "md:col-span-2 border-[#B600A8]/30 bg-[#B600A8]/5" : ""
-                    }`}
-                  >
-                    <h4 className="text-lg font-semibold text-white mb-2 flex items-center gap-2">
-                      <span className="text-xs text-[#B600A8] font-mono">0{i + 1}.</span>
-                      {term.title}
-                    </h4>
-                    <p className="text-sm text-[#D7E2EA]/70 leading-relaxed">{term.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </FadeIn>
-        </div>
-      </section>
-
-      {/* REVIEWS */}
-      <section id="reviews" className="py-24 px-6 md:px-12 bg-[#0A0A0A] border-t border-white/5">
-        <div className="max-w-6xl mx-auto">
-          <FadeIn delay={0} y={30} className="text-center mb-16">
-            <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">Testimonials</span>
-            <h2 className="hero-heading font-black uppercase text-4xl sm:text-6xl md:text-7xl mt-2">Client Messages</h2>
-            <p className="text-[#D7E2EA]/60 max-w-xl mx-auto mt-3 text-sm sm:text-base">
-              Feedback from creators, entrepreneurs, and agencies I collaborate with
-            </p>
-          </FadeIn>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-            {clientReviews.map((rev, idx) => (
-              <FadeIn key={idx} delay={idx * 0.1}>
-                <div className="p-8 rounded-[32px] bg-white/[0.03] backdrop-blur-2xl border border-white/10 flex flex-col justify-between h-full hover:border-[#B600A8]/40 transition-colors shadow-2xl">
-                  <div>
-                    <div className="flex justify-between items-center mb-4">
-                      <span className="text-[#B600A8] text-sm tracking-widest font-mono">{rev.rating}</span>
-                      <span className="text-3xl text-white/20 font-serif leading-none">“</span>
-                    </div>
-                    <p className="text-[#D7E2EA]/85 text-base sm:text-lg leading-relaxed mb-6 font-light">
-                      &quot;{rev.quote}&quot;
-                    </p>
-                  </div>
-
-                  <div className="pt-4 border-t border-white/10 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#B600A8] to-[#7621B0] flex items-center justify-center font-bold text-white text-sm shadow-md">
-                      {rev.client.charAt(0)}
-                    </div>
-                    <div>
-                      <h4 className="text-white font-semibold text-sm sm:text-base">{rev.client}</h4>
-                      <p className="text-xs text-[#D7E2EA]/60">{rev.role}</p>
-                    </div>
-                  </div>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* THUMBNAILS */}
-      <section id="thumbnails" className="py-24 px-5 sm:px-8 md:px-12 bg-[#0A0A0A]">
-        <div className="max-w-6xl mx-auto">
-          <FadeIn delay={0} y={30} className="text-center mb-8">
-            <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
-              Graphic Covers & Visuals
-            </span>
-
-            <div className="relative inline-block mt-3">
-              <button
-                onClick={() => setIsThumbnailsMenuOpen(!isThumbnailsMenuOpen)}
-                className="group inline-flex items-center gap-3 sm:gap-4 hero-heading font-black uppercase text-3xl sm:text-5xl md:text-6xl hover:opacity-90 transition-all cursor-pointer select-none"
-              >
-                <span>Thumbnails & Posters</span>
-                <span
-                  className={`text-2xl sm:text-4xl text-[#B600A8] transition-transform duration-300 ${
-                    isThumbnailsMenuOpen ? "rotate-180" : "rotate-0"
-                  }`}
-                >
-                  ▼
-                </span>
-              </button>
-
-              <p className="text-[#D7E2EA]/60 text-xs sm:text-sm mt-2 tracking-wider">
-                {isThumbnailsMenuOpen
-                  ? "Click title to collapse gallery"
-                  : "Click to reveal high-CTR YouTube covers and commercial posters"}
-              </p>
-            </div>
-          </FadeIn>
-
-          <AnimatePresence>
-            {isThumbnailsMenuOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-12"
-              >
-                {thumbnailsData.map((thumb, index) => (
-                  <FadeIn key={index} delay={index * 0.1}>
-                    <motion.div
-                      whileHover={{ y: -8 }}
-                      className="bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[28px] overflow-hidden shadow-2xl group hover:border-[#B600A8]/50 transition-colors duration-300"
-                    >
-                      <div className="w-full aspect-[4/5] overflow-hidden bg-black/50">
-                        <img
-                          src={thumb.src}
-                          alt={thumb.title}
-                          loading="lazy"
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                      </div>
-
-                      <div className="p-5 flex flex-col gap-1">
-                        <span className="text-xs uppercase tracking-widest text-[#B600A8] font-medium">{thumb.category}</span>
-                        <h3 className="text-[#D7E2EA] font-semibold text-lg sm:text-xl">{thumb.title}</h3>
-                      </div>
-                    </motion.div>
-                  </FadeIn>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </section>
-
-      {/* SERVICES */}
-      <section id="services" className="bg-white rounded-t-[40px] sm:rounded-t-[60px] px-6 sm:px-10 py-24 text-[#0C0C0C]">
-        <div className="max-w-5xl mx-auto">
-          <FadeIn delay={0} y={30}>
-            <h2 className="font-black uppercase text-center mb-16 sm:mb-24 text-4xl sm:text-6xl md:text-7xl text-[#0C0C0C]">
-              Services
-            </h2>
-          </FadeIn>
-
-          <div className="flex flex-col">
-            {servicesList.map((item, index) => (
-              <FadeIn key={item.num} delay={index * 0.1}>
-                <motion.div
-                  whileHover={{ x: 8 }}
-                  className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-t border-[rgba(12,12,12,0.15)] py-8 sm:py-10 gap-4 sm:gap-10"
-                >
-                  <span className="font-black text-[#0C0C0C] text-5xl sm:text-7xl leading-none shrink-0">
-                    {item.num}
-                  </span>
-
-                  <div className="flex flex-col gap-2">
-                    <h3 className="font-bold uppercase text-xl sm:text-2xl text-[#0C0C0C]">{item.name}</h3>
-                    <p className="font-normal leading-relaxed max-w-2xl text-[#0C0C0C]/70 text-sm sm:text-base">{item.desc}</p>
-                  </div>
-                </motion.div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CONTACT */}
-      <section id="contact" className="py-24 px-6 text-center bg-[#0A0A0A] border-t border-white/10">
-        <FadeIn delay={0} y={30} className="max-w-3xl mx-auto">
-          <span className="text-xs uppercase tracking-[0.25em] text-[#B600A8] font-bold">
-            Available for new projects
-          </span>
-
-          <h2 className="hero-heading font-black uppercase text-4xl sm:text-6xl mb-4 mt-3">
-            Let&apos;s Create Together
-          </h2>
-
-          <p className="text-[#D7E2EA]/70 mb-10 max-w-xl mx-auto text-sm sm:text-base">
-            Available for commercial campaigns, ongoing reels retainers, and high-retention video post-production.
-          </p>
-
-          <div className="flex justify-center items-center gap-4 mb-10">
-            <a
-              href="https://www.instagram.com/ebrahimfadel_8/"
+              href="https://wa.me/201211871199?text=Hey%20Lil!%20I%20want%20to%20start%20a%20video%20editing%20project."
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Instagram"
-              className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300 hover:scale-110 shadow-xl"
+              className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#B600A8] hover:bg-[#9d0091] text-white uppercase tracking-widest text-xs font-bold transition-all duration-300 hover:scale-105 shadow-[0_0_30px_rgba(182,0,168,0.35)]"
             >
-              <InstagramIcon />
+              Start a Project
+              <span>→</span>
             </a>
 
-            <a
-              href="https://www.facebook.com/EbrahimFadel8"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Facebook"
-              className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300 hover:scale-110 shadow-xl"
+            <div className="text-xs text-white/40 mt-10">
+              © 2026 Lil. All rights reserved.
+            </div>
+          </FadeIn>
+        </section>
+
+        {/* SCROLL TOP */}
+        <AnimatePresence>
+          {showScrollTop && (
+            <motion.button
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              onClick={scrollToTop}
+              aria-label="Scroll to top"
+              className="fixed bottom-8 right-8 z-40 w-12 h-12 rounded-full bg-[#141414]/80 backdrop-blur-xl border border-white/20 text-[#B600A8] hover:bg-[#B600A8] hover:text-white hover:border-[#B600A8] shadow-2xl flex items-center justify-center font-black transition-all duration-300"
             >
-              <FacebookIcon />
-            </a>
-
-            <a
-              href="https://wa.me/201211871199"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="WhatsApp"
-              className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/70 hover:text-[#25D366] hover:border-[#25D366] hover:bg-[#25D366]/20 transition-all duration-300 hover:scale-110 shadow-xl"
-            >
-              <WhatsAppIcon />
-            </a>
-
-            <a
-              href="mailto:ebrahimfadel8903@gmail.com"
-              aria-label="Email"
-              className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300 hover:scale-110 shadow-xl"
-            >
-              <MailIcon />
-            </a>
-          </div>
-
-          <a
-            href="https://wa.me/201211871199?text=Hey%20Lil!%20I%20want%20to%20start%20a%20video%20editing%20project."
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#B600A8] hover:bg-[#9d0091] text-white uppercase tracking-widest text-xs font-bold transition-all duration-300 hover:scale-105 shadow-[0_0_30px_rgba(182,0,168,0.35)]"
-          >
-            Start a Project
-            <span>→</span>
-          </a>
-
-          <div className="text-xs text-white/40 mt-10">
-            © 2026 Lil. All rights reserved.
-          </div>
-        </FadeIn>
-      </section>
-
-      {/* SCROLL TOP */}
-      <AnimatePresence>
-        {showScrollTop && (
-          <motion.button
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            onClick={scrollToTop}
-            aria-label="Scroll to top"
-            className="fixed bottom-8 right-8 z-40 w-12 h-12 rounded-full bg-[#141414]/80 backdrop-blur-xl border border-white/20 text-[#B600A8] hover:bg-[#B600A8] hover:text-white hover:border-[#B600A8] shadow-2xl flex items-center justify-center font-black transition-all duration-300"
-          >
-            ↑
-          </motion.button>
-        )}
-      </AnimatePresence>
-    </motion.main>
+              ↑
+            </motion.button>
+          )}
+        </AnimatePresence>
+      </main>
+    </>
   );
 }
