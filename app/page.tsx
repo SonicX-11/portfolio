@@ -154,7 +154,7 @@ const softwareStack = [
   },
 ];
 
-// تم تدقيق ومطابقة المسارات بالحروف الكبيرة لتطابق أسماء الملفات على Git و Vercel تماماً
+// مطابقة تامة 100% مع أسماء ملفاتك داخل مجلد public/video/
 const videosData = [
   {
     id: "man-u",
@@ -503,7 +503,7 @@ function MarqueeCard({
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="auto"
           className="w-full h-full object-cover"
         />
       ) : (
@@ -535,7 +535,7 @@ function MarqueeCard({
   );
 }
 
-// --- VIDEO CARD (FEATURED SECTION) ---
+// --- VIDEO CARD ---
 
 function VideoCard({
   item,
@@ -596,14 +596,14 @@ function VideoCard({
             }`}
           />
 
-          {/* تم ضبط الكتم الإجباري الصريح لضمان عمل المعاينة لدى جميع المتصفحات */}
           <video
             ref={videoRef}
             src={item.src}
+            poster={item.poster}
             muted
             loop
             playsInline
-            preload="metadata"
+            preload="auto"
             className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
               isHovered ? "opacity-100" : "opacity-0"
             }`}
@@ -663,7 +663,7 @@ function VideoCard({
 export default function Home() {
   const [currencyMode, setCurrencyMode] = useState<"ALL" | "USD" | "EGP">("ALL");
   const [selectedVideoTab, setSelectedVideoTab] = useState<"all" | "reels" | "commercial" | "cinematic">("all");
-  const [isVideoMenuOpen, setIsVideoMenuOpen] = useState(true); // تم جعلها مفتوحة تلقائياً لسهولة استعراض الفيديوهات
+  const [isVideoMenuOpen, setIsVideoMenuOpen] = useState(true);
   const [isThumbnailsMenuOpen, setIsThumbnailsMenuOpen] = useState(false);
   const [activeModalVideo, setActiveModalVideo] = useState<(typeof videosData)[0] | null>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -786,14 +786,12 @@ export default function Home() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [activeModalVideo, closeModal, goNext, goPrevious]);
 
-  // التحكم في تشغيل الفيديو التفاعلي في المودال عند التبديل
   useEffect(() => {
     if (activeModalVideo && modalVideoRef.current) {
       modalVideoRef.current.currentTime = 0;
       const playPromise = modalVideoRef.current.play();
       if (playPromise !== undefined) {
         playPromise.catch(() => {
-          // في حال منع المتصفح الصوت التلقائي، يُشغل صامتاً لتفادي التعليق
           if (modalVideoRef.current) {
             modalVideoRef.current.muted = true;
             setIsModalMuted(true);
@@ -877,7 +875,6 @@ export default function Home() {
               </div>
 
               <div className="flex items-center gap-2 pointer-events-auto">
-                {/* زر تشغيل / كتم الصوت في المودال */}
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -941,6 +938,7 @@ export default function Home() {
                 controls
                 playsInline
                 loop
+                preload="auto"
                 onPlay={() => setIsPlaying(true)}
                 onPause={() => setIsPlaying(false)}
                 className="w-full h-full object-contain bg-black"
