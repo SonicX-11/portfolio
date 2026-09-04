@@ -29,7 +29,7 @@ const MailIcon = () => (
   </svg>
 );
 
-// --- REUSABLE ANIMATION COMPONENTS (مع موشن بلور تفاعلي عند الظهور) ---
+// --- REUSABLE ANIMATION COMPONENTS ---
 
 interface FadeInProps {
   children: React.ReactNode;
@@ -45,12 +45,12 @@ const FadeIn: React.FC<FadeInProps> = ({
   delay = 0,
   duration = 0.6,
   x = 0,
-  y = 35,
+  y = 30,
   className = "",
 }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, x, y, filter: "blur(8px)" }}
+      initial={{ opacity: 0, x, y, filter: "blur(6px)" }}
       whileInView={{ opacity: 1, x: 0, y: 0, filter: "blur(0px)" }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{
@@ -64,87 +64,6 @@ const FadeIn: React.FC<FadeInProps> = ({
     </motion.div>
   );
 };
-
-// --- 3D INTERACTIVE AVATAR COMPONENT ---
-
-function TiltAvatar3D({ src, alt }: { src: string; alt: string }) {
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  const rotateX = useMotionValue(0);
-  const rotateY = useMotionValue(0);
-  const glowX = useMotionValue(0);
-  const glowY = useMotionValue(0);
-
-  const springConfig = { damping: 22, stiffness: 280, mass: 0.5 };
-  const smoothRotateX = useSpring(rotateX, springConfig);
-  const smoothRotateY = useSpring(rotateY, springConfig);
-  const smoothGlowX = useSpring(glowX, springConfig);
-  const smoothGlowY = useSpring(glowY, springConfig);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-
-    const mouseOffsetX = e.clientX - centerX;
-    const mouseOffsetY = e.clientY - centerY;
-
-    const rotX = -(mouseOffsetY / (rect.height / 2)) * 16;
-    const rotY = (mouseOffsetX / (rect.width / 2)) * 16;
-
-    rotateX.set(rotX);
-    rotateY.set(rotY);
-    glowX.set(mouseOffsetX * 0.35);
-    glowY.set(mouseOffsetY * 0.35);
-  };
-
-  const handleMouseLeave = () => {
-    rotateX.set(0);
-    rotateY.set(0);
-    glowX.set(0);
-    glowY.set(0);
-  };
-
-  return (
-    <div
-      ref={cardRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className="relative flex items-center justify-center cursor-pointer select-none"
-      style={{ perspective: "1000px" }}
-    >
-      <motion.div
-        className="absolute w-[240px] sm:w-[320px] md:w-[400px] h-[240px] sm:h-[320px] md:h-[400px] rounded-full blur-[90px] opacity-35 pointer-events-none"
-        style={{
-          x: smoothGlowX,
-          y: smoothGlowY,
-          background: "radial-gradient(circle, #B600A8 0%, #7621B0 60%, transparent 80%)",
-        }}
-      />
-
-      <motion.div
-        style={{
-          rotateX: smoothRotateX,
-          rotateY: smoothRotateY,
-          transformStyle: "preserve-3d",
-        }}
-        whileHover={{ scale: 1.03 }}
-        transition={{ duration: 0.25 }}
-        className="relative z-10"
-      >
-        <img
-          src={src}
-          alt={alt}
-          className="w-[260px] sm:w-[340px] md:w-[420px] lg:w-[480px] object-contain select-none pointer-events-none drop-shadow-[0_25px_35px_rgba(0,0,0,0.85)]"
-          style={{
-            transform: "translateZ(45px)",
-          }}
-        />
-      </motion.div>
-    </div>
-  );
-}
 
 // --- DATA ---
 
@@ -674,17 +593,15 @@ export default function Home() {
   const scrollVelocity = useVelocity(scrollY);
   const smoothVelocity = useSpring(scrollVelocity, { damping: 30, stiffness: 200 });
 
-  // تحويل سرعة السكرول إلى موشن بلور وتمدد بسيط ديناميكي في الصفحة
   const pageBlur = useTransform(smoothVelocity, [-2000, 0, 2000], [4, 0, 4]);
   const pageScaleY = useTransform(smoothVelocity, [-2000, 0, 2000], [1.02, 1, 1.02]);
   const pageFilter = useTransform(pageBlur, (v) => `blur(${Math.min(v, 4)}px)`);
 
-  // --- CLEAN MOUSE TRACKING WITHOUT REAR GHOST BLUR ---
+  // --- CLEAN & FAST MOUSE TRACKING ---
   const mouseX = useMotionValue(-100);
   const mouseY = useMotionValue(-100);
   const cursorRotation = useMotionValue(0);
 
-  // حركة فورية ودقيقة تحاكي ماوس الويندوز الحقيقي مع حركة فيزيائية سريعة
   const smoothX = useSpring(mouseX, { damping: 35, stiffness: 600, mass: 0.2 });
   const smoothY = useSpring(mouseY, { damping: 35, stiffness: 600, mass: 0.2 });
   const smoothRotation = useSpring(cursorRotation, { damping: 28, stiffness: 350 });
@@ -746,7 +663,6 @@ export default function Home() {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
 
-      // دوران طبيعي وسلس للماوس حسب اتجاه حركة اليد بدون أي بطء
       const deltaX = e.clientX - prevMouseXRef.current;
       prevMouseXRef.current = e.clientX;
       const targetRotation = Math.max(Math.min(deltaX * 0.8, 20), -20);
@@ -878,7 +794,7 @@ export default function Home() {
       }}
       className="relative w-full min-h-screen bg-[#0A0A0A] text-[#D7E2EA] selection:bg-[#B600A8] selection:text-white"
     >
-      {/* --- CLEAN NEON ARROW CURSOR (تمت إزالة الشبح والبلور المزعج خلف الماوس) --- */}
+      {/* --- CLEAN NEON ARROW CURSOR (سهم نقي بدون هالة خلفية) --- */}
       <motion.div
         className="pointer-events-none fixed z-[9999] hidden md:block"
         style={{
@@ -908,18 +824,6 @@ export default function Home() {
           />
         </svg>
       </motion.div>
-
-      {/* توهج نيون محيطي ناعم في الخلفية */}
-      <motion.div
-        className="pointer-events-none fixed z-40 w-[420px] h-[420px] rounded-full blur-[140px] opacity-20 hidden md:block"
-        style={{
-          x: smoothX,
-          y: smoothY,
-          translateX: "-50%",
-          translateY: "-50%",
-          background: "radial-gradient(circle, #B600A8 0%, #7621B0 50%, transparent 80%)",
-        }}
-      />
 
       {/* VIDEO THEATER MODE (GLASSY & FULL 9:16) */}
       <AnimatePresence>
@@ -1119,10 +1023,20 @@ export default function Home() {
           </FadeIn>
         </div>
 
-        {/* الصورة ثلاثية الأبعاد التفاعلية في منتصف الهيرو */}
+        {/* صورة الهيرو الأصلية النظيفة مع ظل سينمائي هادئ */}
         <div className="absolute left-1/2 -translate-x-1/2 z-10 bottom-16 sm:bottom-10 pointer-events-auto">
           <FadeIn delay={0.4} y={30}>
-            <TiltAvatar3D src="/images/avatar.png" alt="Lil Portrait" />
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.3 }}
+              className="relative flex items-center justify-center select-none"
+            >
+              <img
+                src="/images/avatar.png"
+                alt="Lil Portrait"
+                className="w-[260px] sm:w-[340px] md:w-[420px] lg:w-[480px] object-contain select-none pointer-events-none drop-shadow-[0_20px_40px_rgba(0,0,0,0.8)]"
+              />
+            </motion.div>
           </FadeIn>
         </div>
 
