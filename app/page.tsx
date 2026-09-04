@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect, useMemo, useCallback } from "react";
-import { motion, AnimatePresence, useSpring, useMotionValue } from "framer-motion";
+import { motion, AnimatePresence, useSpring, useMotionValue, useScroll, useVelocity, useTransform } from "framer-motion";
 
 // --- SVG SOCIAL & SOFTWARE ICONS ---
 
@@ -29,7 +29,7 @@ const MailIcon = () => (
   </svg>
 );
 
-// --- REUSABLE ANIMATION COMPONENTS ---
+// --- REUSABLE ANIMATION COMPONENTS (مع موشن بلور تفاعلي عند الظهور) ---
 
 interface FadeInProps {
   children: React.ReactNode;
@@ -43,20 +43,20 @@ interface FadeInProps {
 const FadeIn: React.FC<FadeInProps> = ({
   children,
   delay = 0,
-  duration = 0.7,
+  duration = 0.6,
   x = 0,
-  y = 30,
+  y = 35,
   className = "",
 }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, x, y }}
-      whileInView={{ opacity: 1, x: 0, y: 0 }}
-      viewport={{ once: true, margin: "50px", amount: 0 }}
+      initial={{ opacity: 0, x, y, filter: "blur(8px)" }}
+      whileInView={{ opacity: 1, x: 0, y: 0, filter: "blur(0px)" }}
+      viewport={{ once: true, margin: "-40px" }}
       transition={{
         duration,
         delay,
-        ease: [0.25, 0.1, 0.25, 1],
+        ease: [0.22, 1, 0.36, 1],
       }}
       className={className}
     >
@@ -65,7 +65,7 @@ const FadeIn: React.FC<FadeInProps> = ({
   );
 };
 
-// --- 3D INTERACTIVE AVATAR COMPONENT (PARALLAX TILT + GLOW) ---
+// --- 3D INTERACTIVE AVATAR COMPONENT ---
 
 function TiltAvatar3D({ src, alt }: { src: string; alt: string }) {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -114,7 +114,6 @@ function TiltAvatar3D({ src, alt }: { src: string; alt: string }) {
       className="relative flex items-center justify-center cursor-pointer select-none"
       style={{ perspective: "1000px" }}
     >
-      {/* هالة نيون بنفسجية ثلاثية الأبعاد تتحرك في عمق مختلف */}
       <motion.div
         className="absolute w-[240px] sm:w-[320px] md:w-[400px] h-[240px] sm:h-[320px] md:h-[400px] rounded-full blur-[90px] opacity-35 pointer-events-none"
         style={{
@@ -124,7 +123,6 @@ function TiltAvatar3D({ src, alt }: { src: string; alt: string }) {
         }}
       />
 
-      {/* المجسم ثلاثي الأبعاد للصورة الشخصية */}
       <motion.div
         style={{
           rotateX: smoothRotateX,
@@ -671,20 +669,25 @@ export default function Home() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isModalMuted, setIsModalMuted] = useState(false);
 
-  // --- DYNAMIC TILT & MOTION BLUR CURSOR SPRINGS ---
+  // --- MOTION BLUR EFFECT ON THE ENTIRE PAGE DURING FAST SCROLLING ---
+  const { scrollY } = useScroll();
+  const scrollVelocity = useVelocity(scrollY);
+  const smoothVelocity = useSpring(scrollVelocity, { damping: 30, stiffness: 200 });
+
+  // تحويل سرعة السكرول إلى موشن بلور وتمدد بسيط ديناميكي في الصفحة
+  const pageBlur = useTransform(smoothVelocity, [-2000, 0, 2000], [4, 0, 4]);
+  const pageScaleY = useTransform(smoothVelocity, [-2000, 0, 2000], [1.02, 1, 1.02]);
+  const pageFilter = useTransform(pageBlur, (v) => `blur(${Math.min(v, 4)}px)`);
+
+  // --- CLEAN MOUSE TRACKING WITHOUT REAR GHOST BLUR ---
   const mouseX = useMotionValue(-100);
   const mouseY = useMotionValue(-100);
   const cursorRotation = useMotionValue(0);
 
-  const springConfig = { damping: 28, stiffness: 380, mass: 0.5 };
-  const smoothX = useSpring(mouseX, springConfig);
-  const smoothY = useSpring(mouseY, springConfig);
-
-  const ghostSpringConfig = { damping: 40, stiffness: 180, mass: 1 };
-  const ghostX = useSpring(mouseX, ghostSpringConfig);
-  const ghostY = useSpring(mouseY, ghostSpringConfig);
-
-  const smoothRotation = useSpring(cursorRotation, { damping: 25, stiffness: 200 });
+  // حركة فورية ودقيقة تحاكي ماوس الويندوز الحقيقي مع حركة فيزيائية سريعة
+  const smoothX = useSpring(mouseX, { damping: 35, stiffness: 600, mass: 0.2 });
+  const smoothY = useSpring(mouseY, { damping: 35, stiffness: 600, mass: 0.2 });
+  const smoothRotation = useSpring(cursorRotation, { damping: 28, stiffness: 350 });
 
   const prevMouseXRef = useRef(0);
 
@@ -743,9 +746,10 @@ export default function Home() {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
 
+      // دوران طبيعي وسلس للماوس حسب اتجاه حركة اليد بدون أي بطء
       const deltaX = e.clientX - prevMouseXRef.current;
       prevMouseXRef.current = e.clientX;
-      const targetRotation = Math.max(Math.min(deltaX * 1.5, 30), -30);
+      const targetRotation = Math.max(Math.min(deltaX * 0.8, 20), -20);
       cursorRotation.set(targetRotation);
     };
 
@@ -865,27 +869,16 @@ export default function Home() {
   };
 
   return (
-    <main
+    <motion.main
       dir="ltr"
+      style={{
+        filter: pageFilter,
+        scaleY: pageScaleY,
+        transformOrigin: "center center",
+      }}
       className="relative w-full min-h-screen bg-[#0A0A0A] text-[#D7E2EA] selection:bg-[#B600A8] selection:text-white"
     >
-      {/* --- MOTION BLUR GHOST TRAILING --- */}
-      <motion.div
-        className="pointer-events-none fixed z-[9998] hidden md:block opacity-35 blur-[2px]"
-        style={{
-          x: ghostX,
-          y: ghostY,
-          rotate: smoothRotation,
-          translateX: "-3px",
-          translateY: "-3px",
-        }}
-      >
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-          <path d="M3 3L10.5 21L13.5 13.5L21 10.5L3 3Z" fill="#B600A8" />
-        </svg>
-      </motion.div>
-
-      {/* --- ACTIVE TILT NEON ARROW CURSOR --- */}
+      {/* --- CLEAN NEON ARROW CURSOR (تمت إزالة الشبح والبلور المزعج خلف الماوس) --- */}
       <motion.div
         className="pointer-events-none fixed z-[9999] hidden md:block"
         style={{
@@ -897,29 +890,28 @@ export default function Home() {
         }}
       >
         <svg
-          width="26"
-          height="26"
+          width="24"
+          height="24"
           viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           style={{
-            filter:
-              "drop-shadow(0 0 5px #B600A8) drop-shadow(0 0 14px #B600A8) drop-shadow(0 0 22px rgba(182,0,168,0.7))",
+            filter: "drop-shadow(0 0 4px #B600A8) drop-shadow(0 0 10px #B600A8)",
           }}
         >
           <path
             d="M3 3L10.5 21L13.5 13.5L21 10.5L3 3Z"
             fill="#FFFFFF"
             stroke="#B600A8"
-            strokeWidth="1.8"
+            strokeWidth="1.6"
             strokeLinejoin="round"
           />
         </svg>
       </motion.div>
 
-      {/* توهج النيون المحيط بالماوس */}
+      {/* توهج نيون محيطي ناعم في الخلفية */}
       <motion.div
-        className="pointer-events-none fixed z-50 w-[450px] h-[450px] rounded-full blur-[140px] opacity-25 hidden md:block"
+        className="pointer-events-none fixed z-40 w-[420px] h-[420px] rounded-full blur-[140px] opacity-20 hidden md:block"
         style={{
           x: smoothX,
           y: smoothY,
@@ -1785,6 +1777,6 @@ export default function Home() {
           </motion.button>
         )}
       </AnimatePresence>
-    </main>
+    </motion.main>
   );
 }
