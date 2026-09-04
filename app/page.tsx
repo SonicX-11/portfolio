@@ -217,6 +217,39 @@ const softwareStack = [
   { name: "Photoshop", tag: "High-CTR Thumbnails", icon: "Ps" },
 ];
 
+const processSteps = [
+  {
+    num: "01",
+    title: "Project Brief & Creative Vision",
+    arabic: "الاتفاق وفهم فكرة الفيديو",
+    desc: "Understanding target audience, platform format, desired pacing, tone, and visual references.",
+  },
+  {
+    num: "02",
+    title: "Footage Upload & Assembly",
+    arabic: "رفع الماتريال والفرز السريع",
+    desc: "Seamless footage reception via Drive/WeTransfer, organizing media and building initial rough cuts.",
+  },
+  {
+    num: "03",
+    title: "The First Cut & Sound Design",
+    arabic: "المونتاج، التقطيع والمؤثرات",
+    desc: "Applying dynamic cuts, animated pop-up subtitles, visual hooks, sound Foley, and color balancing.",
+  },
+  {
+    num: "04",
+    title: "Feedback & Revisions",
+    arabic: "المراجعة والتعديلات السريعة",
+    desc: "Fine-tuning rhythm, subtitle cues, and visual flow based on your precise notes and vision.",
+  },
+  {
+    num: "05",
+    title: "Final 4K Master Delivery",
+    arabic: "التسليم النهائي بأعلى جودة",
+    desc: "Delivering crisp, native 4K/1080p high-bitrate master exports optimized for TikTok, Reels, and YouTube.",
+  },
+];
+
 const videosData = [
   {
     id: "man-u",
@@ -684,6 +717,9 @@ export default function Home() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isModalMuted, setIsModalMuted] = useState(false);
 
+  // --- WORKFLOW MODAL STATE ---
+  const [isWorkflowOpen, setIsWorkflowOpen] = useState(false);
+
   // --- FAST & DIRECT MOUSE TRACKING ---
   const mouseX = useMotionValue(-200);
   const mouseY = useMotionValue(-200);
@@ -691,7 +727,7 @@ export default function Home() {
 
   const smoothX = useSpring(mouseX, { damping: 45, stiffness: 1000, mass: 0.1 });
   const smoothY = useSpring(mouseY, { damping: 45, stiffness: 1000, mass: 0.1 });
-  const smoothRotation = useSpring(cursorRotation, { damping: 25, stiffness: 400 });
+  const smoothRotation = useSpring(cursorRotation, { damping: 28, stiffness: 400 });
 
   const prevMouseXRef = useRef(0);
 
@@ -801,7 +837,10 @@ export default function Home() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!activeModalVideo) return;
 
-      if (e.key === "Escape") closeModal();
+      if (e.key === "Escape") {
+        closeModal();
+        setIsWorkflowOpen(false);
+      }
       if (e.key === "ArrowRight") goNext();
       if (e.key === "ArrowLeft") goPrevious();
       if (e.key === " ") {
@@ -872,7 +911,7 @@ export default function Home() {
 
   return (
     <>
-      {/* مؤشر الماوس النيون المستقل */}
+      {/* مؤشر الماوس النيون المستقل تماماً */}
       <motion.div
         className="pointer-events-none fixed top-0 left-0 z-[999999] hidden md:block"
         style={{
@@ -902,6 +941,80 @@ export default function Home() {
           />
         </svg>
       </motion.div>
+
+      {/* --- WORKFLOW MODAL POPUP (نافذة منبثقة عند الضغط على Workflow) --- */}
+      <AnimatePresence>
+        {isWorkflowOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsWorkflowOpen(false)}
+            className="fixed inset-0 z-[150] bg-black/90 backdrop-blur-2xl flex items-center justify-center p-4 sm:p-6"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto bg-[#121216] border border-white/20 rounded-[36px] p-6 sm:p-10 shadow-[0_0_60px_rgba(182,0,168,0.3)] custom-scrollbar"
+            >
+              <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/10">
+                <div>
+                  <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
+                    Production Pipeline
+                  </span>
+                  <h3 className="text-2xl sm:text-3xl font-black text-white mt-1">
+                    Editing Workflow
+                  </h3>
+                </div>
+
+                <button
+                  onClick={() => setIsWorkflowOpen(false)}
+                  className="w-10 h-10 rounded-full bg-white/10 border border-white/20 text-white flex items-center justify-center text-lg hover:bg-[#B600A8] transition-all"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="relative border-l-2 border-white/15 ml-4 pl-6 space-y-8">
+                {processSteps.map((step, idx) => (
+                  <div key={step.num} className="relative group">
+                    <div className="absolute -left-[31px] top-1.5 w-5 h-5 rounded-full bg-[#0A0A0A] border-2 border-[#B600A8] flex items-center justify-center shadow-[0_0_12px_rgba(182,0,168,0.8)]">
+                      <div className="w-1.5 h-1.5 rounded-full bg-white" />
+                    </div>
+
+                    <div className="p-5 rounded-2xl bg-white/[0.04] border border-white/10 hover:border-[#B600A8]/50 transition-all">
+                      <div className="flex items-center justify-between gap-2 mb-1.5">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-mono text-[#B600A8] font-bold px-2 py-0.5 rounded bg-[#B600A8]/20 border border-[#B600A8]/40">
+                            STEP {step.num}
+                          </span>
+                          <h4 className="text-base font-bold text-white">{step.title}</h4>
+                        </div>
+                        <span className="text-xs text-[#D7E2EA]/60">{step.arabic}</span>
+                      </div>
+                      <p className="text-xs sm:text-sm text-[#D7E2EA]/75 leading-relaxed">
+                        {step.desc}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-8 pt-4 border-t border-white/10 text-center">
+                <button
+                  onClick={() => setIsWorkflowOpen(false)}
+                  className="px-6 py-2.5 rounded-full bg-[#B600A8] text-white text-xs font-bold uppercase tracking-widest shadow-lg hover:bg-[#9d0091] transition-all"
+                >
+                  Got It, Let&apos;s Start
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <main
         dir="ltr"
@@ -1042,8 +1155,15 @@ export default function Home() {
         <section className="relative min-h-screen flex flex-col justify-between overflow-x-clip bg-[#0A0A0A] pb-8">
           <FadeIn delay={0} y={-20} className="w-full z-30">
             <nav className="flex justify-between items-center px-6 md:px-10 py-4 md:py-5 mt-4 mx-4 md:mx-10 rounded-3xl bg-white/[0.03] backdrop-blur-2xl border border-white/10 text-xs md:text-sm font-medium tracking-wider uppercase gap-6 shadow-2xl">
-              <div className="flex gap-5 sm:gap-8 items-center flex-wrap">
+              <div className="flex gap-4 sm:gap-7 items-center flex-wrap">
                 <a href="#about" className="hover:text-[#B600A8] transition-colors">About</a>
+                {/* زر Workflow التفاعلي الذي يفتح عند الضغط */}
+                <button
+                  onClick={() => setIsWorkflowOpen(true)}
+                  className="text-[#D7E2EA] hover:text-[#B600A8] transition-colors uppercase tracking-wider font-semibold cursor-pointer"
+                >
+                  Workflow ↗
+                </button>
                 <a href="#videos" className="hover:text-[#B600A8] transition-colors">Videos</a>
                 <a href="#price" className="hover:text-[#B600A8] transition-colors">Pricing</a>
                 <a href="#reviews" className="hover:text-[#B600A8] transition-colors">Reviews</a>
@@ -1163,7 +1283,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ABOUT (WITH LIVE COUNTER ANIMATION) */}
+        {/* ABOUT */}
         <section id="about" className="py-24 px-6 md:px-12 bg-[#0A0A0A]">
           <div className="max-w-5xl mx-auto">
             <FadeIn delay={0} y={30} className="text-center mb-16">
