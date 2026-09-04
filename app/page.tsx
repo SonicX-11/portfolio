@@ -2,7 +2,6 @@
 
 import React, { useRef, useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence, useSpring, useMotionValue } from "framer-motion";
-import Head from "next/head";
 
 // --- SVG SOCIAL & SOFTWARE ICONS ---
 
@@ -464,7 +463,7 @@ const servicesList = [
   },
 ];
 
-// --- MARQUEE CARD (GLASSY STYLE) ---
+// --- MARQUEE CARD ---
 
 function MarqueeCard({ item }: { item: (typeof marqueeItems)[0] }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -647,7 +646,7 @@ export default function Home() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isModalMuted, setIsModalMuted] = useState(false);
 
-  // --- DYNAMIC MOTION-BLUR & TILT CURSOR LOGIC ---
+  // --- DYNAMIC TILT & MOTION BLUR CURSOR SPRINGS ---
   const mouseX = useMotionValue(-100);
   const mouseY = useMotionValue(-100);
   const cursorRotation = useMotionValue(0);
@@ -656,7 +655,7 @@ export default function Home() {
   const smoothX = useSpring(mouseX, springConfig);
   const smoothY = useSpring(mouseY, springConfig);
 
-  // هالة التتبع (Motion Blur Ghost Trailing)
+  // هالة التتبع (Motion Blur Ghost)
   const ghostSpringConfig = { damping: 40, stiffness: 180, mass: 1 };
   const ghostX = useSpring(mouseX, ghostSpringConfig);
   const ghostY = useSpring(mouseY, ghostSpringConfig);
@@ -682,7 +681,7 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  // Mouse & Scroll Handling
+  // Scroll & Mouse Tracking
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollTop(window.scrollY > 500);
@@ -698,7 +697,7 @@ export default function Home() {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
 
-      // حساب الميلان يميناً ويساراً حسب اتجاه وسرعة اليد
+      // حساب زاوية الميلان يميناً ويساراً حسب اتجاه حركة اليد
       const deltaX = e.clientX - prevMouseXRef.current;
       prevMouseXRef.current = e.clientX;
       const targetRotation = Math.max(Math.min(deltaX * 1.5, 30), -30);
@@ -746,7 +745,7 @@ export default function Home() {
     setIsPlaying(true);
   }, [currentVideoIndex]);
 
-  // Modal ESC & Shortcuts
+  // Keyboard Shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!activeModalVideo) return;
@@ -825,36 +824,25 @@ export default function Home() {
       dir="ltr"
       className="relative w-full min-h-screen bg-[#0A0A0A] text-[#D7E2EA] selection:bg-[#B600A8] selection:text-white"
     >
-      {/* حقن أيقونة التايم لاين مباشرة وعالية الوضوح في الهيد */}
-      <Head>
-        <link
-          rel="icon"
-          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23121212%22/><rect x=%2210%22 y=%2225%22 width=%2280%22 height=%2215%22 rx=%224%22 fill=%22%23B600A8%22/><rect x=%2210%22 y=%2245%22 width=%2235%22 height=%2215%22 rx=%224%22 fill=%22%2300D2FF%22/><rect x=%2250%22 y=%2245%22 width=%2240%22 height=%2215%22 rx=%224%22 fill=%22%23BE4C00%22/><rect x=%2210%22 y=%2265%22 width=%2280%22 height=%2212%22 rx=%223%22 fill=%22%2352B788%22/><line x1=%2245%22 y1=%2215%22 x2=%2245%22 y2=%2285%22 stroke=%22%2300FFFF%22 stroke-width=%223%22/></svg>"
-        />
-      </Head>
+      {/* حقن أيقونة التايم لاين الاحترافية الملونة بدقة مباشرة في المتصفح */}
+      <link
+        rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23121212%22/><rect x=%2210%22 y=%2225%22 width=%2280%22 height=%2215%22 rx=%224%22 fill=%22%23B600A8%22/><rect x=%2210%22 y=%2245%22 width=%2235%22 height=%2215%22 rx=%224%22 fill=%22%2300D2FF%22/><rect x=%2250%22 y=%2245%22 width=%2240%22 height=%2215%22 rx=%224%22 fill=%22%23BE4C00%22/><rect x=%2210%22 y=%2265%22 width=%2280%22 height=%2212%22 rx=%223%22 fill=%22%2352B788%22/><line x1=%2245%22 y1=%2215%22 x2=%2245%22 y2=%2285%22 stroke=%22%2300FFFF%22 stroke-width=%224%22/></svg>"
+      />
 
-      {/* --- CUSTOM MOTION BLUR GHOST TRAILING --- */}
+      {/* --- MOTION BLUR GHOST TRAILING --- */}
       <motion.div
-        className="pointer-events-none fixed z-[9998] hidden md:block opacity-40 blur-[2px]"
+        className="pointer-events-none fixed z-[9998] hidden md:block opacity-35 blur-[2px]"
         style={{
           x: ghostX,
           y: ghostY,
           rotate: smoothRotation,
-          translateX: "-4px",
-          translateY: "-4px",
+          translateX: "-3px",
+          translateY: "-3px",
         }}
       >
-        <svg
-          width="26"
-          height="26"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M3 3L10.5 21L13.5 13.5L21 10.5L3 3Z"
-            fill="#B600A8"
-          />
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+          <path d="M3 3L10.5 21L13.5 13.5L21 10.5L3 3Z" fill="#B600A8" />
         </svg>
       </motion.div>
 
@@ -865,8 +853,8 @@ export default function Home() {
           x: smoothX,
           y: smoothY,
           rotate: smoothRotation,
-          translateX: "-4px",
-          translateY: "-4px",
+          translateX: "-3px",
+          translateY: "-3px",
         }}
       >
         <svg
@@ -1036,7 +1024,7 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* HERO SECTION (WITH GLASSY NAVBAR) */}
+      {/* HERO SECTION */}
       <section className="relative min-h-screen flex flex-col justify-between overflow-x-clip bg-[#0A0A0A] pb-8">
         <FadeIn delay={0} y={-20} className="w-full z-30">
           <nav className="flex justify-between items-center px-6 md:px-10 py-4 md:py-5 mt-4 mx-4 md:mx-10 rounded-3xl bg-white/[0.03] backdrop-blur-2xl border border-white/10 text-xs md:text-sm font-medium tracking-wider uppercase gap-6 shadow-2xl">
@@ -1163,7 +1151,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ABOUT (GLASSY CARDS) */}
+      {/* ABOUT */}
       <section id="about" className="py-24 px-6 md:px-12 bg-[#0A0A0A]">
         <div className="max-w-5xl mx-auto">
           <FadeIn delay={0} y={30} className="text-center mb-16">
@@ -1538,7 +1526,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* REVIEWS (GLASSY) */}
+      {/* REVIEWS */}
       <section id="reviews" className="py-24 px-6 md:px-12 bg-[#0A0A0A] border-t border-white/5">
         <div className="max-w-6xl mx-auto">
           <FadeIn delay={0} y={30} className="text-center mb-16">

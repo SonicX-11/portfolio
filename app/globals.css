@@ -21,6 +21,13 @@ body {
   overflow-x: clip;
 }
 
+/* إخفاء ماوس الويندوز تماماً على شاشات الكمبيوتر */
+@media (min-width: 768px) {
+  html, body, *, *::before, *::after {
+    cursor: none !important;
+  }
+}
+
 .hero-heading {
   background: linear-gradient(180deg, #646973 0%, #BBCCD7 100%);
   -webkit-background-clip: text;
@@ -77,10 +84,4 @@ body {
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
-  /* إخفاء ماوس النظام تماماً على الشاشات التي تدعم مؤشراً */
-@media (min-width: 768px) {
-  html, body, *, *::before, *::after {
-    cursor: none !important;
-  }
-}
 }
