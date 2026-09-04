@@ -154,7 +154,7 @@ const softwareStack = [
   },
 ];
 
-// قائمة الفيديوهات موحدة جميعها كفيديوهات ريلز رأسية portrait ومسارات مطابقة لـ Vercel
+// قائمة الفيديوهات الـ 11 موحدة بنسبة ريلز رأسية portrait ومسارات مطابقة لـ Vercel
 const videosData = [
   {
     id: "man-u",
@@ -524,7 +524,7 @@ function MarqueeCard({
   );
 }
 
-// --- VIDEO CARD (موحد بالكامل ريلز 9:16 + لقطة حية من منتصف المقطع لمنع الشاشة السوداء) ---
+// --- VIDEO CARD (لقطة حية من منتصف الفيديو + نسبة 9:16 ريلز موحدة) ---
 
 function VideoCard({
   item,
@@ -575,7 +575,7 @@ function VideoCard({
         transition={{ duration: 0.25 }}
         className="bg-[#141414] border border-white/10 rounded-[28px] sm:rounded-[32px] overflow-hidden p-3 sm:p-3.5 shadow-2xl flex flex-col justify-between h-full group hover:border-[#B600A8]/50"
       >
-        {/* تم تثبيت نسبة 9:16 دائماً لجميع الكروت بدون أي استثناء */}
+        {/* نسبة العرض موحدة 9:16 دائماً لجميع الكروت لتشبه الريلز بالكامل وتمنع الفراغ الأسود */}
         <div
           onMouseEnter={handleEnter}
           onMouseLeave={handleLeave}
@@ -830,14 +830,32 @@ export default function Home() {
       dir="ltr"
       className="relative w-full min-h-screen bg-[#0C0C0C] text-[#D7E2EA] selection:bg-[#B600A8] selection:text-white"
     >
-      {/* MOUSE GLOW */}
+      {/* CUSTOM CURSOR: السهم مع إضاءة وتوهج النيون */}
       <div
-        className="pointer-events-none fixed z-50 w-[420px] h-[420px] rounded-full blur-[130px] opacity-20 -translate-x-1/2 -translate-y-1/2 transition-opacity duration-500 hidden md:block"
+        className="pointer-events-none fixed z-[9999] -translate-x-1 -translate-y-1 transition-transform duration-75 hidden md:block"
+        style={{
+          left: `${mousePos.x}px`,
+          top: `${mousePos.y}px`,
+        }}
+      >
+        <img
+          src="/images/cursor.png"
+          alt="cursor"
+          className="w-6 h-6 object-contain -rotate-45"
+          style={{
+            filter: "invert(1) drop-shadow(0 0 6px #B600A8) drop-shadow(0 0 16px #B600A8)",
+          }}
+        />
+      </div>
+
+      {/* توهج النيون المحيط بالماوس */}
+      <div
+        className="pointer-events-none fixed z-50 w-[450px] h-[450px] rounded-full blur-[140px] opacity-25 -translate-x-1/2 -translate-y-1/2 transition-opacity duration-500 hidden md:block"
         style={{
           left: `${mousePos.x}px`,
           top: `${mousePos.y}px`,
           background:
-            "radial-gradient(circle, #B600A8 0%, #7621B0 60%, transparent 80%)",
+            "radial-gradient(circle, #B600A8 0%, #7621B0 50%, transparent 80%)",
         }}
       />
 
