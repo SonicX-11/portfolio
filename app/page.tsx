@@ -1,983 +1,1916 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import React, { useRef, useState, useEffect, useMemo, useCallback } from "react";
+import { motion, AnimatePresence, useSpring, useMotionValue, useInView } from "framer-motion";
 
-// Global types for CDN scripts (GSAP & Hls)
-declare global {
-  interface Window {
-    gsap: any;
-    ScrollTrigger: any;
-    Hls: any;
-  }
+// --- SVG SOCIAL & SOFTWARE ICONS ---
+
+const InstagramIcon = () => (
+  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+  </svg>
+);
+
+const FacebookIcon = () => (
+  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+    <path d="M9 8H6v4h3v12h5V12h3.642L18 8h-4V6.333C14 5.374 14.5 5 15.667 5H18V0h-3.889C10.5 0 9 1.582 9 4.615V8z" />
+  </svg>
+);
+
+const WhatsAppIcon = () => (
+  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
+  </svg>
+);
+
+const MailIcon = () => (
+  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+    <path d="M0 3v18h24v-18h-24zm6.623 7.929l-4.623 5.712v-9.458l4.623 3.746zm-4.141-5.929h19.035l-9.517 7.713-9.518-7.713zm5.694 7.188l3.824 3.099 3.83-3.104 5.612 6.817h-18.779l5.513-6.812zm9.208-1.264l4.616-3.741v9.348l-4.616-5.607z" />
+  </svg>
+);
+
+// --- REUSABLE ANIMATION COMPONENTS ---
+
+interface FadeInProps {
+  children: React.ReactNode;
+  delay?: number;
+  duration?: number;
+  x?: number;
+  y?: number;
+  className?: string;
 }
 
-interface VideoItem {
-  id: string;
-  title: string;
-  category: string;
-  tab: "reels" | "commercial" | "cinematic";
-  src: string;
-  description: string;
-  span: string;
-  aspect: string;
-}
+const FadeIn: React.FC<FadeInProps> = ({
+  children,
+  delay = 0,
+  duration = 0.5,
+  x = 0,
+  y = 25,
+  className = "",
+}) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x, y }}
+      whileInView={{ opacity: 1, x: 0, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{
+        duration,
+        delay,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+};
 
-interface ThumbnailItem {
-  id: string;
-  title: string;
-  category: string;
-  src: string;
-}
+// --- COUNT UP ANIMATION (0 -> Number) ---
+function CountUp({ target, suffix = "+" }: { target: number; suffix?: string }) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
 
-export default function App() {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [loadingCount, setLoadingCount] = useState<number>(0);
-  const [activeNav, setActiveNav] = useState<string>("Home");
-  const [currentRoleIndex, setCurrentRoleIndex] = useState<number>(0);
-  const [scrolled, setScrolled] = useState<boolean>(false);
-  const [currencyMode, setCurrencyMode] = useState<"ALL" | "USD" | "EGP">("ALL");
-  const [selectedVideoTab, setSelectedVideoTab] = useState<"all" | "reels" | "commercial" | "cinematic">("all");
-  const [activeModalVideo, setActiveModalVideo] = useState<VideoItem | null>(null);
-  const [selectedThumbnail, setSelectedThumbnail] = useState<ThumbnailItem | null>(null);
-  const [isModalMuted, setIsModalMuted] = useState<boolean>(false);
-
-  const roles = ["Video Editor", "Colorist", "Sound Designer", "Storyteller"];
-  const heroVideoRef = useRef<HTMLVideoElement | null>(null);
-  const footerVideoRef = useRef<HTMLVideoElement | null>(null);
-  const marqueeRef = useRef<HTMLDivElement | null>(null);
-  const modalVideoRef = useRef<HTMLVideoElement | null>(null);
-
-  // --- PRELOADER COUNTER ---
   useEffect(() => {
-    let startTime: number;
-    let animationFrameId: number;
-    const duration = 2500;
+    if (!isInView) return;
+    let start = 0;
+    const duration = 1600;
+    const stepTime = 20;
+    const steps = duration / stepTime;
+    const increment = target / steps;
 
-    const updateCounter = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const elapsed = timestamp - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const current = Math.floor(progress * 100);
-
-      setLoadingCount(current);
-
-      if (progress < 1) {
-        animationFrameId = requestAnimationFrame(updateCounter);
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= target) {
+        setCount(target);
+        clearInterval(timer);
       } else {
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 350);
+        setCount(Math.floor(start));
+      }
+    }, stepTime);
+
+    return () => clearInterval(timer);
+  }, [isInView, target]);
+
+  return (
+    <span ref={ref}>
+      {count}
+      {suffix}
+    </span>
+  );
+}
+
+// --- MAGNETIC BUTTON COMPONENT ---
+function MagneticButton({
+  children,
+  href,
+  className = "",
+  style = {},
+  onClick,
+}: {
+  children: React.ReactNode;
+  href?: string;
+  className?: string;
+  style?: React.CSSProperties;
+  onClick?: () => void;
+}) {
+  const btnRef = useRef<HTMLAnchorElement>(null);
+  const [pos, setPos] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!btnRef.current) return;
+    const { left, top, width, height } = btnRef.current.getBoundingClientRect();
+    const centerX = left + width / 2;
+    const centerY = top + height / 2;
+    setPos({
+      x: (e.clientX - centerX) * 0.35,
+      y: (e.clientY - centerY) * 0.35,
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setPos({ x: 0, y: 0 });
+  };
+
+  return (
+    <motion.a
+      ref={btnRef}
+      href={href}
+      onClick={onClick}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      animate={{ x: pos.x, y: pos.y }}
+      transition={{ type: "spring", stiffness: 250, damping: 15, mass: 0.1 }}
+      className={`inline-block ${className}`}
+      style={style}
+    >
+      {children}
+    </motion.a>
+  );
+}
+
+// --- MAGNETIC AVATAR COMPONENT ---
+interface MagnetProps {
+  children: React.ReactNode;
+  padding?: number;
+  strength?: number;
+  className?: string;
+}
+
+const Magnet: React.FC<MagnetProps> = ({
+  children,
+  padding = 180,
+  strength = 3.5,
+  className = "",
+}) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!ref.current) return;
+      const rect = ref.current.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const dist = Math.hypot(e.clientX - centerX, e.clientY - centerY);
+
+      if (dist < rect.width / 2 + padding) {
+        setIsHovered(true);
+        setPosition({
+          x: (e.clientX - centerX) / strength,
+          y: (e.clientY - centerY) / strength,
+        });
+      } else {
+        setIsHovered(false);
+        setPosition({ x: 0, y: 0 });
       }
     };
 
-    animationFrameId = requestAnimationFrame(updateCounter);
-    return () => cancelAnimationFrame(animationFrameId);
-  }, []);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [padding, strength]);
 
-  // --- ROLES & SCROLL ---
-  useEffect(() => {
-    const roleInterval = setInterval(() => {
-      setCurrentRoleIndex((prev) => (prev + 1) % roles.length);
-    }, 2000);
+  return (
+    <div
+      ref={ref}
+      className={className}
+      style={{
+        transform: `translate3d(${position.x}px, ${position.y}px, 0)`,
+        transition: isHovered
+          ? "transform 0.25s cubic-bezier(0.25, 1, 0.5, 1)"
+          : "transform 0.7s cubic-bezier(0.25, 1, 0.5, 1)",
+        willChange: "transform",
+      }}
+    >
+      {children}
+    </div>
+  );
+};
 
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 80);
-    };
+// --- DATA ---
 
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      clearInterval(roleInterval);
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [roles.length]);
+const softwareStack = [
+  { name: "Premiere Pro", tag: "Post-Production & Cutting", icon: "Pr" },
+  { name: "After Effects", tag: "Transitions & Text Animation", icon: "Ae" },
+  { name: "DaVinci Resolve", tag: "Color Grading & Mastering", icon: "Da" },
+  { name: "Photoshop", tag: "High-CTR Thumbnails", icon: "Ps" },
+];
 
-  // --- GSAP MARQUEE & REVEALS ---
-  useEffect(() => {
-    if (isLoading) return;
+const processSteps = [
+  {
+    num: "01",
+    title: "Project Brief & Creative Vision",
+    arabic: "الاتفاق وفهم فكرة الفيديو",
+    desc: "Understanding target audience, platform format, desired pacing, tone, and visual references.",
+  },
+  {
+    num: "02",
+    title: "Footage Upload & Assembly",
+    arabic: "رفع الماتريال والفرز السريع",
+    desc: "Seamless footage reception via Drive/WeTransfer, organizing media and building initial rough cuts.",
+  },
+  {
+    num: "03",
+    title: "The First Cut & Sound Design",
+    arabic: "المونتاج، التقطيع والمؤثرات",
+    desc: "Applying dynamic cuts, animated pop-up subtitles, visual hooks, sound Foley, and color balancing.",
+  },
+  {
+    num: "04",
+    title: "Feedback & Revisions",
+    arabic: "المراجعة والتعديلات السريعة",
+    desc: "Fine-tuning rhythm, subtitle cues, and visual flow based on your precise notes and vision.",
+  },
+  {
+    num: "05",
+    title: "Final 4K Master Delivery",
+    arabic: "التسليم النهائي بأعلى جودة",
+    desc: "Delivering crisp, native 4K/1080p high-bitrate master exports optimized for TikTok, Reels, and YouTube.",
+  },
+];
 
-    if (window.gsap) {
-      const gsap = window.gsap;
+const videosData = [
+  {
+    id: "man-u",
+    title: "Manchester United Highlight Cut",
+    category: "Sports",
+    tab: "commercial",
+    src: "/video/Man-U.mp4",
+    description: "Fast-paced football edit focused on rhythm, impact, typography and music synchronization.",
+    orientation: "portrait",
+  },
+  {
+    id: "the-odyssey",
+    title: "The Odyssey Cinematic Master",
+    category: "Cinematic Narrative",
+    tab: "cinematic",
+    src: "/video/The-Odyssey.mp4",
+    description: "Cinematic storytelling edit combining pacing, atmosphere, sound design and visual continuity.",
+    orientation: "portrait",
+  },
+  {
+    id: "mb22",
+    title: "Commercial Showcase (mb22)",
+    category: "Brand Campaign",
+    tab: "commercial",
+    src: "/video/Mb22.mp4",
+    description: "Commercial showcase built around product presentation, dynamic cuts and visual impact.",
+    orientation: "portrait",
+  },
+  {
+    id: "color",
+    title: "Color Grading Reel",
+    category: "Color Correction",
+    tab: "commercial",
+    src: "/video/Color.mp4",
+    description: "Color grading showcase demonstrating contrast, skin tones, mood and cinematic look development.",
+    orientation: "portrait",
+  },
+  {
+    id: "reel-1",
+    title: "High-Retention Commercial Reel #1",
+    category: "TikTok / Reels",
+    tab: "reels",
+    src: "/video/1.mp4",
+    description: "Short-form edit designed around strong hooks, rapid pacing and audience retention.",
+    orientation: "portrait",
+  },
+  {
+    id: "reel-2",
+    title: "Business Growth Reel #2",
+    category: "Pop-Up Subtitles",
+    tab: "reels",
+    src: "/video/2.mp4",
+    description: "Business-focused short-form edit using animated subtitles, visual emphasis and sound effects.",
+    orientation: "portrait",
+  },
+  {
+    id: "reel-3",
+    title: "Dynamic Hook Cut #3",
+    category: "Fast Paced",
+    tab: "reels",
+    src: "/video/3.mp4",
+    description: "High-energy social edit focused on hooks, fast transitions and visual storytelling.",
+    orientation: "portrait",
+  },
+  {
+    id: "reel-4",
+    title: "Viral Engagement Reel #4",
+    category: "Fast Paced Cuts",
+    tab: "reels",
+    src: "/video/4.mp4",
+    description: "Engagement-first edit with rhythmic cuts, zooms, subtitles and layered sound design.",
+    orientation: "portrait",
+  },
+  {
+    id: "reel-5",
+    title: "Brand Storytelling #5",
+    category: "Commercial Cut",
+    tab: "reels",
+    src: "/video/5.mp4",
+    description: "Brand storytelling reel combining clean editing, narrative structure and visual consistency.",
+    orientation: "portrait",
+  },
+  {
+    id: "reel-12",
+    title: "Social Media Hook #12",
+    category: "Short-Form Reel",
+    tab: "reels",
+    src: "/video/12.mp4",
+    description: "Short-form social media edit built to grab attention immediately and maintain momentum.",
+    orientation: "portrait",
+  },
+  {
+    id: "habib-ayamy",
+    title: "Habib Ayamy",
+    category: "Cinematic Sound Design",
+    tab: "cinematic",
+    src: "/video/Habib-Ayamy.mp4",
+    description: "Emotional cinematic edit with music synchronization, atmosphere and detailed sound design.",
+    orientation: "portrait",
+  },
+];
 
-      gsap.fromTo(
-        ".name-reveal",
-        { opacity: 0, y: 50 },
-        { opacity: 1, y: 0, duration: 1.2, delay: 0.1, ease: "power3.out" }
-      );
+const marqueeItems = [
+  {
+    title: "Bruno Fernandes - The King",
+    category: "Sports Graphic",
+    image: "/images/thumbnails/thumb-1.png",
+    video: null,
+  },
+  {
+    title: "Business Budgeting Strategy",
+    category: "Reels / TikTok",
+    image: "/images/thumbnails/thumb-2.png",
+    video: "/video/1.mp4",
+  },
+  {
+    title: "EdTech Agency Growth",
+    category: "Educational Showcase",
+    image: "/images/thumbnails/thumb-3.png",
+    video: "/video/2.mp4",
+  },
+  {
+    title: "US Company Setup Case Study",
+    category: "Business Content",
+    image: "/images/thumbnails/thumb-4.png",
+    video: "/video/3.mp4",
+  },
+  {
+    title: "Gigabyte B840M Eagle",
+    category: "Hardware Commercial",
+    image: "/images/thumbnails/thumb-5.png",
+    video: "/video/Mb22.mp4",
+  },
+  {
+    title: "Manchester United | Bruno Cut",
+    category: "Sports Poster",
+    image: "/images/thumbnails/thumb-6.png",
+    video: "/video/Man-U.mp4",
+  },
+];
 
-      gsap.fromTo(
-        ".blur-in",
-        { opacity: 0, filter: "blur(10px)", y: 20 },
-        { opacity: 1, filter: "blur(0px)", y: 0, duration: 1, stagger: 0.1, delay: 0.25, ease: "power3.out" }
-      );
+const thumbnailsData = [
+  {
+    title: "Bruno Fernandes - The King",
+    category: "Sports Graphic",
+    src: "/images/thumbnails/thumb-1.png",
+  },
+  {
+    title: "Business Budgeting Strategy",
+    category: "Reels / TikTok",
+    src: "/images/thumbnails/thumb-2.png",
+  },
+  {
+    title: "EdTech Agency Growth",
+    category: "Educational Showcase",
+    src: "/images/thumbnails/thumb-3.png",
+  },
+  {
+    title: "US Company Setup Case Study",
+    category: "Business Content",
+    src: "/images/thumbnails/thumb-4.png",
+  },
+  {
+    title: "Gigabyte B840M Eagle",
+    category: "Hardware Commercial",
+    src: "/images/thumbnails/thumb-5.png",
+  },
+  {
+    title: "Manchester United | Bruno Cut",
+    category: "Sports Poster",
+    src: "/images/thumbnails/thumb-6.png",
+  },
+];
 
-      if (marqueeRef.current) {
-        gsap.to(marqueeRef.current, {
-          xPercent: -50,
-          duration: 35,
-          ease: "none",
-          repeat: -1,
-        });
+const packagesData = [
+  {
+    id: "01",
+    name: "The Spark Pack",
+    arabicName: "Clean & Fast-Paced Cut",
+    priceUSD: "$10",
+    priceEGP: "500 EGP",
+    featured: false,
+    revisions: "1 Free Revision per video based on feedback",
+    driveLink: "https://drive.google.com/file/d/1Y97S6qk9JqmONHOk-BQcj1XO1piaa0KT/view?usp=drive_link",
+    features: [
+      "Dynamic cutting eliminating dead spaces to ensure fluid rhythm",
+      "Clean, readable, color-coded subtitles matching voice tempo",
+      "Essential Color Correction paired with balanced background music",
+    ],
+  },
+  {
+    id: "02",
+    name: "The Viral Growth",
+    arabicName: "High Retention & Engaging",
+    priceUSD: "$17",
+    priceEGP: "850 EGP",
+    featured: true,
+    revisions: "Up to 2 Revisions per video",
+    driveLink: "https://drive.google.com/file/d/1WtLRXTR_r5RQPndULSfyAwIqst8j7YYX/view?usp=drive_link",
+    features: [
+      "Retention-first pacing calculated to maximize completion rates",
+      "Dynamic Pop-up Subtitles reacting rhythmically to vocal emphasis",
+      "Visual zooms, sound design impacts, risers, and Foley FX",
+      "Supporting B-roll and curated stock footage integration",
+    ],
+  },
+  {
+    id: "03",
+    name: "Cinematic Prime",
+    arabicName: "Commercial & Brand Showcase",
+    priceUSD: "$24",
+    priceEGP: "1,200 EGP",
+    featured: false,
+    revisions: "Up to 3 Revisions per video",
+    driveLink: "https://drive.google.com/file/d/19usAUA3dCWM4rYtLkX557m793uyGFLnW/view?usp=drive_link",
+    features: [
+      "Bespoke cinematic pacing tailored for corporate brands and creators",
+      "Full brand identity adaptation (typography, vectors, palette)",
+      "Dynamic visual framing and pacing elevating core message impact",
+      "Deep cinematic Color Grading + immersive multi-layer sound mastering",
+    ],
+  },
+];
+
+const generalTerms = [
+  {
+    title: "Deposit & Payment Milestones",
+    desc: "A 25% upfront deposit is required prior to project start. The remaining 75% balance is settled upon final approval before delivery of unwatermarked master exports.",
+  },
+  {
+    title: "Short Video Duration",
+    desc: "Listed rates apply specifically to short-form reels and TikToks with a total duration not exceeding 60 seconds.",
+  },
+  {
+    title: "Scheduled Batch Delivery",
+    desc: "Deliveries are organized in clear, pre-scheduled batches agreed in advance to preserve craft precision and streamline production.",
+  },
+  {
+    title: "Revisions Policy",
+    desc: "Please respect the revision allocation per tier. Any additional revision rounds beyond this scope are accommodated at a minor pre-agreed rate.",
+  },
+  {
+    title: "Raw Footage Submission",
+    desc: "Source footage should be uploaded in full native resolution via neatly organized Google Drive or WeTransfer links.",
+  },
+];
+
+const clientReviews = [
+  {
+    quote: "Lil transformed our raw footage into high-retention commercial reels. The pacing, audio sync, and pop-up subtitles significantly boosted our engagement.",
+    client: "Ahmed Abdelkareem",
+    role: "Content Creator & Entrepreneur",
+    rating: "★★★★★",
+  },
+  {
+    quote: "Exceptional turnaround and aesthetic sense. He understands video storytelling deeply, delivering flawless color grading and slick pacing without endless revisions.",
+    client: "Sameh Othman",
+    role: "Business Consultant",
+    rating: "★★★★★",
+  },
+  {
+    quote: "The retention on our educational campaigns jumped noticeably after hiring Lil. The edits are razor sharp and the communication is clear and professional.",
+    client: "Rania",
+    role: "E-Learning Academy Lead",
+    rating: "★★★★★",
+  },
+  {
+    quote: "Reliable, creative, and fast. His sound design and B-roll selection gave our commercial launches a truly cinematic presence.",
+    client: "Maryam",
+    role: "Commercial Brand Manager",
+    rating: "★★★★★",
+  },
+];
+
+const servicesList = [
+  {
+    num: "01",
+    name: "Video Editing & Post-Production",
+    desc: "Crafting engaging social media reels, commercial ads, and storytelling cuts with precise timing, match cuts, and visual rhythm.",
+  },
+  {
+    num: "02",
+    name: "Color Grading & Look Dev",
+    desc: "Cinematic color grading and palette balancing tailored to capture the emotional mood and professional visual polish.",
+  },
+  {
+    num: "03",
+    name: "High-CTR Thumbnails & Graphic Art",
+    desc: "Eye-catching graphic design for YouTube thumbnails, sports graphics, and commercial social covers designed to maximize clicks.",
+  },
+  {
+    num: "04",
+    name: "Layered Foley Sound Design",
+    desc: "Layered Foley sound design, impacts, risers, and music mixing that immerse viewers into the scene.",
+  },
+];
+
+// --- MARQUEE CARD ---
+
+function MarqueeCard({ item }: { item: (typeof marqueeItems)[0] }) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <div
+      onMouseEnter={() => item.video && setIsHovered(true)}
+      onMouseLeave={() => item.video && setIsHovered(false)}
+      className="w-[240px] h-[340px] sm:w-[280px] sm:h-[390px] rounded-3xl border border-white/15 bg-white/[0.03] backdrop-blur-xl overflow-hidden shrink-0 shadow-2xl group relative cursor-pointer"
+    >
+      {isHovered && item.video ? (
+        <video
+          src={item.video}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          className="w-full h-full object-cover"
+        />
+      ) : (
+        <img
+          src={item.image}
+          alt={item.title}
+          loading="lazy"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        />
+      )}
+
+      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent flex flex-col justify-end p-5 pointer-events-none">
+        <span className="text-[11px] uppercase tracking-widest text-[#B600A8] font-bold">
+          {item.category}
+          {item.video && !isHovered ? " • Hover to Preview" : ""}
+        </span>
+
+        <h4 className="text-white font-semibold text-base truncate mt-1">
+          {item.title}
+        </h4>
+      </div>
+    </div>
+  );
+}
+
+// --- VIDEO CARD ---
+
+function VideoCard({
+  item,
+  index,
+  onOpen,
+}: {
+  item: (typeof videosData)[0];
+  index: number;
+  onOpen: (item: (typeof videosData)[0]) => void;
+}) {
+  const [isHovered, setIsHovered] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const midPointRef = useRef<number>(1);
+
+  const handleLoadedMetadata = () => {
+    if (videoRef.current) {
+      const midTime = videoRef.current.duration > 2 ? videoRef.current.duration * 0.35 : 1;
+      midPointRef.current = midTime;
+      videoRef.current.currentTime = midTime;
+    }
+  };
+
+  const handleEnter = () => {
+    setIsHovered(true);
+    if (videoRef.current) {
+      videoRef.current.currentTime = 0;
+      videoRef.current.muted = true;
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {});
       }
     }
-  }, [isLoading]);
+  };
 
-  // --- DATA ---
-  const videosData: VideoItem[] = [
-    { id: "reel-1", title: "High-Retention Commercial Reel #1", category: "Commercial Cut", tab: "reels", src: "/video/1.mp4", description: "إيقاع سريع وتصميم صوتي موجه لرفع معدل المشاهدة للنهاية.", span: "md:col-span-7", aspect: "aspect-[16/10]" },
-    { id: "man-u", title: "Manchester United Highlight Cut", category: "Sports Narrative", tab: "commercial", src: "/video/Man-U.mp4", description: "مونتاج رياضي حماسي مع تزامن كامل بين حركة اللعب والموسيقى.", span: "md:col-span-5", aspect: "aspect-[4/5]" },
-    { id: "reel-2", title: "Business Growth Reel #2", category: "Pop-Up Subtitles", tab: "reels", src: "/video/2.mp4", description: "فيديو بيزنس بنصوص متحركة وتركيز بصري على المعلومات الأساسية.", span: "md:col-span-5", aspect: "aspect-[4/5]" },
-    { id: "the-odyssey", title: "The Odyssey Cinematic Master", category: "Cinematic Cut", tab: "cinematic", src: "/video/The-Odyssey.mp4", description: "مونتاج سينمائي قائم على الأجواء الصوتية وتدريج المشاعر في القصة.", span: "md:col-span-7", aspect: "aspect-[16/10]" },
-    { id: "reel-3", title: "Dynamic Hook Cut #3", category: "Fast Paced", tab: "reels", src: "/video/3.mp4", description: "بداية خاطفة وانتقالات مدروسة لجذب المتابع من أول 3 ثوانٍ.", span: "md:col-span-4", aspect: "aspect-[9/16]" },
-    { id: "reel-4", title: "Viral Engagement Reel #4", category: "Retention First", tab: "reels", src: "/video/4.mp4", description: "تقطيع معتمد على الموسيقى مع زوومات سريعة ومؤثرات صوتية دقيقة.", span: "md:col-span-4", aspect: "aspect-[9/16]" },
-    { id: "reel-5", title: "Brand Storytelling #5", category: "Commercial Reel", tab: "reels", src: "/video/5.mp4", description: "سرد بصري للعلامة التجارية يجمع بين المونتاج النظيف والرسالة القوية.", span: "md:col-span-4", aspect: "aspect-[9/16]" },
-    { id: "mb22", title: "Commercial Hardware Showcase", category: "Brand Promo", tab: "commercial", src: "/video/Mb22.mp4", description: "عرض تجاري لمنتج يركز على إبراز التفاصيل والقطع الديناميكي.", span: "md:col-span-6", aspect: "aspect-[16/10]" },
-    { id: "color", title: "Color Grading Showcase", category: "Color Dev", tab: "commercial", src: "/video/Color.mp4", description: "استعراض تصحيح وتدريج الألوان وإبراز التباين ونضارة ألوان البشرة.", span: "md:col-span-6", aspect: "aspect-[16/10]" },
-    { id: "reel-12", title: "Social Media Hook #12", category: "Short Form", tab: "reels", src: "/video/12.mp4", description: "ريل مصمم لمنصات تيك توك وإنستجرام للحفاظ على وتيرة التفاعل.", span: "md:col-span-6", aspect: "aspect-[16/10]" },
-    { id: "habib-ayamy", title: "Habib Ayamy Aesthetic", category: "Atmosphere Edit", tab: "cinematic", src: "/video/Habib-Ayamy.mp4", description: "عمل فني يعتمد على التناغم بين الموسيقى، زوايا الكاميرا، والهدوء البصري.", span: "md:col-span-6", aspect: "aspect-[16/10]" },
-  ];
+  const handleLeave = () => {
+    setIsHovered(false);
+    if (videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = midPointRef.current;
+    }
+  };
 
-  const thumbnailsData: ThumbnailItem[] = [
-    { id: "t1", title: "Bruno Fernandes - The King", category: "Sports Poster", src: "/images/thumbnails/thumb-1.png" },
-    { id: "t2", title: "Business Budgeting Strategy", category: "Finance Cover", src: "/images/thumbnails/thumb-2.png" },
-    { id: "t3", title: "EdTech Agency Growth", category: "Case Study Cover", src: "/images/thumbnails/thumb-3.png" },
-    { id: "t4", title: "US Company Setup", category: "Educational Art", src: "/images/thumbnails/thumb-4.png" },
-    { id: "t5", title: "Gigabyte B840M Eagle", category: "Hardware Commercial", src: "/images/thumbnails/thumb-5.png" },
-    { id: "t6", title: "Manchester United | Bruno Cut", category: "Social Graphic", src: "/images/thumbnails/thumb-6.png" },
-  ];
+  return (
+    <FadeIn delay={index * 0.05}>
+      <motion.div
+        whileHover={{ y: -8, scale: 1.01 }}
+        transition={{ duration: 0.3 }}
+        className="bg-white/[0.04] backdrop-blur-2xl border border-white/15 rounded-[28px] sm:rounded-[34px] overflow-hidden p-3 sm:p-3.5 shadow-[0_12px_40px_rgba(0,0,0,0.6)] flex flex-col justify-between h-full group hover:border-[#B600A8]/60 hover:shadow-[0_0_35px_rgba(182,0,168,0.25)] transition-all duration-300"
+      >
+        <div
+          onMouseEnter={handleEnter}
+          onMouseLeave={handleLeave}
+          onClick={() => onOpen(item)}
+          className="rounded-[20px] sm:rounded-[24px] overflow-hidden aspect-[9/16] w-full bg-black relative cursor-pointer"
+        >
+          <video
+            ref={videoRef}
+            src={item.src}
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            onLoadedMetadata={handleLoadedMetadata}
+            className="w-full h-full object-cover"
+          />
 
-  const processSteps = [
-    { num: "01", title: "Creative Brief & Strategy", arabic: "الاتفاق وفهم فكرة الفيديو", desc: "فهم الجمهور المستهدف، منصة النشر، وإيقاع التقطيع والهوك المناسب للقصة." },
-    { num: "02", title: "Footage Intake & Media Selects", arabic: "رفع الماتريال والفرز السريع", desc: "استلام الماتريال الخام بدقة كاملة عبر Drive أو WeTransfer واختيار اللقطات الأقوى." },
-    { num: "03", title: "Cutting, Hooks & Multi-Layer Foley", arabic: "المونتاج، التقطيع والمؤثرات", desc: "تقطيع ديناميكي، هوك أول 3 ثوانٍ، نصوص حركية، وهندسة صوتية محيطية." },
-    { num: "04", title: "Refinements & Frame-Accurate Notes", arabic: "المراجعة والتعديلات السريعة", desc: "ضبط سرعة الكلام ونقاط التأثير وتناسق الموسيقى طبقاً لملاحظاتك الدقيقة." },
-    { num: "05", title: "Final 4K Master Delivery", arabic: "التسليم النهائي بأعلى جودة", desc: "تصدير الملفات بأعلى معدل Bitrate ودقة 4K جاهزة للانتشار الفوري." },
-  ];
+          <div
+            className={`absolute inset-0 transition-all duration-300 flex items-center justify-center pointer-events-none ${
+              isHovered ? "bg-black/0" : "bg-black/20"
+            }`}
+          />
 
-  const packagesData = [
-    {
-      id: "01",
-      name: "The Spark Pack",
-      arabicName: "مونتاج سريع وسلس",
-      priceUSD: "$10",
-      priceEGP: "500 EGP",
-      featured: false,
-      revisions: "تعديل مجاني واحد لكل فيديو",
-      driveLink: "https://drive.google.com/file/d/1Y97S6qk9JqmONHOk-BQcj1XO1piaa0KT/view?usp=drive_link",
-      features: [
-        "تقطيع احترافي يزيل الوقفات واللحظات الميتة لضمان استمرار المشاهدة",
-        "نصوص واضحة وسريعة متناسقة مع طبقة الصوت ونبرة المتحدث",
-        "تصحيح ألوان أساسي وموازنة صوتية للموسيقى الخلفية",
-      ],
-    },
-    {
-      id: "02",
-      name: "The Viral Growth",
-      arabicName: "ريلز ذات تفاعل واحتفاظ عالي",
-      priceUSD: "$17",
-      priceEGP: "850 EGP",
-      featured: true,
-      revisions: "حتى جولتين من التعديلات لكل فيديو",
-      driveLink: "https://drive.google.com/file/d/1WtLRXTR_r5RQPndULSfyAwIqst8j7YYX/view?usp=drive_link",
-      features: [
-        "إيقاع محسوب لرفع نسبة إكمال الفيديو (Completion Rate)",
-        "نصوص حركية منبثقة (Pop-up Subtitles) متزامنة مع نبرة الكلام",
-        "مؤثرات بصرية وزوومات سريعة وطبقات Foley FX صوتية متقنة",
-        "دمج لقطات B-roll سينمائية وسياقية داعمة للموضوع",
-      ],
-    },
-    {
-      id: "03",
-      name: "Cinematic Prime",
-      arabicName: "مونتاج سينمائي وتجاري للبراندات",
-      priceUSD: "$24",
-      priceEGP: "1,200 EGP",
-      featured: false,
-      revisions: "حتى 3 جولات تعديل شاملة",
-      driveLink: "https://drive.google.com/file/d/19usAUA3dCWM4rYtLkX557m793uyGFLnW/view?usp=drive_link",
-      features: [
-        "سرد بصري متقدم مخصص لحملات الشركات وصناع المحتوى المحترفين",
-        "ملاءمة الهوية البصرية للعلامة التجارية (Typography & Colors)",
-        "تدريج ألوان سينمائي متكامل (DaVinci Resolve)",
-        "هندسة صوتية شاملة ومؤثرات سينمائية غامرة",
-      ],
-    },
-  ];
+          <div className="absolute top-3 sm:top-4 left-3 sm:left-4 pointer-events-none">
+            <span className="px-3 py-1.5 rounded-full bg-black/65 backdrop-blur-xl border border-white/15 text-[9px] sm:text-[10px] uppercase tracking-widest font-bold text-white shadow-lg">
+              {item.tab}
+            </span>
+          </div>
 
-  const generalTerms = [
-    { title: "الدفع وجدولة المشروع", desc: "دفعة مقدمة 25% لبدء العمل، والمتبقي 75% بعد الاعتماد النهائي وقبل تسليم الملفات الأصلية بدون علامة مائية." },
-    { title: "مدة الفيديو القصير", desc: "الأسعار الموضحة تنطبق على الفيديوهات القصيرة (Reels / TikTok / Shorts) بمدة تصل إلى 60 ثانية." },
-    { title: "التسليم على دفعات", desc: "يتم تسليم باقات الفيديوهات في جداول زمنية محددة مسبقاً لضمان التدقيق الفني والإخراجي." },
-    { title: "سياسة التعديلات", desc: "تلتزم كل باقة بعدد التعديلات الموضح، وتتم أي تعديلات جذرية إضافية خارج الاسكوب باتفاق مسبق مرن." },
-    { title: "تسليم الماتريال الخام", desc: "يُفضل إرسال المواد المصورة بكامل جودتها الأصلية منظمة داخل مجلد Google Drive أو WeTransfer." },
-  ];
+          <div className="absolute bottom-3 sm:bottom-4 right-3 sm:right-4 pointer-events-none">
+            <span className="px-3 py-1.5 rounded-full bg-black/65 backdrop-blur-xl border border-white/15 text-[9px] sm:text-[10px] uppercase tracking-wider text-white/90 shadow-lg">
+              Click to watch
+            </span>
+          </div>
+        </div>
 
-  const clientReviews = [
-    { quote: "Lil transformed our raw footage into high-retention commercial reels. The pacing, audio sync, and pop-up subtitles significantly boosted our engagement.", client: "Ahmed Abdelkareem", role: "Content Creator & Entrepreneur" },
-    { quote: "Exceptional turnaround and aesthetic sense. He understands video storytelling deeply, delivering flawless color grading and slick pacing without endless revisions.", client: "Sameh Othman", role: "Business Consultant" },
-    { quote: "The retention on our educational campaigns jumped noticeably after hiring Lil. The edits are razor sharp and the communication is clear and professional.", client: "Rania", role: "E-Learning Academy Lead" },
-    { quote: "Reliable, creative, and fast. His sound design and B-roll selection gave our commercial launches a truly cinematic presence.", client: "Maryam", role: "Commercial Brand Manager" },
-  ];
+        <div className="p-3.5 sm:p-4 flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-[#B600A8] font-bold">
+              {item.category}
+            </span>
 
-  // --- MODAL CONTROLS ---
-  const currentVideoIndex = activeModalVideo ? videosData.findIndex((v) => v.id === activeModalVideo.id) : -1;
+            <h3 className="text-white font-semibold text-base sm:text-lg mt-0.5 sm:mt-1 leading-snug">
+              {item.title}
+            </h3>
+          </div>
+
+          <button
+            onClick={() => onOpen(item)}
+            className="shrink-0 text-[11px] sm:text-xs uppercase font-bold text-white/50 hover:text-[#B600A8] transition-colors pt-1"
+          >
+            Expand ↗
+          </button>
+        </div>
+      </motion.div>
+    </FadeIn>
+  );
+}
+
+// --- MAIN COMPONENT ---
+
+export default function Home() {
+  const [currencyMode, setCurrencyMode] = useState<"ALL" | "USD" | "EGP">("ALL");
+  const [selectedVideoTab, setSelectedVideoTab] = useState<"all" | "reels" | "commercial" | "cinematic">("all");
+  const [isVideoMenuOpen, setIsVideoMenuOpen] = useState(true);
+  const [isThumbnailsMenuOpen, setIsThumbnailsMenuOpen] = useState(false);
+  const [activeModalVideo, setActiveModalVideo] = useState<(typeof videosData)[0] | null>(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [typedText, setTypedText] = useState("");
+  const marqueeRef = useRef<HTMLDivElement>(null);
+  const [scrollOffset, setScrollOffset] = useState(0);
+  const modalVideoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isModalMuted, setIsModalMuted] = useState(false);
+
+  // --- WORKFLOW MODAL STATE ---
+  const [isWorkflowOpen, setIsWorkflowOpen] = useState(false);
+
+  // --- FAST & DIRECT MOUSE TRACKING ---
+  const mouseX = useMotionValue(-200);
+  const mouseY = useMotionValue(-200);
+  const cursorRotation = useMotionValue(0);
+
+  const smoothX = useSpring(mouseX, { damping: 45, stiffness: 1000, mass: 0.1 });
+  const smoothY = useSpring(mouseY, { damping: 45, stiffness: 1000, mass: 0.1 });
+  const smoothRotation = useSpring(cursorRotation, { damping: 28, stiffness: 400 });
+
+  const prevMouseXRef = useRef(0);
+
+  useEffect(() => {
+    document.documentElement.style.cursor = "none";
+    document.body.style.cursor = "none";
+
+    const styleEl = document.createElement("style");
+    styleEl.innerHTML = `
+      @media (min-width: 768px) {
+        *, *::before, *::after, html, body, a, button, [role="button"], video, input {
+          cursor: none !important;
+        }
+      }
+    `;
+    document.head.appendChild(styleEl);
+
+    return () => {
+      document.documentElement.style.cursor = "auto";
+      document.body.style.cursor = "auto";
+      if (styleEl.parentNode) styleEl.parentNode.removeChild(styleEl);
+    };
+  }, []);
+
+  // Typewriter
+  useEffect(() => {
+    const fullText = "Hi, i'm Lil";
+    let index = 0;
+
+    const interval = setInterval(() => {
+      setTypedText(fullText.slice(0, index + 1));
+      index++;
+
+      if (index >= fullText.length) {
+        clearInterval(interval);
+      }
+    }, 120);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Scroll & Mouse Tracking
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 500);
+
+      if (!marqueeRef.current) return;
+      const rect = marqueeRef.current.getBoundingClientRect();
+      const sectionTop = window.scrollY + rect.top;
+      const offset = (window.scrollY - sectionTop + window.innerHeight) * 0.3;
+      setScrollOffset(offset);
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      mouseX.set(e.clientX);
+      mouseY.set(e.clientY);
+
+      const deltaX = e.clientX - prevMouseXRef.current;
+      prevMouseXRef.current = e.clientX;
+      const targetRotation = Math.max(Math.min(deltaX * 0.7, 20), -20);
+      cursorRotation.set(targetRotation);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    handleScroll();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, [mouseX, mouseY, cursorRotation]);
 
   const closeModal = useCallback(() => {
-    if (modalVideoRef.current) modalVideoRef.current.pause();
+    if (modalVideoRef.current) {
+      modalVideoRef.current.pause();
+    }
     setActiveModalVideo(null);
+    setIsFullscreen(false);
   }, []);
 
-  const openModal = useCallback((video: VideoItem) => {
+  const openModal = useCallback((video: (typeof videosData)[0]) => {
     setActiveModalVideo(video);
+    setIsPlaying(true);
   }, []);
+
+  const currentVideoIndex = activeModalVideo
+    ? videosData.findIndex((video) => video.id === activeModalVideo.id)
+    : -1;
 
   const goNext = useCallback(() => {
     if (currentVideoIndex === -1) return;
-    setActiveModalVideo(videosData[(currentVideoIndex + 1) % videosData.length]);
-  }, [currentVideoIndex, videosData]);
+    const nextIndex = (currentVideoIndex + 1) % videosData.length;
+    setActiveModalVideo(videosData[nextIndex]);
+    setIsPlaying(true);
+  }, [currentVideoIndex]);
 
   const goPrevious = useCallback(() => {
     if (currentVideoIndex === -1) return;
-    setActiveModalVideo(videosData[(currentVideoIndex - 1 + videosData.length) % videosData.length]);
-  }, [currentVideoIndex, videosData]);
+    const previousIndex = (currentVideoIndex - 1 + videosData.length) % videosData.length;
+    setActiveModalVideo(videosData[previousIndex]);
+    setIsPlaying(true);
+  }, [currentVideoIndex]);
 
+  // Keyboard Shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!activeModalVideo) return;
-      if (e.key === "Escape") closeModal();
+
+      if (e.key === "Escape") {
+        closeModal();
+        setIsWorkflowOpen(false);
+      }
       if (e.key === "ArrowRight") goNext();
       if (e.key === "ArrowLeft") goPrevious();
       if (e.key === " ") {
         e.preventDefault();
         if (!modalVideoRef.current) return;
-        if (modalVideoRef.current.paused) modalVideoRef.current.play();
-        else modalVideoRef.current.pause();
+        if (modalVideoRef.current.paused) {
+          modalVideoRef.current.play().catch(() => {});
+          setIsPlaying(true);
+        } else {
+          modalVideoRef.current.pause();
+          setIsPlaying(false);
+        }
       }
+      if (e.key.toLowerCase() === "f") toggleFullscreen();
     };
+
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [activeModalVideo, closeModal, goNext, goPrevious]);
 
+  useEffect(() => {
+    if (activeModalVideo && modalVideoRef.current) {
+      modalVideoRef.current.currentTime = 0;
+      const playPromise = modalVideoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          if (modalVideoRef.current) {
+            modalVideoRef.current.muted = true;
+            setIsModalMuted(true);
+            modalVideoRef.current.play().catch(() => {});
+          }
+        });
+      }
+    }
+  }, [activeModalVideo]);
+
+  const toggleSound = () => {
+    if (!modalVideoRef.current) return;
+    modalVideoRef.current.muted = !modalVideoRef.current.muted;
+    setIsModalMuted(modalVideoRef.current.muted);
+  };
+
+  const toggleFullscreen = async () => {
+    try {
+      if (!modalVideoRef.current) return;
+      if (!document.fullscreenElement) {
+        await modalVideoRef.current.requestFullscreen();
+        setIsFullscreen(true);
+      } else {
+        await document.exitFullscreen();
+        setIsFullscreen(false);
+      }
+    } catch {
+      setIsFullscreen(false);
+    }
+  };
+
   const filteredVideos = useMemo(() => {
     if (selectedVideoTab === "all") return videosData;
-    return videosData.filter((v) => v.tab === selectedVideoTab);
-  }, [selectedVideoTab, videosData]);
+    return videosData.filter((video) => video.tab === selectedVideoTab);
+  }, [selectedVideoTab]);
+
+  const tripleMarqueeItems = [...marqueeItems, ...marqueeItems, ...marqueeItems];
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
-    <div className="bg-[hsl(var(--bg))] text-[hsl(var(--text))] font-sans antialiased selection:bg-[hsl(var(--muted))] selection:text-[hsl(var(--text))] min-h-screen relative overflow-x-hidden">
-      
-      {/* Dynamic Fonts & Styling */}
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
-        
-        :root {
-          --bg: 0 0% 4%;
-          --surface: 0 0% 8%;
-          --text: 0 0% 96%;
-          --muted: 0 0% 53%;
-          --stroke: 0 0% 12%;
-          --accent: 0 0% 96%;
-        }
-
-        .font-display {
-          font-family: 'Instrument Serif', serif;
-        }
-
-        .accent-gradient {
-          background: linear-gradient(90deg, #89AACC 0%, #4E85BF 100%);
-        }
-
-        @keyframes scroll-down {
-          0% { transform: translateY(-100%); }
-          50% { transform: translateY(200%); }
-          100% { transform: translateY(-100%); }
-        }
-
-        .animate-scroll-down {
-          animation: scroll-down 1.5s ease-in-out infinite;
-        }
-
-        @keyframes role-fade-in {
-          0% { opacity: 0; transform: translateY(8px); }
-          100% { opacity: 1; transform: translateY(0); }
-        }
-
-        .animate-role-fade-in {
-          animation: role-fade-in 0.4s ease-out forwards;
-        }
-
-        @keyframes gradient-shift {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-
-        .animate-gradient-border {
-          background-size: 200% 200%;
-          animation: gradient-shift 6s ease infinite;
-        }
-      `}</style>
-
-      {/* External Scripts Loader */}
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-
-      {/* --- PRELOADER --- */}
-      {isLoading && (
-        <div className="fixed inset-0 z-[99999] bg-[hsl(var(--bg))] flex flex-col justify-between p-6 md:p-12 transition-opacity duration-700">
-          <div className="flex justify-between items-start">
-            <span className="text-xs text-[hsl(var(--muted))] uppercase tracking-[0.3em]">Lil Studio</span>
-            <span className="text-xs text-[hsl(var(--muted))] uppercase tracking-[0.3em] font-mono">SYSTEM READY</span>
-          </div>
-
-          <div className="flex flex-col items-center justify-center text-center">
-            <div className="h-20 flex items-center justify-center overflow-hidden">
-              <span className="text-4xl md:text-6xl lg:text-7xl font-display italic text-[hsl(var(--text))] opacity-80 transition-all duration-300">
-                {["Pacing", "Rhythm", "Retention", "Mastering"][Math.floor(loadingCount / 26) % 4]}
-              </span>
-            </div>
-          </div>
-
-          <div className="flex flex-col md:flex-row justify-between items-end gap-6">
-            <div className="w-full md:w-96">
-              <div className="h-[3px] bg-[hsl(var(--stroke))]/50 w-full overflow-hidden rounded-full">
-                <div
-                  className="h-full accent-gradient transition-all duration-75 ease-out rounded-full"
-                  style={{
-                    transform: `scaleX(${loadingCount / 100})`,
-                    transformOrigin: "left",
-                    boxShadow: "0 0 10px rgba(137, 170, 204, 0.4)",
-                  }}
-                />
-              </div>
-            </div>
-            <div className="text-6xl md:text-8xl lg:text-9xl font-display text-[hsl(var(--text))] tabular-nums leading-none">
-              {String(loadingCount).padStart(3, "0")}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* --- FLOATING NAVBAR --- */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 md:pt-6 px-4 pointer-events-none">
-        <div
-          className={`pointer-events-auto inline-flex items-center rounded-full backdrop-blur-md border border-white/10 bg-[hsl(var(--surface))]/90 px-2 py-2 transition-all duration-300 ${
-            scrolled ? "shadow-xl shadow-black/60" : ""
-          }`}
+    <>
+      {/* مؤشر الماوس النيون المستقل تماماً */}
+      <motion.div
+        className="pointer-events-none fixed top-0 left-0 z-[999999] hidden md:block"
+        style={{
+          x: smoothX,
+          y: smoothY,
+          rotate: smoothRotation,
+          translateX: "-3px",
+          translateY: "-3px",
+        }}
+      >
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{
+            filter: "drop-shadow(0 0 4px #B600A8) drop-shadow(0 0 10px #B600A8)",
+          }}
         >
-          {/* Logo Badge */}
-          <div className="relative group p-0.5 rounded-full">
-            <div className="absolute -inset-0.5 rounded-full accent-gradient opacity-75 blur-[1px] group-hover:opacity-100 transition duration-300 animate-gradient-border"></div>
-            <a
-              href="#home"
-              className="relative flex items-center justify-center w-9 h-9 rounded-full bg-[hsl(var(--bg))] text-[hsl(var(--text))] font-display italic text-sm font-bold transition-transform duration-300 group-hover:scale-110"
-            >
-              LF
-            </a>
-          </div>
-
-          <div className="w-px h-5 bg-[hsl(var(--stroke))] mx-1.5 hidden sm:block"></div>
-
-          {/* Nav Items */}
-          <div className="flex items-center gap-1 font-mono text-xs">
-            {[
-              { label: "Home", href: "#home" },
-              { label: "Works", href: "#work" },
-              { label: "Covers", href: "#covers" },
-              { label: "Pipeline", href: "#pipeline" },
-              { label: "Pricing", href: "#pricing" },
-            ].map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                onClick={() => setActiveNav(item.label)}
-                className={`rounded-full px-3 sm:px-4 py-1.5 transition-colors duration-200 uppercase ${
-                  activeNav === item.label
-                    ? "text-[hsl(var(--text))] bg-[hsl(var(--stroke))]/60 font-bold"
-                    : "text-[hsl(var(--muted))] hover:text-[hsl(var(--text))] hover:bg-[hsl(var(--stroke))]/30"
-                }`}
-              >
-                {item.label}
-              </a>
-            ))}
-          </div>
-
-          <div className="w-px h-5 bg-[hsl(var(--stroke))] mx-1.5 hidden sm:block"></div>
-
-          {/* Direct Contact Button */}
-          <div className="relative group ml-1">
-            <div className="absolute -inset-0.5 rounded-full accent-gradient opacity-0 group-hover:opacity-100 transition duration-300 blur-[1px]"></div>
-            <a
-              href="https://wa.me/201211871199"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="relative flex items-center gap-1.5 text-xs px-3.5 py-1.5 rounded-full bg-[hsl(var(--surface))] text-[hsl(var(--text))] backdrop-blur-md transition-transform duration-200 group-hover:scale-[1.02] font-mono"
-            >
-              <span>WhatsApp</span>
-              <span className="text-xs">↗</span>
-            </a>
-          </div>
-        </div>
-      </nav>
-
-      {/* --- HERO SECTION --- */}
-      <section id="home" className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden px-6">
-        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-          <video
-            ref={heroVideoRef}
-            src="/video/The-Odyssey.mp4"
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="absolute min-w-full min-h-full object-cover top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 filter brightness-75 contrast-125 grayscale"
+          <path
+            d="M3 3L10.5 21L13.5 13.5L21 10.5L3 3Z"
+            fill="#FFFFFF"
+            stroke="#B600A8"
+            strokeWidth="1.6"
+            strokeLinejoin="round"
           />
-          <div className="absolute inset-0 bg-black/60"></div>
-          <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[hsl(var(--bg))] to-transparent"></div>
-        </div>
+        </svg>
+      </motion.div>
 
-        <div className="relative z-10 flex flex-col items-center text-center max-w-4xl mx-auto mt-12">
-          <span className="blur-in text-xs text-[hsl(var(--muted))] uppercase tracking-[0.3em] mb-4 font-mono">
-            COLLECTION &apos;26 • SENIOR VIDEO EDITOR
-          </span>
-
-          <h1 className="name-reveal text-6xl md:text-8xl lg:text-9xl font-display italic leading-[0.9] tracking-tight text-[hsl(var(--text))] mb-6">
-            Lil Fadel
-          </h1>
-
-          <div className="text-lg md:text-xl text-[hsl(var(--muted))] mb-6 font-light">
-            A <span key={currentRoleIndex} className="font-display italic text-[hsl(var(--text))] text-2xl md:text-3xl animate-role-fade-in inline-block mx-1">{roles[currentRoleIndex]}</span> crafting high-retention stories.
-          </div>
-
-          <p className="blur-in text-sm md:text-base text-[hsl(var(--muted))] max-w-lg mb-10 leading-relaxed font-light">
-            تصميم محتوى بصري سريع الانتشار، بمعدل احتفاظ عالي للمشاهدة وهندسة صوتية متقنة تخدم أهداف صناع المحتوى والشركات.
-          </p>
-
-          <div className="blur-in flex flex-wrap items-center justify-center gap-4">
-            <a
-              href="#work"
-              className="rounded-full text-xs font-mono uppercase tracking-wider px-7 py-3.5 bg-[hsl(var(--text))] text-[hsl(var(--bg))] font-semibold transition-all duration-300 hover:scale-105"
+      {/* --- WORKFLOW MODAL POPUP --- */}
+      <AnimatePresence>
+        {isWorkflowOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsWorkflowOpen(false)}
+            className="fixed inset-0 z-[150] bg-black/90 backdrop-blur-2xl flex items-center justify-center p-4 sm:p-6"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto bg-[#121216] border border-white/20 rounded-[36px] p-6 sm:p-10 shadow-[0_0_60px_rgba(182,0,168,0.3)] custom-scrollbar"
             >
-              See Works ({videosData.length})
-            </a>
-            <a
-              href="https://wa.me/201211871199?text=Hey%20Lil!%20I%20want%20to%20start%20a%20project."
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-full text-xs font-mono uppercase tracking-wider px-7 py-3.5 border border-[hsl(var(--stroke))] bg-[hsl(var(--surface))] text-[hsl(var(--text))] font-semibold transition-all duration-300 hover:scale-105 hover:border-white/40"
-            >
-              Reach out... ↗
-            </a>
-          </div>
-        </div>
-
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2">
-          <span className="text-[9px] text-[hsl(var(--muted))] uppercase tracking-[0.2em] font-mono">SCROLL</span>
-          <div className="w-px h-10 bg-[hsl(var(--stroke))] relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1/2 accent-gradient animate-scroll-down"></div>
-          </div>
-        </div>
-      </section>
-
-      {/* --- STATS SECTION --- */}
-      <section className="bg-[hsl(var(--bg))] py-16 px-6 border-b border-[hsl(var(--stroke))]">
-        <div className="max-w-[1200px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          <div className="p-6 rounded-3xl bg-[hsl(var(--surface))] border border-[hsl(var(--stroke))]">
-            <div className="text-4xl md:text-6xl font-display italic text-[hsl(var(--text))] mb-1">4+</div>
-            <div className="text-xs text-[hsl(var(--muted))] uppercase font-mono tracking-wider">Years Experience</div>
-          </div>
-          <div className="p-6 rounded-3xl bg-[hsl(var(--surface))] border border-[hsl(var(--stroke))]">
-            <div className="text-4xl md:text-6xl font-display italic text-[hsl(var(--text))] mb-1">350+</div>
-            <div className="text-xs text-[hsl(var(--muted))] uppercase font-mono tracking-wider">Videos Delivered</div>
-          </div>
-          <div className="p-6 rounded-3xl bg-[hsl(var(--surface))] border border-[hsl(var(--stroke))]">
-            <div className="text-4xl md:text-6xl font-display italic text-[hsl(var(--text))] mb-1">20+</div>
-            <div className="text-xs text-[hsl(var(--muted))] uppercase font-mono tracking-wider">Brands & Creators</div>
-          </div>
-          <div className="p-6 rounded-3xl bg-[hsl(var(--surface))] border border-[hsl(var(--stroke))]">
-            <div className="text-4xl md:text-6xl font-display italic text-[hsl(var(--text))] mb-1">45%</div>
-            <div className="text-xs text-[hsl(var(--muted))] uppercase font-mono tracking-wider">Retention Boost</div>
-          </div>
-        </div>
-      </section>
-
-      {/* --- BENTO GRID: SELECTED WORK --- */}
-      <section id="work" className="bg-[hsl(var(--bg))] py-20 md:py-32 px-6 md:px-10 lg:px-16">
-        <div className="max-w-[1200px] mx-auto">
-          
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-            <div>
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-8 h-px bg-[hsl(var(--stroke))]"></div>
-                <span className="text-xs text-[hsl(var(--muted))] uppercase tracking-[0.3em] font-mono">Selected Work</span>
-              </div>
-              <h2 className="text-4xl md:text-6xl font-sans font-light tracking-tight text-[hsl(var(--text))]">
-                Featured <span className="font-display italic">projects</span>
-              </h2>
-            </div>
-
-            {/* Category Filters */}
-            <div className="inline-flex flex-wrap p-1 rounded-full border border-[hsl(var(--stroke))] bg-[hsl(var(--surface))] font-mono text-xs">
-              {[
-                { id: "all", label: "All (11)" },
-                { id: "reels", label: "Reels (6)" },
-                { id: "commercial", label: "Commercial (3)" },
-                { id: "cinematic", label: "Cinematic (2)" },
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setSelectedVideoTab(tab.id as any)}
-                  className={`px-4 py-1.5 rounded-full uppercase transition-colors ${
-                    selectedVideoTab === tab.id
-                      ? "bg-white text-black font-bold"
-                      : "text-[hsl(var(--muted))] hover:text-white"
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Bento Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-            {filteredVideos.map((project) => (
-              <div
-                key={project.id}
-                onClick={() => openModal(project)}
-                className={`${project.span} group relative bg-[hsl(var(--surface))] border border-[hsl(var(--stroke))] rounded-3xl overflow-hidden cursor-pointer transition-transform duration-500 hover:-translate-y-1 flex flex-col justify-between`}
-              >
-                <div className={`relative w-full ${project.aspect} overflow-hidden bg-black`}>
-                  <video
-                    src={project.src}
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
-                    onMouseEnter={(e) => e.currentTarget.play()}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.pause();
-                      e.currentTarget.currentTime = 1;
-                    }}
-                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 opacity-85 group-hover:opacity-100"
-                  />
-
-                  {/* Hover Backdrop */}
-                  <div className="absolute inset-0 bg-[hsl(var(--bg))]/70 opacity-0 group-hover:opacity-100 backdrop-blur-sm transition-opacity duration-300 flex items-center justify-center p-6">
-                    <div className="relative inline-flex items-center px-5 py-2.5 rounded-full bg-[hsl(var(--surface))] text-[hsl(var(--text))] border border-white/10 shadow-lg">
-                      <div className="absolute -inset-0.5 rounded-full accent-gradient opacity-75 blur-[1px]"></div>
-                      <span className="relative text-sm font-medium">Watch Cut — <span className="font-display italic">{project.title}</span></span>
-                    </div>
-                  </div>
-
-                  <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 border border-white/10 text-[10px] font-mono uppercase text-white">
-                    {project.tab}
-                  </div>
+              <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/10">
+                <div>
+                  <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
+                    Production Pipeline
+                  </span>
+                  <h3 className="text-2xl sm:text-3xl font-black text-white mt-1">
+                    Editing Workflow
+                  </h3>
                 </div>
 
-                <div className="p-6 flex items-center justify-between bg-[hsl(var(--surface))] border-t border-[hsl(var(--stroke))]">
-                  <div>
-                    <h3 className="text-lg font-medium text-[hsl(var(--text))]">{project.title}</h3>
-                    <p className="text-xs text-[hsl(var(--muted))] mt-1">{project.category}</p>
+                <button
+                  onClick={() => setIsWorkflowOpen(false)}
+                  className="w-10 h-10 rounded-full bg-white/10 border border-white/20 text-white flex items-center justify-center text-lg hover:bg-[#B600A8] transition-all"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="relative border-l-2 border-white/15 ml-4 pl-6 space-y-8">
+                {processSteps.map((step, idx) => (
+                  <div key={step.num} className="relative group">
+                    <div className="absolute -left-[31px] top-1.5 w-5 h-5 rounded-full bg-[#0A0A0A] border-2 border-[#B600A8] flex items-center justify-center shadow-[0_0_12px_rgba(182,0,168,0.8)]">
+                      <div className="w-1.5 h-1.5 rounded-full bg-white" />
+                    </div>
+
+                    <div className="p-5 rounded-2xl bg-white/[0.04] border border-white/10 hover:border-[#B600A8]/50 transition-all">
+                      <div className="flex items-center justify-between gap-2 mb-1.5">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-mono text-[#B600A8] font-bold px-2 py-0.5 rounded bg-[#B600A8]/20 border border-[#B600A8]/40">
+                            STEP {step.num}
+                          </span>
+                          <h4 className="text-base font-bold text-white">{step.title}</h4>
+                        </div>
+                        <span className="text-xs text-[#D7E2EA]/60">{step.arabic}</span>
+                      </div>
+                      <p className="text-xs sm:text-sm text-[#D7E2EA]/75 leading-relaxed">
+                        {step.desc}
+                      </p>
+                    </div>
                   </div>
-                  <span className="w-10 h-10 rounded-full border border-[hsl(var(--stroke))] flex items-center justify-center text-[hsl(var(--muted))] group-hover:text-[hsl(var(--text))] group-hover:border-[hsl(var(--text))] transition-colors">
-                    ↗
+                ))}
+              </div>
+
+              <div className="mt-8 pt-4 border-t border-white/10 text-center">
+                <button
+                  onClick={() => setIsWorkflowOpen(false)}
+                  className="px-6 py-2.5 rounded-full bg-[#B600A8] text-white text-xs font-bold uppercase tracking-widest shadow-lg hover:bg-[#9d0091] transition-all"
+                >
+                  Got It, Let&apos;s Start
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <main
+        dir="ltr"
+        className="relative w-full min-h-screen bg-[#0A0A0A] text-[#D7E2EA] selection:bg-[#B600A8] selection:text-white overflow-x-hidden"
+      >
+        {/* VIDEO THEATER MODE */}
+        <AnimatePresence>
+          {activeModalVideo && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={closeModal}
+              className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-3xl flex items-center justify-center p-2 sm:p-6"
+            >
+              <div className="absolute top-3 sm:top-6 left-3 sm:left-6 right-3 sm:right-6 z-[130] flex items-center justify-between pointer-events-none">
+                <div className="pointer-events-auto">
+                  <span className="px-3.5 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-2xl text-[10px] sm:text-xs uppercase tracking-widest text-[#B600A8] font-bold shadow-2xl">
+                    {currentVideoIndex + 1} / {videosData.length}
                   </span>
                 </div>
+
+                <div className="flex items-center gap-2.5 pointer-events-auto">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleSound();
+                    }}
+                    className="px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-2xl text-white text-xs font-bold hover:bg-[#B600A8] transition-all flex items-center gap-1.5 shadow-xl"
+                  >
+                    {isModalMuted ? "🔇 UNMUTE" : "🔊 MUTE"}
+                  </button>
+
+                  <button
+                    onClick={closeModal}
+                    className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/10 border border-white/20 backdrop-blur-2xl text-white flex items-center justify-center text-lg hover:bg-[#B600A8] transition-all shadow-xl"
+                    aria-label="Close video"
+                  >
+                    ✕
+                  </button>
+                </div>
               </div>
-            ))}
-          </div>
 
-        </div>
-      </section>
-
-      {/* --- PRODUCTION PIPELINE (FORMERLY JOURNAL) --- */}
-      <section id="pipeline" className="bg-[hsl(var(--bg))] py-20 md:py-32 px-6 md:px-10 lg:px-16 border-t border-[hsl(var(--stroke))]">
-        <div className="max-w-[1200px] mx-auto">
-          
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-            <div>
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-8 h-px bg-[hsl(var(--stroke))]"></div>
-                <span className="text-xs text-[hsl(var(--muted))] uppercase tracking-[0.3em] font-mono">Production System</span>
-              </div>
-              <h2 className="text-4xl md:text-6xl font-sans font-light tracking-tight text-[hsl(var(--text))]">
-                Editorial <span className="font-display italic">pipeline</span>
-              </h2>
-            </div>
-            <p className="text-sm text-[hsl(var(--muted))] max-w-sm">
-              مراحل الإنتاج من استلام الماتريال الخام وحتى تسليم الماستر النهائي بأعلى دقة.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4">
-            {processSteps.map((entry) => (
-              <div
-                key={entry.num}
-                className="group flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 p-5 md:p-6 bg-[hsl(var(--surface))]/30 hover:bg-[hsl(var(--surface))] border border-[hsl(var(--stroke))] rounded-3xl transition-all duration-300"
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  goPrevious();
+                }}
+                className="absolute left-2 sm:left-6 z-[120] w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-black/60 border border-white/20 backdrop-blur-2xl text-white flex items-center justify-center text-xl hover:bg-[#B600A8] transition-all shadow-2xl"
+                aria-label="Previous video"
               >
-                <div className="flex items-center gap-5 w-full sm:w-auto">
-                  <div className="w-14 h-14 rounded-2xl bg-[hsl(var(--surface))] border border-[hsl(var(--stroke))] flex items-center justify-center font-display italic text-2xl text-[hsl(var(--text))]">
-                    {entry.num}
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-base sm:text-lg font-medium text-[hsl(var(--text))] group-hover:text-[#89AACC] transition-colors">
-                        {entry.title}
-                      </h3>
-                      <span className="text-xs text-[hsl(var(--muted))] font-mono">({entry.arabic})</span>
-                    </div>
-                    <p className="text-xs sm:text-sm text-[hsl(var(--muted))] mt-1 max-w-xl leading-relaxed">
-                      {entry.desc}
+                ←
+              </button>
+
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  goNext();
+                }}
+                className="absolute right-2 sm:right-6 z-[120] w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-black/60 border border-white/20 backdrop-blur-2xl text-white flex items-center justify-center text-xl hover:bg-[#B600A8] transition-all shadow-2xl"
+                aria-label="Next video"
+              >
+                →
+              </button>
+
+              <motion.div
+                initial={{ scale: 0.94, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.94, opacity: 0 }}
+                transition={{ duration: 0.25 }}
+                onClick={(e) => e.stopPropagation()}
+                className="relative w-full max-w-[380px] sm:max-w-sm h-[84dvh] sm:h-[88vh] aspect-[9/16] bg-black rounded-[30px] sm:rounded-[38px] overflow-hidden border border-white/20 shadow-[0_0_80px_rgba(182,0,168,0.35)]"
+              >
+                <video
+                  key={activeModalVideo.id}
+                  ref={modalVideoRef}
+                  src={activeModalVideo.src}
+                  autoPlay
+                  controls
+                  playsInline
+                  loop
+                  preload="auto"
+                  onPlay={() => setIsPlaying(true)}
+                  onPause={() => setIsPlaying(false)}
+                  className="w-full h-full object-cover bg-black"
+                />
+
+                <div className="absolute left-0 right-0 bottom-0 pointer-events-none p-5 sm:p-7 bg-gradient-to-t from-black via-black/85 to-transparent">
+                  <div className="max-w-2xl">
+                    <span className="text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] text-[#B600A8] font-bold">
+                      {activeModalVideo.category}
+                    </span>
+
+                    <h3 className="text-white font-bold text-base sm:text-xl mt-0.5 leading-snug">
+                      {activeModalVideo.title}
+                    </h3>
+
+                    <p className="hidden sm:block text-white/70 text-xs sm:text-sm mt-1.5 max-w-xl leading-relaxed">
+                      {activeModalVideo.description}
                     </p>
                   </div>
                 </div>
 
-                <div className="self-end sm:self-center mr-2 w-10 h-10 rounded-full border border-[hsl(var(--stroke))] flex items-center justify-center text-[hsl(var(--muted))] group-hover:text-[hsl(var(--text))] group-hover:border-[hsl(var(--text))] transition-colors">
-                  ✦
+                <div className="absolute top-4 left-4 right-4 flex justify-between pointer-events-none">
+                  <div className="flex gap-2 pointer-events-auto">
+                    <button
+                      onClick={() => {
+                        if (!modalVideoRef.current) return;
+                        if (modalVideoRef.current.paused) {
+                          modalVideoRef.current.play().catch(() => {});
+                          setIsPlaying(true);
+                        } else {
+                          modalVideoRef.current.pause();
+                          setIsPlaying(false);
+                        }
+                      }}
+                      className="w-10 h-10 rounded-full bg-black/60 border border-white/20 backdrop-blur-xl text-white flex items-center justify-center hover:bg-[#B600A8] transition-colors"
+                      aria-label={isPlaying ? "Pause" : "Play"}
+                    >
+                      {isPlaying ? "Ⅱ" : "▶"}
+                    </button>
+                  </div>
+
+                  <button
+                    onClick={toggleFullscreen}
+                    className="pointer-events-auto w-10 h-10 rounded-full bg-black/60 border border-white/20 backdrop-blur-xl text-white flex items-center justify-center hover:bg-[#B600A8] transition-colors"
+                    aria-label="Fullscreen"
+                  >
+                    ⛶
+                  </button>
                 </div>
-              </div>
-            ))}
-          </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        </div>
-      </section>
-
-      {/* --- VISUAL COVERS & THUMBNAILS (EXPLORATIONS) --- */}
-      <section id="covers" className="bg-[hsl(var(--bg))] py-24 px-6 md:px-12 border-t border-[hsl(var(--stroke))]">
-        <div className="max-w-[1200px] mx-auto">
-          <div className="text-center mb-16">
-            <span className="text-xs text-[hsl(var(--muted))] uppercase tracking-[0.3em] mb-3 block font-mono">Visual Explorations</span>
-            <h2 className="text-4xl md:text-7xl font-display italic text-[hsl(var(--text))] mb-4">
-              Posters & High-CTR <span className="not-italic font-sans font-light">covers</span>
-            </h2>
-            <p className="text-sm text-[hsl(var(--muted))] max-w-md mx-auto">
-              أغلفة وبوسترات دعائية مصممة لجذب النقرات ورفع معدلات التفاعل على المنصات. اضغط على أي غلاف للمعاينة.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {thumbnailsData.map((item) => (
-              <div
-                key={item.id}
-                onClick={() => setSelectedThumbnail(item)}
-                className="group relative aspect-[4/5] rounded-3xl overflow-hidden border border-[hsl(var(--stroke))] bg-[hsl(var(--surface))] cursor-pointer shadow-xl hover:scale-[1.02] transition-transform duration-500"
-              >
-                <img src={item.src} alt={item.title} className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-6">
-                  <span className="text-[10px] uppercase font-mono tracking-widest text-[#89AACC]">{item.category}</span>
-                  <span className="text-base font-medium text-white mt-1">{item.title}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Lightbox Modal for Covers */}
-      {selectedThumbnail && (
-        <div
-          className="fixed inset-0 z-[99999] bg-black/85 backdrop-blur-md flex items-center justify-center p-6"
-          onClick={() => setSelectedThumbnail(null)}
-        >
-          <div
-            className="relative max-w-2xl w-full bg-[hsl(var(--surface))] border border-[hsl(var(--stroke))] rounded-3xl p-6 overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setSelectedThumbnail(null)}
-              className="absolute top-4 right-4 w-10 h-10 rounded-full bg-[hsl(var(--bg))] text-white flex items-center justify-center border border-[hsl(var(--stroke))] z-10"
-            >
-              ✕
-            </button>
-            <img src={selectedThumbnail.src} alt={selectedThumbnail.title} className="w-full max-h-[60vh] object-cover rounded-2xl mb-4" />
-            <h3 className="text-2xl font-display italic text-white">{selectedThumbnail.title}</h3>
-            <p className="text-xs text-[hsl(var(--muted))] font-mono uppercase tracking-widest mt-1">{selectedThumbnail.category}</p>
-          </div>
-        </div>
-      )}
-
-      {/* --- PRICING SECTION --- */}
-      <section id="pricing" className="bg-[hsl(var(--bg))] py-20 md:py-32 px-6 border-t border-[hsl(var(--stroke))]">
-        <div className="max-w-[1200px] mx-auto">
-          
-          <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-6 mb-16 pb-6 border-b border-[hsl(var(--stroke))]">
-            <div>
-              <span className="text-xs text-[hsl(var(--muted))] uppercase tracking-[0.3em] font-mono block mb-2">[Transparent Rates]</span>
-              <h2 className="text-4xl md:text-6xl font-sans font-light tracking-tight text-[hsl(var(--text))]">
-                Production <span className="font-display italic">packages</span>
-              </h2>
-            </div>
-
-            {/* Currency Switcher */}
-            <div className="inline-flex p-1 rounded-full border border-[hsl(var(--stroke))] bg-[hsl(var(--surface))] text-xs font-mono">
-              {(["ALL", "USD", "EGP"] as const).map((mode) => (
+        {/* HERO SECTION */}
+        <section className="relative min-h-screen flex flex-col justify-between overflow-x-clip bg-[#0A0A0A] pb-8">
+          <FadeIn delay={0} y={-20} className="w-full z-30">
+            <nav className="flex justify-between items-center px-6 md:px-10 py-4 md:py-5 mt-4 mx-4 md:mx-10 rounded-3xl bg-white/[0.03] backdrop-blur-2xl border border-white/10 text-xs md:text-sm font-medium tracking-wider uppercase gap-6 shadow-2xl">
+              <div className="flex gap-4 sm:gap-7 items-center flex-wrap">
+                <a href="#about" className="hover:text-[#B600A8] transition-colors">About</a>
                 <button
-                  key={mode}
-                  onClick={() => setCurrencyMode(mode)}
-                  className={`px-4 py-1.5 rounded-full transition-all ${
-                    currencyMode === mode ? "bg-white text-black font-bold" : "text-[hsl(var(--muted))] hover:text-white"
-                  }`}
+                  onClick={() => setIsWorkflowOpen(true)}
+                  className="text-[#D7E2EA] hover:text-[#B600A8] transition-colors uppercase tracking-wider font-semibold cursor-pointer"
                 >
-                  {mode === "ALL" ? "USD & EGP" : mode === "USD" ? "USD (\$)" : "EGP (ج.م)"}
+                  Workflow ↗
                 </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {packagesData.map((pkg) => {
-              const priceText =
-                currencyMode === "USD"
-                  ? pkg.priceUSD
-                  : currencyMode === "EGP"
-                  ? pkg.priceEGP
-                  : `${pkg.priceUSD} / ${pkg.priceEGP}`;
-
-              return (
-                <div
-                  key={pkg.id}
-                  className={`p-8 rounded-3xl border flex flex-col justify-between ${
-                    pkg.featured
-                      ? "border-white bg-[hsl(var(--surface))] relative shadow-2xl"
-                      : "border-[hsl(var(--stroke))] bg-[hsl(var(--surface))]/40"
-                  }`}
-                >
-                  <div>
-                    <div className="flex justify-between items-baseline mb-4 font-mono text-xs">
-                      <span className="text-[hsl(var(--muted))]">TIER {pkg.id}</span>
-                      {pkg.featured && (
-                        <span className="px-3 py-1 bg-white text-black font-bold uppercase text-[10px] rounded-full">
-                          الأكثر طلباً
-                        </span>
-                      )}
-                    </div>
-
-                    <h3 className="text-2xl font-bold uppercase text-white tracking-tight">{pkg.name}</h3>
-                    <p className="text-xs text-[hsl(var(--muted))] mt-1">{pkg.arabicName}</p>
-
-                    <div className="my-8 pb-6 border-b border-[hsl(var(--stroke))] font-mono">
-                      <div className="text-3xl sm:text-4xl font-bold text-white">{priceText}</div>
-                      <div className="text-xs text-[hsl(var(--muted))] mt-1 uppercase">لكل فيديو (حتى 60 ثانية)</div>
-                    </div>
-
-                    <ul className="space-y-3.5 mb-8 text-xs text-[hsl(var(--muted))]">
-                      {pkg.features.map((feat, i) => (
-                        <li key={i} className="flex items-start gap-2.5">
-                          <span className="text-[#89AACC] font-mono mt-0.5">—</span>
-                          <span className="leading-relaxed">{feat}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="pt-6 border-t border-[hsl(var(--stroke))] space-y-3">
-                    <div className="text-[11px] font-mono text-[hsl(var(--muted))] text-center">{pkg.revisions}</div>
-                    
-                    <a
-                      href={pkg.driveLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block text-center py-2.5 text-xs uppercase font-mono tracking-wider border border-[hsl(var(--stroke))] rounded-full text-white/80 hover:text-white hover:border-white transition-colors"
-                    >
-                      عينة من الشغل ↗
-                    </a>
-
-                    <a
-                      href={`https://wa.me/201211871199?text=${encodeURIComponent(`أهلاً يا ليل! حابب أطلب باقة ${pkg.name} (${priceText}).`)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`block text-center py-3 text-xs uppercase font-bold tracking-wider rounded-full transition-colors ${
-                        pkg.featured ? "bg-white text-black hover:bg-white/90" : "border border-[hsl(var(--stroke))] text-white hover:border-white"
-                      }`}
-                    >
-                      طلب الباقة عبر واتساب
-                    </a>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Terms */}
-          <div className="mt-16 p-8 rounded-3xl border border-[hsl(var(--stroke))] bg-[hsl(var(--surface))]/30">
-            <h3 className="text-sm font-mono uppercase tracking-wider text-white mb-6">
-              شروط التعاقد وتدفق الإنتاج
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-[hsl(var(--muted))]">
-              {generalTerms.map((term, i) => (
-                <div key={i} className="space-y-1">
-                  <div className="text-white font-semibold uppercase">{i + 1}. {term.title}</div>
-                  <p className="leading-relaxed font-light">{term.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* --- CLIENT REVIEWS --- */}
-      <section className="bg-[hsl(var(--bg))] py-20 px-6 border-t border-[hsl(var(--stroke))]">
-        <div className="max-w-[1200px] mx-auto">
-          <div className="mb-12">
-            <span className="text-xs text-[hsl(var(--muted))] uppercase tracking-[0.3em] font-mono block mb-2">[Dispatches]</span>
-            <h2 className="text-4xl md:text-6xl font-sans font-light tracking-tight text-[hsl(var(--text))]">
-              Client <span className="font-display italic">messages</span>
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {clientReviews.map((rev, i) => (
-              <div key={i} className="p-8 rounded-3xl border border-[hsl(var(--stroke))] bg-[hsl(var(--surface))]/40 flex flex-col justify-between">
-                <p className="text-base text-white/85 font-light leading-relaxed mb-6 font-display italic text-xl">
-                  &ldquo;{rev.quote}&rdquo;
-                </p>
-                <div className="pt-4 border-t border-[hsl(var(--stroke))] flex justify-between items-end text-xs">
-                  <div>
-                    <h4 className="font-semibold text-white uppercase">{rev.client}</h4>
-                    <p className="text-[hsl(var(--muted))] mt-0.5">{rev.role}</p>
-                  </div>
-                  <span className="font-mono text-[hsl(var(--muted))] text-[10px]">VERIFIED REVIEW</span>
-                </div>
+                <a href="#videos" className="hover:text-[#B600A8] transition-colors">Videos</a>
+                <a href="#price" className="hover:text-[#B600A8] transition-colors">Pricing</a>
+                <a href="#reviews" className="hover:text-[#B600A8] transition-colors">Reviews</a>
+                <a href="#thumbnails" className="hover:text-[#B600A8] transition-colors">Thumbnails</a>
+                <a href="#services" className="hover:text-[#B600A8] transition-colors">Services</a>
               </div>
-            ))}
+
+              <div className="flex items-center gap-3 shrink-0">
+                <a
+                  href="https://www.instagram.com/ebrahimfadel_8/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                  className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300"
+                >
+                  <InstagramIcon />
+                </a>
+
+                <a
+                  href="https://www.facebook.com/EbrahimFadel8"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300"
+                >
+                  <FacebookIcon />
+                </a>
+
+                <a
+                  href="https://wa.me/201211871199"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="WhatsApp"
+                  className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-[#25D366] hover:border-[#25D366] hover:bg-[#25D366]/10 transition-all duration-300"
+                >
+                  <WhatsAppIcon />
+                </a>
+
+                <a
+                  href="mailto:ebrahimfadel8903@gmail.com"
+                  aria-label="Email"
+                  className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300"
+                >
+                  <MailIcon />
+                </a>
+              </div>
+            </nav>
+          </FadeIn>
+
+          <div className="overflow-hidden w-full select-none my-auto">
+            <FadeIn delay={0.15} y={40}>
+              <h1 className="hero-heading font-black uppercase tracking-tight leading-none whitespace-nowrap w-full text-center text-[15vw] sm:text-[16vw] md:text-[18vw] inline-flex items-center justify-center">
+                <span>{typedText}</span>
+                <span className="text-[#B600A8] animate-pulse ml-2 font-light">|</span>
+              </h1>
+            </FadeIn>
           </div>
-        </div>
-      </section>
 
-      {/* --- FOOTER SECTION --- */}
-      <footer className="relative bg-[hsl(var(--bg))] pt-20 md:pt-32 pb-8 md:pb-12 overflow-hidden border-t border-[hsl(var(--stroke))]">
-        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-          <video
-            ref={footerVideoRef}
-            src="/video/The-Odyssey.mp4"
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="absolute min-w-full min-h-full object-cover top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 scale-y-[-1] filter brightness-50 contrast-125 grayscale"
-          />
-          <div className="absolute inset-0 bg-black/75"></div>
-        </div>
+          <div className="absolute left-1/2 -translate-x-1/2 z-10 bottom-16 sm:bottom-10 pointer-events-auto">
+            <FadeIn delay={0.4} y={30}>
+              <Magnet padding={180} strength={3.5}>
+                <img
+                  src="/images/avatar.png"
+                  alt="Lil Portrait"
+                  className="w-[260px] sm:w-[340px] md:w-[420px] lg:w-[480px] object-contain select-none pointer-events-none drop-shadow-[0_20px_40px_rgba(0,0,0,0.85)]"
+                />
+              </Magnet>
+            </FadeIn>
+          </div>
 
-        <div className="relative z-10 max-w-[1200px] mx-auto px-6 text-center">
-          
-          {/* GSAP Marquee */}
-          <div className="overflow-hidden whitespace-nowrap mb-16 py-4 border-y border-white/10">
-            <div ref={marqueeRef} className="inline-flex gap-8 text-xl md:text-2xl font-display italic text-[hsl(var(--muted))]/80 uppercase tracking-widest">
-              {[...Array(10)].map((_, i) => (
-                <span key={i} className="inline-flex items-center gap-8">
-                  <span>RETENTION FIRST • CINEMATIC MASTERY • SURGICAL TIMELINE</span>
-                  <span className="text-[#89AACC]">•</span>
-                </span>
-              ))}
+          <div className="flex flex-col sm:flex-row justify-between items-center sm:items-end px-6 md:px-10 gap-6 z-20 mt-12 sm:mt-0">
+            <FadeIn delay={0.3} y={20}>
+              <p className="text-[#D7E2EA] font-light leading-snug max-w-[280px] text-center sm:text-start text-xs sm:text-sm md:text-base opacity-80 uppercase tracking-wide">
+                Senior video editor shaping memorable visual stories
+              </p>
+            </FadeIn>
+
+            <FadeIn delay={0.4} y={20} className="flex gap-3 items-center">
+              <MagneticButton
+                href="#videos"
+                className="rounded-full border-2 border-white/20 bg-white/[0.04] backdrop-blur-xl text-[#D7E2EA] font-medium uppercase tracking-widest px-6 py-2.5 text-xs sm:text-sm hover:bg-white/15 transition-colors shadow-lg"
+              >
+                Watch Videos
+              </MagneticButton>
+
+              <MagneticButton
+                href="#contact"
+                className="rounded-full uppercase tracking-widest font-semibold text-white px-7 py-3 text-xs sm:text-sm shadow-xl"
+                style={{
+                  background: "linear-gradient(123deg, #18011F 7%, #B600A8 37%, #7621B0 72%, #BE4C00 100%)",
+                  boxShadow: "0px 4px 4px rgba(181, 1, 167, 0.25), inset 4px 4px 12px #7721B1",
+                  outline: "2px solid #FFFFFF",
+                  outlineOffset: "-3px",
+                }}
+              >
+                Get in touch
+              </MagneticButton>
+            </FadeIn>
+          </div>
+        </section>
+
+        {/* MARQUEE WITH DRAG HINT & VIEW ALL VIDEOS CTA */}
+        <section
+          ref={marqueeRef}
+          className="bg-[#0A0A0A] pt-16 pb-12 overflow-hidden flex flex-col gap-6 border-y border-white/5"
+        >
+          <div className="max-w-7xl mx-auto px-6 md:px-12 w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
+                ← Drag / Scroll to Explore →
+              </span>
+              <h3 className="text-white text-xl sm:text-2xl font-bold mt-1">
+                Featured Highlights & Posters
+              </h3>
             </div>
-          </div>
 
-          <span className="text-xs text-[hsl(var(--muted))] uppercase tracking-[0.3em] block mb-4 font-mono">Get in touch</span>
-
-          <h2 className="text-5xl md:text-8xl font-display italic text-[hsl(var(--text))] mb-8">
-            Let&apos;s create something <br />
-            <span className="not-italic font-sans font-light">extraordinary.</span>
-          </h2>
-
-          <div className="relative inline-block group mb-20">
-            <div className="absolute -inset-1 rounded-full accent-gradient opacity-75 blur-md group-hover:opacity-100 transition duration-300"></div>
             <a
-              href="mailto:ebrahimfadel8903@gmail.com"
-              className="relative inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[hsl(var(--surface))] text-[hsl(var(--text))] text-lg font-medium border border-white/10 transition-transform duration-300 group-hover:scale-105"
+              href="#videos"
+              className="px-5 py-2.5 rounded-full bg-white/5 border border-white/15 text-white text-xs uppercase font-bold tracking-wider hover:bg-[#B600A8] hover:border-[#B600A8] transition-all flex items-center gap-2 shadow-lg"
             >
-              <span>ebrahimfadel8903@gmail.com</span>
+              <span>View All Videos</span>
               <span>↗</span>
             </a>
           </div>
 
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-12 border-t border-white/10 text-xs">
-            {/* Socials */}
-            <div className="flex items-center gap-6 text-[hsl(var(--muted))]">
-              <a href="https://www.instagram.com/ebrahimfadel_8/" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">Instagram</a>
-              <a href="https://www.facebook.com/EbrahimFadel8" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">Facebook</a>
-              <a href="https://wa.me/201211871199" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">WhatsApp</a>
-              <a href="mailto:ebrahimfadel8903@gmail.com" className="hover:text-white transition-colors">Email</a>
-            </div>
-
-            {/* Availability Badge */}
-            <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-[hsl(var(--surface))] border border-white/10">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping absolute"></span>
-              <span className="w-2 h-2 rounded-full bg-emerald-500 relative"></span>
-              <span className="text-xs text-[hsl(var(--text))] font-medium font-mono">Available for projects</span>
-            </div>
-
-            <div className="text-[hsl(var(--muted))] font-mono">
-              © 2026 Lil Fadel. All rights reserved.
-            </div>
-          </div>
-
-        </div>
-      </footer>
-
-      {/* --- THEATER VIDEO MODAL --- */}
-      {activeModalVideo && (
-        <div
-          className="fixed inset-0 z-[99999] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-4 sm:p-8"
-          onClick={closeModal}
-        >
-          <div className="absolute top-6 left-6 right-6 flex justify-between items-center z-10 pointer-events-none text-xs font-mono">
-            <span className="text-white/70 pointer-events-auto">
-              [{currentVideoIndex + 1} / {videosData.length}] — {activeModalVideo.title}
-            </span>
-            <div className="flex items-center gap-3 pointer-events-auto">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (!modalVideoRef.current) return;
-                  modalVideoRef.current.muted = !modalVideoRef.current.muted;
-                  setIsModalMuted(modalVideoRef.current.muted);
-                }}
-                className="px-3 py-1 border border-white/20 rounded-full text-white text-[10px] uppercase hover:bg-white hover:text-black transition-colors"
-              >
-                {isModalMuted ? "Unmute" : "Mute"}
-              </button>
-              <button
-                onClick={closeModal}
-                className="w-8 h-8 rounded-full border border-white/20 text-white flex items-center justify-center hover:bg-white hover:text-black transition-colors"
-              >
-                ✕
-              </button>
-            </div>
-          </div>
-
-          <button
-            onClick={(e) => { e.stopPropagation(); goPrevious(); }}
-            className="absolute left-4 sm:left-8 w-11 h-11 rounded-full border border-white/20 text-white flex items-center justify-center text-sm hover:bg-white hover:text-black transition-colors z-10"
-          >
-            ←
-          </button>
-
-          <button
-            onClick={(e) => { e.stopPropagation(); goNext(); }}
-            className="absolute right-4 sm:right-8 w-11 h-11 rounded-full border border-white/20 text-white flex items-center justify-center text-sm hover:bg-white hover:text-black transition-colors z-10"
-          >
-            →
-          </button>
-
           <div
-            onClick={(e) => e.stopPropagation()}
-            className="relative max-w-sm w-full h-[85vh] aspect-[9/16] bg-black rounded-3xl border border-white/20 overflow-hidden shadow-2xl"
+            className="flex gap-4 whitespace-nowrap"
+            style={{
+              transform: `translateX(${scrollOffset - 150}px)`,
+              willChange: "transform",
+            }}
           >
-            <video
-              ref={modalVideoRef}
-              src={activeModalVideo.src}
-              controls
-              autoPlay
-              playsInline
-              loop
-              className="w-full h-full object-cover"
-            />
+            {tripleMarqueeItems.map((item, i) => (
+              <MarqueeCard key={i} item={item} />
+            ))}
           </div>
-        </div>
-      )}
+        </section>
 
-    </div>
+        {/* ABOUT */}
+        <section id="about" className="py-24 px-6 md:px-12 bg-[#0A0A0A]">
+          <div className="max-w-5xl mx-auto">
+            <FadeIn delay={0} y={30} className="text-center mb-16">
+              <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
+                Background & Track Record
+              </span>
+              <h2 className="hero-heading font-black uppercase text-4xl sm:text-6xl md:text-7xl mt-2">
+                Who Am I
+              </h2>
+            </FadeIn>
+
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+              <FadeIn delay={0.1} className="md:col-span-7 bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[32px] p-8 sm:p-10 shadow-2xl">
+                <h3 className="text-2xl font-bold text-white mb-4">
+                  Hey, I&apos;m Lil — Senior Video Editor
+                </h3>
+
+                <p className="text-[#D7E2EA]/80 leading-relaxed text-base sm:text-lg mb-6">
+                  Specialized in building high-retention visual assets that captivate audiences. With extensive experience across Adobe Premiere Pro, After Effects, and DaVinci Resolve, I bridge the gap between creative storytelling, surgical audio design, and conversion-driven marketing.
+                </p>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-white/10 text-center mb-8">
+                  <div>
+                    <div className="text-2xl sm:text-3xl font-black text-white font-mono">
+                      <CountUp target={4} suffix="+" />
+                    </div>
+                    <div className="text-[10px] sm:text-[11px] text-[#D7E2EA]/60 uppercase tracking-wider mt-1">Years Experience</div>
+                  </div>
+
+                  <div>
+                    <div className="text-2xl sm:text-3xl font-black text-white font-mono">
+                      <CountUp target={350} suffix="+" />
+                    </div>
+                    <div className="text-[10px] sm:text-[11px] text-[#D7E2EA]/60 uppercase tracking-wider mt-1">Videos Delivered</div>
+                  </div>
+
+                  <div>
+                    <div className="text-2xl sm:text-3xl font-black text-white font-mono">
+                      <CountUp target={20} suffix="+" />
+                    </div>
+                    <div className="text-[10px] sm:text-[11px] text-[#D7E2EA]/60 uppercase tracking-wider mt-1">Brands & Creators</div>
+                  </div>
+
+                  <div>
+                    <div className="text-2xl sm:text-3xl font-black text-white font-mono">
+                      <CountUp target={45} suffix="%" />
+                    </div>
+                    <div className="text-[10px] sm:text-[11px] text-[#D7E2EA]/60 uppercase tracking-wider mt-1">Retention Growth</div>
+                  </div>
+                </div>
+
+                <div className="pt-6 border-t border-white/10">
+                  <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold block mb-4">
+                    Primary Software Suite
+                  </span>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    {softwareStack.map((soft, idx) => (
+                      <div
+                        key={idx}
+                        className="p-3 rounded-2xl bg-white/[0.02] border border-white/10 flex flex-col items-center text-center hover:border-[#B600A8]/60 transition-colors"
+                      >
+                        <span className="w-9 h-9 rounded-xl bg-[#B600A8]/20 border border-[#B600A8]/40 text-[#B600A8] font-black text-sm flex items-center justify-center mb-2">
+                          {soft.icon}
+                        </span>
+                        <h4 className="text-white text-xs font-semibold">{soft.name}</h4>
+                        <p className="text-[10px] text-white/50 mt-0.5 leading-tight">{soft.tag}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </FadeIn>
+
+              <FadeIn delay={0.2} className="md:col-span-5 bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[32px] p-8 sm:p-10 flex flex-col justify-between h-full shadow-2xl">
+                <div>
+                  <span className="text-xs uppercase tracking-widest text-[#B600A8] font-semibold">
+                    Client Deliverables
+                  </span>
+
+                  <h4 className="text-xl font-bold text-white mt-1 mb-4">
+                    Creators & Brands I&apos;ve Edited For
+                  </h4>
+
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {["Ahmed Abdelkareem", "Sameh Othman", "Maryam", "Sawsan", "Yasmine", "Rania", "Mai"].map((client, idx) => (
+                      <div
+                        key={idx}
+                        className="px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-[#D7E2EA]/90 flex items-center gap-1.5"
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#B600A8]" />
+                        <span>{client}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-white/10">
+                  <MagneticButton
+                    href="#contact"
+                    className="block text-center w-full py-3 rounded-full bg-white/10 hover:bg-[#B600A8] text-white text-xs font-bold uppercase tracking-wider transition-colors shadow-lg"
+                  >
+                    Book Your Project
+                  </MagneticButton>
+                </div>
+              </FadeIn>
+            </div>
+          </div>
+        </section>
+
+        {/* FEATURED VIDEOS */}
+        <section
+          id="videos"
+          className="py-20 sm:py-24 px-4 sm:px-8 md:px-12 bg-[#0A0A0A] border-t border-white/5"
+        >
+          <div className="max-w-6xl mx-auto">
+            <FadeIn delay={0} y={30} className="text-center mb-8">
+              <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
+                Interactive Video Portfolio
+              </span>
+
+              <div className="relative inline-block mt-3">
+                <button
+                  onClick={() => setIsVideoMenuOpen(!isVideoMenuOpen)}
+                  className="group inline-flex items-center gap-3 sm:gap-4 hero-heading font-black uppercase text-2xl sm:text-5xl md:text-6xl hover:opacity-90 transition-all cursor-pointer select-none"
+                >
+                  <span>Featured Video Cuts</span>
+                  <span
+                    className={`text-xl sm:text-4xl text-[#B600A8] transition-transform duration-300 ${
+                      isVideoMenuOpen ? "rotate-180" : "rotate-0"
+                    }`}
+                  >
+                    ▼
+                  </span>
+                </button>
+
+                <p className="text-[#D7E2EA]/60 text-xs sm:text-sm mt-2 tracking-wider">
+                  {isVideoMenuOpen
+                    ? "Click any video to open Theater Mode • Hover to preview"
+                    : "Click to reveal featured video reels & commercial campaigns"}
+                </p>
+
+                <AnimatePresence>
+                  {isVideoMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="flex justify-center flex-wrap gap-2 sm:gap-3 mt-6"
+                    >
+                      {[
+                        { id: "all", label: "All Videos (11)" },
+                        { id: "reels", label: "Reels & Hooks (6)" },
+                        { id: "commercial", label: "Commercial & Sports (3)" },
+                        { id: "cinematic", label: "Cinematic & Narrative (2)" },
+                      ].map((tab) => (
+                        <button
+                          key={tab.id}
+                          onClick={() =>
+                            setSelectedVideoTab(
+                              tab.id as "all" | "reels" | "commercial" | "cinematic"
+                            )
+                          }
+                          className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all duration-200 border ${
+                            selectedVideoTab === tab.id
+                              ? "bg-[#B600A8] text-white border-[#B600A8] shadow-lg shadow-[#B600A8]/30"
+                              : "bg-white/5 text-[#D7E2EA]/70 border-white/10 hover:border-white/20 hover:text-white"
+                          }`}
+                        >
+                          {tab.label}
+                        </button>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </FadeIn>
+
+            <AnimatePresence mode="wait">
+              {isVideoMenuOpen && (
+                <motion.div
+                  key={selectedVideoTab}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-12"
+                >
+                  {filteredVideos.map((item, idx) => (
+                    <VideoCard
+                      key={item.id}
+                      item={item}
+                      index={idx}
+                      onOpen={openModal}
+                    />
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </section>
+
+        {/* PRICING */}
+        <section id="price" className="py-24 px-5 sm:px-8 md:px-12 bg-[#0A0A0A]">
+          <div className="max-w-6xl mx-auto">
+            <FadeIn delay={0} y={30} className="text-center mb-10">
+              <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
+                Video Editing Packages & Rates
+              </span>
+
+              <h2 className="hero-heading font-black uppercase text-4xl sm:text-6xl md:text-7xl mt-2">
+                Rates & Packages
+              </h2>
+
+              <p className="text-[#D7E2EA]/60 max-w-xl mx-auto mt-3 text-sm sm:text-base">
+                Transparent video production rates in USD and EGP with milestone delivery
+              </p>
+            </FadeIn>
+
+            <FadeIn delay={0.1} y={20} className="flex justify-center mb-16">
+              <div className="inline-flex items-center p-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl">
+                <button
+                  onClick={() => setCurrencyMode("ALL")}
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
+                    currencyMode === "ALL"
+                      ? "bg-[#B600A8] text-white"
+                      : "text-white/60 hover:text-white"
+                  }`}
+                >
+                  USD & EGP
+                </button>
+
+                <button
+                  onClick={() => setCurrencyMode("USD")}
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
+                    currencyMode === "USD"
+                      ? "bg-[#B600A8] text-white"
+                      : "text-white/60 hover:text-white"
+                  }`}
+                >
+                  USD ($)
+                </button>
+
+                <button
+                  onClick={() => setCurrencyMode("EGP")}
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
+                    currencyMode === "EGP"
+                      ? "bg-[#B600A8] text-white"
+                      : "text-white/60 hover:text-white"
+                  }`}
+                >
+                  EGP (ج.م)
+                </button>
+              </div>
+            </FadeIn>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch mb-20">
+              {packagesData.map((pkg, idx) => {
+                const selectedPriceText =
+                  currencyMode === "USD"
+                    ? pkg.priceUSD
+                    : currencyMode === "EGP"
+                    ? pkg.priceEGP
+                    : `${pkg.priceUSD} / ${pkg.priceEGP}`;
+
+                const whatsappPreFilledLink = `https://wa.me/201211871199?text=${encodeURIComponent(
+                  `Hey Lil! I want to book the "${pkg.name}" package (${selectedPriceText} per video). Let's discuss the project details.`
+                )}`;
+
+                return (
+                  <FadeIn key={pkg.id} delay={idx * 0.15} className="flex">
+                    <div
+                      className={`w-full rounded-[36px] p-8 flex flex-col justify-between transition-all duration-300 relative backdrop-blur-2xl ${
+                        pkg.featured
+                          ? "bg-gradient-to-b from-[#18011F]/90 to-[#121212]/90 border-2 border-[#B600A8] shadow-[0_0_40px_rgba(182,0,168,0.25)]"
+                          : "bg-white/[0.03] border border-white/10 hover:border-white/25 shadow-2xl"
+                      }`}
+                    >
+                      {pkg.featured && (
+                        <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#B600A8] text-white text-[11px] font-bold uppercase tracking-widest px-4 py-1 rounded-full shadow-lg">
+                          Most Popular
+                        </span>
+                      )}
+
+                      <div>
+                        <div className="flex justify-between items-start mb-4">
+                          <div>
+                            <h3 className="text-2xl font-bold text-white">{pkg.name}</h3>
+                            <p className="text-[#D7E2EA]/70 text-sm mt-1">{pkg.arabicName}</p>
+                          </div>
+                          <span className="font-mono text-white/30 text-lg font-bold">{pkg.id}</span>
+                        </div>
+
+                        <div className="my-6 pb-6 border-b border-white/10">
+                          {currencyMode === "ALL" && (
+                            <div>
+                              <div className="flex items-baseline gap-2">
+                                <span className="text-4xl sm:text-5xl font-black text-white">{pkg.priceUSD}</span>
+                                <span className="text-sm uppercase tracking-wider text-[#D7E2EA]/60 font-medium">/ Video</span>
+                              </div>
+                              <div className="text-sm text-[#B600A8] font-bold mt-1">
+                                ≈ {pkg.priceEGP} / Video
+                              </div>
+                            </div>
+                          )}
+
+                          {currencyMode === "USD" && (
+                            <div className="flex items-baseline gap-2">
+                              <span className="text-4xl sm:text-5xl font-black text-white">{pkg.priceUSD}</span>
+                              <span className="text-sm uppercase tracking-wider text-[#D7E2EA]/60 font-medium">/ Video</span>
+                            </div>
+                          )}
+
+                          {currencyMode === "EGP" && (
+                            <div className="flex items-baseline gap-2">
+                              <span className="text-4xl sm:text-5xl font-black text-white">{pkg.priceEGP}</span>
+                              <span className="text-sm uppercase tracking-wider text-[#D7E2EA]/60 font-medium">/ Video</span>
+                            </div>
+                          )}
+                        </div>
+
+                        <ul className="space-y-4 mb-8">
+                          {pkg.features.map((feat, i) => (
+                            <li key={i} className="flex items-start gap-3 text-sm text-[#D7E2EA]/80 leading-relaxed">
+                              <span className="text-[#B600A8] text-base mt-0.5 inline-block select-none">✦</span>
+                              <span>{feat}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div className="pt-6 border-t border-white/10 flex flex-col gap-3">
+                        <p className="text-xs text-[#D7E2EA]/50 text-center font-medium">{pkg.revisions}</p>
+                        <a
+                          href={pkg.driveLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full text-center py-2.5 rounded-full border border-[#B600A8]/60 hover:bg-[#B600A8]/20 text-xs uppercase font-bold tracking-wider text-[#D7E2EA] transition-colors shadow-md"
+                        >
+                          ▶ Watch Video Sample
+                        </a>
+
+                        <MagneticButton
+                          href={whatsappPreFilledLink}
+                          className={`block w-full text-center rounded-full uppercase tracking-widest font-semibold py-3.5 text-sm transition-all duration-300 ${
+                            pkg.featured
+                              ? "bg-[#B600A8] hover:bg-[#9d0091] text-white shadow-lg shadow-[#B600A8]/30"
+                              : "border border-white/20 hover:bg-white/10 text-white shadow-md"
+                          }`}
+                        >
+                          Order via WhatsApp
+                        </MagneticButton>
+                      </div>
+                    </div>
+                  </FadeIn>
+                );
+              })}
+            </div>
+
+            <FadeIn delay={0.2} y={30}>
+              <div className="rounded-[36px] bg-white/[0.02] backdrop-blur-2xl border border-white/10 p-8 sm:p-12 shadow-2xl">
+                <div className="flex items-center gap-3 mb-8">
+                  <span className="text-[#B600A8] text-xl">✦</span>
+                  <h3 className="text-2xl sm:text-3xl font-bold text-white">General Terms & Production Flow</h3>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+                  {generalTerms.map((term, i) => (
+                    <div
+                      key={i}
+                      className={`p-6 rounded-2xl bg-white/[0.02] border border-white/5 ${
+                        i === 0 ? "md:col-span-2 border-[#B600A8]/30 bg-[#B600A8]/5" : ""
+                      }`}
+                    >
+                      <h4 className="text-lg font-semibold text-white mb-2 flex items-center gap-2">
+                        <span className="text-xs text-[#B600A8] font-mono">0{i + 1}.</span>
+                        {term.title}
+                      </h4>
+                      <p className="text-sm text-[#D7E2EA]/70 leading-relaxed">{term.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </FadeIn>
+          </div>
+        </section>
+
+        {/* REVIEWS */}
+        <section id="reviews" className="py-24 px-6 md:px-12 bg-[#0A0A0A] border-t border-white/5">
+          <div className="max-w-6xl mx-auto">
+            <FadeIn delay={0} y={30} className="text-center mb-16">
+              <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">Testimonials</span>
+              <h2 className="hero-heading font-black uppercase text-4xl sm:text-6xl md:text-7xl mt-2">Client Messages</h2>
+              <p className="text-[#D7E2EA]/60 max-w-xl mx-auto mt-3 text-sm sm:text-base">
+                Feedback from creators, entrepreneurs, and agencies I collaborate with
+              </p>
+            </FadeIn>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+              {clientReviews.map((rev, idx) => (
+                <FadeIn key={idx} delay={idx * 0.1}>
+                  <div className="p-8 rounded-[32px] bg-white/[0.03] backdrop-blur-2xl border border-white/10 flex flex-col justify-between h-full hover:border-[#B600A8]/40 transition-colors shadow-2xl">
+                    <div>
+                      <div className="flex justify-between items-center mb-4">
+                        <span className="text-[#B600A8] text-sm tracking-widest font-mono">{rev.rating}</span>
+                        <span className="text-3xl text-white/20 font-serif leading-none">“</span>
+                      </div>
+                      <p className="text-[#D7E2EA]/85 text-base sm:text-lg leading-relaxed mb-6 font-light">
+                        &quot;{rev.quote}&quot;
+                      </p>
+                    </div>
+
+                    <div className="pt-4 border-t border-white/10 flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#B600A8] to-[#7621B0] flex items-center justify-center font-bold text-white text-sm shadow-md">
+                        {rev.client.charAt(0)}
+                      </div>
+                      <div>
+                        <h4 className="text-white font-semibold text-sm sm:text-base">{rev.client}</h4>
+                        <p className="text-xs text-[#D7E2EA]/60">{rev.role}</p>
+                      </div>
+                    </div>
+                  </div>
+                </FadeIn>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* THUMBNAILS */}
+        <section id="thumbnails" className="py-24 px-5 sm:px-8 md:px-12 bg-[#0A0A0A]">
+          <div className="max-w-6xl mx-auto">
+            <FadeIn delay={0} y={30} className="text-center mb-8">
+              <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
+                Graphic Covers & Visuals
+              </span>
+
+              <div className="relative inline-block mt-3">
+                <button
+                  onClick={() => setIsThumbnailsMenuOpen(!isThumbnailsMenuOpen)}
+                  className="group inline-flex items-center gap-3 sm:gap-4 hero-heading font-black uppercase text-3xl sm:text-5xl md:text-6xl hover:opacity-90 transition-all cursor-pointer select-none"
+                >
+                  <span>Thumbnails & Posters</span>
+                  <span
+                    className={`text-2xl sm:text-4xl text-[#B600A8] transition-transform duration-300 ${
+                      isThumbnailsMenuOpen ? "rotate-180" : "rotate-0"
+                    }`}
+                  >
+                    ▼
+                  </span>
+                </button>
+
+                <p className="text-[#D7E2EA]/60 text-xs sm:text-sm mt-2 tracking-wider">
+                  {isThumbnailsMenuOpen
+                    ? "Click title to collapse gallery"
+                    : "Click to reveal high-CTR YouTube covers and commercial posters"}
+                </p>
+              </div>
+            </FadeIn>
+
+            <AnimatePresence>
+              {isThumbnailsMenuOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-12"
+                >
+                  {thumbnailsData.map((thumb, index) => (
+                    <FadeIn key={index} delay={index * 0.1}>
+                      <motion.div
+                        whileHover={{ y: -8 }}
+                        className="bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[28px] overflow-hidden shadow-2xl group hover:border-[#B600A8]/50 transition-colors duration-300"
+                      >
+                        <div className="w-full aspect-[4/5] overflow-hidden bg-black/50">
+                          <img
+                            src={thumb.src}
+                            alt={thumb.title}
+                            loading="lazy"
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                        </div>
+
+                        <div className="p-5 flex flex-col gap-1">
+                          <span className="text-xs uppercase tracking-widest text-[#B600A8] font-medium">{thumb.category}</span>
+                          <h3 className="text-[#D7E2EA] font-semibold text-lg sm:text-xl">{thumb.title}</h3>
+                        </div>
+                      </motion.div>
+                    </FadeIn>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </section>
+
+        {/* SERVICES */}
+        <section id="services" className="bg-white rounded-t-[40px] sm:rounded-t-[60px] px-6 sm:px-10 py-24 text-[#0C0C0C]">
+          <div className="max-w-5xl mx-auto">
+            <FadeIn delay={0} y={30}>
+              <h2 className="font-black uppercase text-center mb-16 sm:mb-24 text-4xl sm:text-6xl md:text-7xl text-[#0C0C0C]">
+                Services
+              </h2>
+            </FadeIn>
+
+            <div className="flex flex-col">
+              {servicesList.map((item, index) => (
+                <FadeIn key={item.num} delay={index * 0.1}>
+                  <motion.div
+                    whileHover={{ x: 8 }}
+                    className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-t border-[rgba(12,12,12,0.15)] py-8 sm:py-10 gap-4 sm:gap-10"
+                  >
+                    <span className="font-black text-[#0C0C0C] text-5xl sm:text-7xl leading-none shrink-0">
+                      {item.num}
+                    </span>
+
+                    <div className="flex flex-col gap-2">
+                      <h3 className="font-bold uppercase text-xl sm:text-2xl text-[#0C0C0C]">{item.name}</h3>
+                      <p className="font-normal leading-relaxed max-w-2xl text-[#0C0C0C]/70 text-sm sm:text-base">{item.desc}</p>
+                    </div>
+                  </motion.div>
+                </FadeIn>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* CONTACT */}
+        <section id="contact" className="py-24 px-6 text-center bg-[#0A0A0A] border-t border-white/10">
+          <FadeIn delay={0} y={30} className="max-w-3xl mx-auto">
+            <span className="text-xs uppercase tracking-[0.25em] text-[#B600A8] font-bold">
+              Available for new projects
+            </span>
+
+            <h2 className="hero-heading font-black uppercase text-4xl sm:text-6xl mb-4 mt-3">
+              Let&apos;s Create Together
+            </h2>
+
+            <p className="text-[#D7E2EA]/70 mb-10 max-w-xl mx-auto text-sm sm:text-base">
+              Available for commercial campaigns, ongoing reels retainers, and high-retention video post-production.
+            </p>
+
+            <div className="flex justify-center items-center gap-4 mb-10">
+              <a
+                href="https://www.instagram.com/ebrahimfadel_8/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300 hover:scale-110 shadow-xl"
+              >
+                <InstagramIcon />
+              </a>
+
+              <a
+                href="https://www.facebook.com/EbrahimFadel8"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300 hover:scale-110 shadow-xl"
+              >
+                <FacebookIcon />
+              </a>
+
+              <a
+                href="https://wa.me/201211871199"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="WhatsApp"
+                className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/70 hover:text-[#25D366] hover:border-[#25D366] hover:bg-[#25D366]/20 transition-all duration-300 hover:scale-110 shadow-xl"
+              >
+                <WhatsAppIcon />
+              </a>
+
+              <a
+                href="mailto:ebrahimfadel8903@gmail.com"
+                aria-label="Email"
+                className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300 hover:scale-110 shadow-xl"
+              >
+                <MailIcon />
+              </a>
+            </div>
+
+            <MagneticButton
+              href="https://wa.me/201211871199?text=Hey%20Lil!%20I%20want%20to%20start%20a%20video%20editing%20project."
+              className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#B600A8] hover:bg-[#9d0091] text-white uppercase tracking-widest text-xs font-bold transition-all duration-300 shadow-[0_0_30px_rgba(182,0,168,0.35)]"
+            >
+              Start a Project
+              <span>→</span>
+            </MagneticButton>
+
+            <div className="text-xs text-white/40 mt-10">
+              © 2026 Lil. All rights reserved.
+            </div>
+          </FadeIn>
+        </section>
+
+        {/* SCROLL TOP */}
+        <AnimatePresence>
+          {showScrollTop && (
+            <motion.button
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              onClick={scrollToTop}
+              aria-label="Scroll to top"
+              className="fixed bottom-8 right-8 z-40 w-12 h-12 rounded-full bg-[#141414]/80 backdrop-blur-xl border border-white/20 text-[#B600A8] hover:bg-[#B600A8] hover:text-white hover:border-[#B600A8] shadow-2xl flex items-center justify-center font-black transition-all duration-300"
+            >
+              ↑
+            </motion.button>
+          )}
+        </AnimatePresence>
+      </main>
+    </>
   );
 }
