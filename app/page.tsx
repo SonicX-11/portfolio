@@ -26,7 +26,8 @@ export default function AtelierHeroPage() {
         let totalAu = 0;
 
         tracks.forEach((anim) => {
-          if (anim.animationName && anim.animationName.startsWith("au-")) {
+          const cssAnim = anim as CSSAnimation;
+          if (cssAnim.animationName && cssAnim.animationName.startsWith("au-")) {
             totalAu++;
             anim.onfinish = () => {
               finishedCount++;
@@ -63,7 +64,7 @@ export default function AtelierHeroPage() {
 
   return (
     <>
-      <style jsx global>{`
+      <style>{`
         @font-face {
           font-family: "AU Grotesk";
           src: url(/assets/au-grotesk-regular.woff2) format("woff2");
