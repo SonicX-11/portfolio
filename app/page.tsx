@@ -942,7 +942,7 @@ export default function Home() {
         </svg>
       </motion.div>
 
-      {/* --- WORKFLOW MODAL POPUP (نافذة منبثقة عند الضغط على Workflow) --- */}
+      {/* --- WORKFLOW MODAL POPUP --- */}
       <AnimatePresence>
         {isWorkflowOpen && (
           <motion.div
@@ -1157,7 +1157,6 @@ export default function Home() {
             <nav className="flex justify-between items-center px-6 md:px-10 py-4 md:py-5 mt-4 mx-4 md:mx-10 rounded-3xl bg-white/[0.03] backdrop-blur-2xl border border-white/10 text-xs md:text-sm font-medium tracking-wider uppercase gap-6 shadow-2xl">
               <div className="flex gap-4 sm:gap-7 items-center flex-wrap">
                 <a href="#about" className="hover:text-[#B600A8] transition-colors">About</a>
-                {/* زر Workflow التفاعلي الذي يفتح عند الضغط */}
                 <button
                   onClick={() => setIsWorkflowOpen(true)}
                   className="text-[#D7E2EA] hover:text-[#B600A8] transition-colors uppercase tracking-wider font-semibold cursor-pointer"
@@ -1265,11 +1264,30 @@ export default function Home() {
           </div>
         </section>
 
-        {/* MARQUEE */}
+        {/* MARQUEE WITH DRAG HINT & VIEW ALL VIDEOS CTA */}
         <section
           ref={marqueeRef}
-          className="bg-[#0A0A0A] pt-16 pb-12 overflow-hidden flex flex-col gap-4 border-y border-white/5"
+          className="bg-[#0A0A0A] pt-16 pb-12 overflow-hidden flex flex-col gap-6 border-y border-white/5"
         >
+          <div className="max-w-7xl mx-auto px-6 md:px-12 w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
+                ← Drag / Scroll to Explore →
+              </span>
+              <h3 className="text-white text-xl sm:text-2xl font-bold mt-1">
+                Featured Highlights & Posters
+              </h3>
+            </div>
+
+            <a
+              href="#videos"
+              className="px-5 py-2.5 rounded-full bg-white/5 border border-white/15 text-white text-xs uppercase font-bold tracking-wider hover:bg-[#B600A8] hover:border-[#B600A8] transition-all flex items-center gap-2 shadow-lg"
+            >
+              <span>View All Videos</span>
+              <span>↗</span>
+            </a>
+          </div>
+
           <div
             className="flex gap-4 whitespace-nowrap"
             style={{
