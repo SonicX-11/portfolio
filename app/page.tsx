@@ -1,71 +1,55 @@
 "use client";
 
 import React, { useRef, useState, useEffect, useMemo, useCallback } from "react";
-import { motion, AnimatePresence, useSpring, useMotionValue, useInView } from "framer-motion";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 
-// --- SVG SOCIAL & SOFTWARE ICONS ---
+// --- SVG SOCIAL & SYSTEM ICONS ---
 
 const InstagramIcon = () => (
-  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
     <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
   </svg>
 );
 
 const FacebookIcon = () => (
-  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
     <path d="M9 8H6v4h3v12h5V12h3.642L18 8h-4V6.333C14 5.374 14.5 5 15.667 5H18V0h-3.889C10.5 0 9 1.582 9 4.615V8z" />
   </svg>
 );
 
 const WhatsAppIcon = () => (
-  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
     <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
   </svg>
 );
 
 const MailIcon = () => (
-  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
     <path d="M0 3v18h24v-18h-24zm6.623 7.929l-4.623 5.712v-9.458l4.623 3.746zm-4.141-5.929h19.035l-9.517 7.713-9.518-7.713zm5.694 7.188l3.824 3.099 3.83-3.104 5.612 6.817h-18.779l5.513-6.812zm9.208-1.264l4.616-3.741v9.348l-4.616-5.607z" />
   </svg>
 );
 
-// --- REUSABLE ANIMATION COMPONENTS ---
+// --- ANIMATION & COUNTER HELPERS ---
 
 interface FadeInProps {
   children: React.ReactNode;
   delay?: number;
-  duration?: number;
-  x?: number;
   y?: number;
   className?: string;
 }
 
-const FadeIn: React.FC<FadeInProps> = ({
-  children,
-  delay = 0,
-  duration = 0.5,
-  x = 0,
-  y = 25,
-  className = "",
-}) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, x, y }}
-      whileInView={{ opacity: 1, x: 0, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{
-        duration,
-        delay,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-};
+const FadeIn: React.FC<FadeInProps> = ({ children, delay = 0, y = 20, className = "" }) => (
+  <motion.div
+    initial={{ opacity: 0, y }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, margin: "-40px" }}
+    transition={{ duration: 0.65, delay, ease: [0.16, 1, 0.3, 1] }}
+    className={className}
+  >
+    {children}
+  </motion.div>
+);
 
-// --- COUNT UP ANIMATION (0 -> Number) ---
 function CountUp({ target, suffix = "+" }: { target: number; suffix?: string }) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
@@ -74,7 +58,7 @@ function CountUp({ target, suffix = "+" }: { target: number; suffix?: string }) 
   useEffect(() => {
     if (!isInView) return;
     let start = 0;
-    const duration = 1600;
+    const duration = 1400;
     const stepTime = 20;
     const steps = duration / stepTime;
     const increment = target / steps;
@@ -99,623 +83,46 @@ function CountUp({ target, suffix = "+" }: { target: number; suffix?: string }) 
     </span>
   );
 }
-
-// --- DATA ---
-
-const processSteps = [
-  {
-    num: "01",
-    title: "Project Brief & Creative Vision",
-    arabic: "الاتفاق وفهم فكرة الفيديو",
-    desc: "Understanding target audience, platform format, desired pacing, tone, and visual references.",
-  },
-  {
-    num: "02",
-    title: "Footage Upload & Assembly",
-    arabic: "رفع الماتريال والفرز السريع",
-    desc: "Seamless footage reception via Drive/WeTransfer, organizing media and building initial rough cuts.",
-  },
-  {
-    num: "03",
-    title: "The First Cut & Sound Design",
-    arabic: "المونتاج، التقطيع والمؤثرات",
-    desc: "Applying dynamic cuts, animated pop-up subtitles, visual hooks, sound Foley, and color balancing.",
-  },
-  {
-    num: "04",
-    title: "Feedback & Revisions",
-    arabic: "المراجعة والتعديلات السريعة",
-    desc: "Fine-tuning rhythm, subtitle cues, and visual flow based on your precise notes and vision.",
-  },
-  {
-    num: "05",
-    title: "Final 4K Master Delivery",
-    arabic: "التسليم النهائي بأعلى جودة",
-    desc: "Delivering crisp, native 4K/1080p high-bitrate master exports optimized for TikTok, Reels, and YouTube.",
-  },
-];
-
-const videosData = [
-  {
-    id: "man-u",
-    title: "Manchester United Highlight Cut",
-    category: "Sports",
-    tab: "commercial",
-    src: "/video/Man-U.mp4",
-    description: "Fast-paced football edit focused on rhythm, impact, typography and music synchronization.",
-    orientation: "portrait",
-  },
-  {
-    id: "the-odyssey",
-    title: "The Odyssey Cinematic Master",
-    category: "Cinematic Narrative",
-    tab: "cinematic",
-    src: "/video/The-Odyssey.mp4",
-    description: "Cinematic storytelling edit combining pacing, atmosphere, sound design and visual continuity.",
-    orientation: "portrait",
-  },
-  {
-    id: "mb22",
-    title: "Commercial Showcase (mb22)",
-    category: "Brand Campaign",
-    tab: "commercial",
-    src: "/video/Mb22.mp4",
-    description: "Commercial showcase built around product presentation, dynamic cuts and visual impact.",
-    orientation: "portrait",
-  },
-  {
-    id: "color",
-    title: "Color Grading Reel",
-    category: "Color Correction",
-    tab: "commercial",
-    src: "/video/Color.mp4",
-    description: "Color grading showcase demonstrating contrast, skin tones, mood and cinematic look development.",
-    orientation: "portrait",
-  },
-  {
-    id: "reel-1",
-    title: "High-Retention Commercial Reel #1",
-    category: "TikTok / Reels",
-    tab: "reels",
-    src: "/video/1.mp4",
-    description: "Short-form edit designed around strong hooks, rapid pacing and audience retention.",
-    orientation: "portrait",
-  },
-  {
-    id: "reel-2",
-    title: "Business Growth Reel #2",
-    category: "Pop-Up Subtitles",
-    tab: "reels",
-    src: "/video/2.mp4",
-    description: "Business-focused short-form edit using animated subtitles, visual emphasis and sound effects.",
-    orientation: "portrait",
-  },
-  {
-    id: "reel-3",
-    title: "Dynamic Hook Cut #3",
-    category: "Fast Paced",
-    tab: "reels",
-    src: "/video/3.mp4",
-    description: "High-energy social edit focused on hooks, fast transitions and visual storytelling.",
-    orientation: "portrait",
-  },
-  {
-    id: "reel-4",
-    title: "Viral Engagement Reel #4",
-    category: "Fast Paced Cuts",
-    tab: "reels",
-    src: "/video/4.mp4",
-    description: "Engagement-first edit with rhythmic cuts, zooms, subtitles and layered sound design.",
-    orientation: "portrait",
-  },
-  {
-    id: "reel-5",
-    title: "Brand Storytelling #5",
-    category: "Commercial Cut",
-    tab: "reels",
-    src: "/video/5.mp4",
-    description: "Brand storytelling reel combining clean editing, narrative structure and visual consistency.",
-    orientation: "portrait",
-  },
-  {
-    id: "reel-12",
-    title: "Social Media Hook #12",
-    category: "Short-Form Reel",
-    tab: "reels",
-    src: "/video/12.mp4",
-    description: "Short-form social media edit built to grab attention immediately and maintain momentum.",
-    orientation: "portrait",
-  },
-  {
-    id: "habib-ayamy",
-    title: "Habib Ayamy",
-    category: "Cinematic Sound Design",
-    tab: "cinematic",
-    src: "/video/Habib-Ayamy.mp4",
-    description: "Emotional cinematic edit with music synchronization, atmosphere and detailed sound design.",
-    orientation: "portrait",
-  },
-];
-
-const marqueeItems = [
-  {
-    title: "Bruno Fernandes - The King",
-    category: "Sports Graphic",
-    image: "/images/thumbnails/thumb-1.png",
-    video: null,
-  },
-  {
-    title: "Business Budgeting Strategy",
-    category: "Reels / TikTok",
-    image: "/images/thumbnails/thumb-2.png",
-    video: "/video/1.mp4",
-  },
-  {
-    title: "EdTech Agency Growth",
-    category: "Educational Showcase",
-    image: "/images/thumbnails/thumb-3.png",
-    video: "/video/2.mp4",
-  },
-  {
-    title: "US Company Setup Case Study",
-    category: "Business Content",
-    image: "/images/thumbnails/thumb-4.png",
-    video: "/video/3.mp4",
-  },
-  {
-    title: "Gigabyte B840M Eagle",
-    category: "Hardware Commercial",
-    image: "/images/thumbnails/thumb-5.png",
-    video: "/video/Mb22.mp4",
-  },
-  {
-    title: "Manchester United | Bruno Cut",
-    category: "Sports Poster",
-    image: "/images/thumbnails/thumb-6.png",
-    video: "/video/Man-U.mp4",
-  },
-];
-
-const packagesData = [
-  {
-    id: "01",
-    name: "The Spark Pack",
-    arabicName: "Clean & Fast-Paced Cut",
-    priceUSD: "$10",
-    priceEGP: "500 EGP",
-    featured: false,
-    revisions: "1 Free Revision per video based on feedback",
-    driveLink: "https://drive.google.com/file/d/1Y97S6qk9JqmONHOk-BQcj1XO1piaa0KT/view?usp=drive_link",
-    features: [
-      "Dynamic cutting eliminating dead spaces to ensure fluid rhythm",
-      "Clean, readable, color-coded subtitles matching voice tempo",
-      "Essential Color Correction paired with balanced background music",
-    ],
-  },
-  {
-    id: "02",
-    name: "The Viral Growth",
-    arabicName: "High Retention & Engaging",
-    priceUSD: "$17",
-    priceEGP: "850 EGP",
-    featured: true,
-    revisions: "Up to 2 Revisions per video",
-    driveLink: "https://drive.google.com/file/d/1WtLRXTR_r5RQPndULSfyAwIqst8j7YYX/view?usp=drive_link",
-    features: [
-      "Retention-first pacing calculated to maximize completion rates",
-      "Dynamic Pop-up Subtitles reacting rhythmically to vocal emphasis",
-      "Visual zooms, sound design impacts, risers, and Foley FX",
-      "Supporting B-roll and curated stock footage integration",
-    ],
-  },
-  {
-    id: "03",
-    name: "Cinematic Prime",
-    arabicName: "Commercial & Brand Showcase",
-    priceUSD: "$24",
-    priceEGP: "1,200 EGP",
-    featured: false,
-    revisions: "Up to 3 Revisions per video",
-    driveLink: "https://drive.google.com/file/d/19usAUA3dCWM4rYtLkX557m793uyGFLnW/view?usp=drive_link",
-    features: [
-      "Bespoke cinematic pacing tailored for corporate brands and creators",
-      "Full brand identity adaptation (typography, vectors, palette)",
-      "Dynamic visual framing and pacing elevating core message impact",
-      "Deep cinematic Color Grading + immersive multi-layer sound mastering",
-    ],
-  },
-];
-
-const generalTerms = [
-  {
-    title: "Deposit & Payment Milestones",
-    desc: "A 25% upfront deposit is required prior to project start. The remaining 75% balance is settled upon final approval before delivery of unwatermarked master exports.",
-  },
-  {
-    title: "Short Video Duration",
-    desc: "Listed rates apply specifically to short-form reels and TikToks with a total duration not exceeding 60 seconds.",
-  },
-  {
-    title: "Scheduled Batch Delivery",
-    desc: "Deliveries are organized in clear, pre-scheduled batches agreed in advance to preserve craft precision and streamline production.",
-  },
-  {
-    title: "Revisions Policy",
-    desc: "Please respect the revision allocation per tier. Any additional revision rounds beyond this scope are accommodated at a minor pre-agreed rate.",
-  },
-  {
-    title: "Raw Footage Submission",
-    desc: "Source footage should be uploaded in full native resolution via neatly organized Google Drive or WeTransfer links.",
-  },
-];
-
-const clientReviews = [
-  {
-    quote: "Lil transformed our raw footage into high-retention commercial reels. The pacing, audio sync, and pop-up subtitles significantly boosted our engagement.",
-    client: "Ahmed Abdelkareem",
-    role: "Content Creator & Entrepreneur",
-    rating: "★★★★★",
-  },
-  {
-    quote: "Exceptional turnaround and aesthetic sense. He understands video storytelling deeply, delivering flawless color grading and slick pacing without endless revisions.",
-    client: "Sameh Othman",
-    role: "Business Consultant",
-    rating: "★★★★★",
-  },
-  {
-    quote: "The retention on our educational campaigns jumped noticeably after hiring Lil. The edits are razor sharp and the communication is clear and professional.",
-    client: "Rania",
-    role: "E-Learning Academy Lead",
-    rating: "★★★★★",
-  },
-  {
-    quote: "Reliable, creative, and fast. His sound design and B-roll selection gave our commercial launches a truly cinematic presence.",
-    client: "Maryam",
-    role: "Commercial Brand Manager",
-    rating: "★★★★★",
-  },
-];
-
-// --- VIDEO CARD COMPONENT ---
-
-function VideoCard({
-  item,
-  index,
-  onOpen,
-}: {
-  item: (typeof videosData)[0];
-  index: number;
-  onOpen: (item: (typeof videosData)[0]) => void;
-}) {
-  const [isHovered, setIsHovered] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const midPointRef = useRef<number>(1);
-
-  const handleLoadedMetadata = () => {
-    if (videoRef.current) {
-      const midTime = videoRef.current.duration > 2 ? videoRef.current.duration * 0.35 : 1;
-      midPointRef.current = midTime;
-      videoRef.current.currentTime = midTime;
-    }
-  };
-
-  const handleEnter = () => {
-    setIsHovered(true);
-    if (videoRef.current) {
-      videoRef.current.currentTime = 0;
-      videoRef.current.muted = true;
-      const playPromise = videoRef.current.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(() => {});
-      }
-    }
-  };
-
-  const handleLeave = () => {
-    setIsHovered(false);
-    if (videoRef.current) {
-      videoRef.current.pause();
-      videoRef.current.currentTime = midPointRef.current;
-    }
-  };
-
-  return (
-    <FadeIn delay={index * 0.05}>
-      <motion.div
-        whileHover={{ y: -8, scale: 1.01 }}
-        transition={{ duration: 0.3 }}
-        className="bg-white/[0.04] backdrop-blur-2xl border border-white/15 rounded-[28px] sm:rounded-[34px] overflow-hidden p-3 sm:p-3.5 shadow-[0_12px_40px_rgba(0,0,0,0.6)] flex flex-col justify-between h-full group hover:border-[#B600A8]/60 hover:shadow-[0_0_35px_rgba(182,0,168,0.25)] transition-all duration-300"
-      >
-        <div
-          onMouseEnter={handleEnter}
-          onMouseLeave={handleLeave}
-          onClick={() => onOpen(item)}
-          className="rounded-[20px] sm:rounded-[24px] overflow-hidden aspect-[9/16] w-full bg-black relative cursor-pointer"
-        >
-          <video
-            ref={videoRef}
-            src={item.src}
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            onLoadedMetadata={handleLoadedMetadata}
-            className="w-full h-full object-cover"
-          />
-          <div
-            className={`absolute inset-0 transition-all duration-300 flex items-center justify-center pointer-events-none ${
-              isHovered ? "bg-black/0" : "bg-black/20"
-            }`}
-          />
-          <div className="absolute top-3 sm:top-4 left-3 sm:left-4 pointer-events-none">
-            <span className="px-3 py-1.5 rounded-full bg-black/65 backdrop-blur-xl border border-white/15 text-[9px] sm:text-[10px] uppercase tracking-widest font-bold text-white shadow-lg">
-              {item.tab}
-            </span>
-          </div>
-          <div className="absolute bottom-3 sm:bottom-4 right-3 sm:right-4 pointer-events-none">
-            <span className="px-3 py-1.5 rounded-full bg-black/65 backdrop-blur-xl border border-white/15 text-[9px] sm:text-[10px] uppercase tracking-wider text-white/90 shadow-lg">
-              Click to watch
-            </span>
-          </div>
-        </div>
-
-        <div className="p-3.5 sm:p-4 flex items-start justify-between gap-4">
-          <div className="min-w-0">
-            <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-[#B600A8] font-bold">
-              {item.category}
-            </span>
-            <h3 className="text-white font-semibold text-base sm:text-lg mt-0.5 sm:mt-1 leading-snug">
-              {item.title}
-            </h3>
-          </div>"use client";
-
-import React, { useRef, useState, useEffect, useMemo, useCallback } from "react";
-import { motion, AnimatePresence, useSpring, useMotionValue, useInView } from "framer-motion";
-
-// --- SVG SOCIAL & SOFTWARE ICONS ---
-
-const InstagramIcon = () => (
-  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-  </svg>
-);
-
-const FacebookIcon = () => (
-  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-    <path d="M9 8H6v4h3v12h5V12h3.642L18 8h-4V6.333C14 5.374 14.5 5 15.667 5H18V0h-3.889C10.5 0 9 1.582 9 4.615V8z" />
-  </svg>
-);
-
-const WhatsAppIcon = () => (
-  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
-  </svg>
-);
-
-const MailIcon = () => (
-  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-    <path d="M0 3v18h24v-18h-24zm6.623 7.929l-4.623 5.712v-9.458l4.623 3.746zm-4.141-5.929h19.035l-9.517 7.713-9.518-7.713zm5.694 7.188l3.824 3.099 3.83-3.104 5.612 6.817h-18.779l5.513-6.812zm9.208-1.264l4.616-3.741v9.348l-4.616-5.607z" />
-  </svg>
-);
-
-// --- REUSABLE ANIMATION COMPONENTS ---
-
-interface FadeInProps {
-  children: React.ReactNode;
-  delay?: number;
-  duration?: number;
-  x?: number;
-  y?: number;
-  className?: string;
-}
-
-const FadeIn: React.FC<FadeInProps> = ({
-  children,
-  delay = 0,
-  duration = 0.5,
-  x = 0,
-  y = 25,
-  className = "",
-}) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, x, y }}
-      whileInView={{ opacity: 1, x: 0, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{
-        duration,
-        delay,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-};
-
-// --- COUNT UP ANIMATION (0 -> Number) ---
-function CountUp({ target, suffix = "+" }: { target: number; suffix?: string }) {
-  const [count, setCount] = useState(0);
-  const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-50px" });
-
-  useEffect(() => {
-    if (!isInView) return;
-    let start = 0;
-    const duration = 1600;
-    const stepTime = 20;
-    const steps = duration / stepTime;
-    const increment = target / steps;
-
-    const timer = setInterval(() => {
-      start += increment;
-      if (start >= target) {
-        setCount(target);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(start));
-      }
-    }, stepTime);
-
-    return () => clearInterval(timer);
-  }, [isInView, target]);
-
-  return (
-    <span ref={ref}>
-      {count}
-      {suffix}
-    </span>
-  );
-}
-
-// --- MAGNETIC BUTTON COMPONENT ---
-function MagneticButton({
-  children,
-  href,
-  className = "",
-  style = {},
-  onClick,
-}: {
-  children: React.ReactNode;
-  href?: string;
-  className?: string;
-  style?: React.CSSProperties;
-  onClick?: () => void;
-}) {
-  const btnRef = useRef<HTMLAnchorElement>(null);
-  const [pos, setPos] = useState({ x: 0, y: 0 });
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (!btnRef.current) return;
-    const { left, top, width, height } = btnRef.current.getBoundingClientRect();
-    const centerX = left + width / 2;
-    const centerY = top + height / 2;
-    setPos({
-      x: (e.clientX - centerX) * 0.35,
-      y: (e.clientY - centerY) * 0.35,
-    });
-  };
-
-  const handleMouseLeave = () => {
-    setPos({ x: 0, y: 0 });
-  };
-
-  return (
-    <motion.a
-      ref={btnRef}
-      href={href}
-      onClick={onClick}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      animate={{ x: pos.x, y: pos.y }}
-      transition={{ type: "spring", stiffness: 250, damping: 15, mass: 0.1 }}
-      className={`inline-block ${className}`}
-      style={style}
-    >
-      {children}
-    </motion.a>
-  );
-}
-
-// --- MAGNETIC AVATAR COMPONENT ---
-interface MagnetProps {
-  children: React.ReactNode;
-  padding?: number;
-  strength?: number;
-  className?: string;
-}
-
-const Magnet: React.FC<MagnetProps> = ({
-  children,
-  padding = 180,
-  strength = 3.5,
-  className = "",
-}) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!ref.current) return;
-      const rect = ref.current.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      const dist = Math.hypot(e.clientX - centerX, e.clientY - centerY);
-
-      if (dist < rect.width / 2 + padding) {
-        setIsHovered(true);
-        setPosition({
-          x: (e.clientX - centerX) / strength,
-          y: (e.clientY - centerY) / strength,
-        });
-      } else {
-        setIsHovered(false);
-        setPosition({ x: 0, y: 0 });
-      }
-    };
-
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [padding, strength]);
-
-  return (
-    <div
-      ref={ref}
-      className={className}
-      style={{
-        transform: `translate3d(${position.x}px, ${position.y}px, 0)`,
-        transition: isHovered
-          ? "transform 0.25s cubic-bezier(0.25, 1, 0.5, 1)"
-          : "transform 0.7s cubic-bezier(0.25, 1, 0.5, 1)",
-        willChange: "transform",
-      }}
-    >
-      {children}
-    </div>
-  );
-};
 
 // --- DATA ---
 
 const softwareStack = [
-  { name: "Premiere Pro", tag: "Post-Production & Cutting", icon: "Pr" },
-  { name: "After Effects", tag: "Transitions & Text Animation", icon: "Ae" },
-  { name: "DaVinci Resolve", tag: "Color Grading & Mastering", icon: "Da" },
-  { name: "Photoshop", tag: "High-CTR Thumbnails", icon: "Ps" },
+  { name: "Premiere Pro", tag: "Cutting & Timeline Mastery", icon: "Pr" },
+  { name: "After Effects", tag: "Motion & Graphic Typography", icon: "Ae" },
+  { name: "DaVinci Resolve", tag: "Color Science & Mastering", icon: "Da" },
+  { name: "Photoshop", tag: "High-CTR Architectural Covers", icon: "Ps" },
 ];
 
 const processSteps = [
   {
     num: "01",
-    title: "Project Brief & Creative Vision",
+    title: "Creative Brief & Rhythm Conception",
     arabic: "الاتفاق وفهم فكرة الفيديو",
-    desc: "Understanding target audience, platform format, desired pacing, tone, and visual references.",
+    desc: "Dissecting audience psychology, platform kinetics, pacing tempo, and sonic vision before touching the timeline.",
   },
   {
     num: "02",
-    title: "Footage Upload & Assembly",
+    title: "Footage Intake & Media Assembly",
     arabic: "رفع الماتريال والفرز السريع",
-    desc: "Seamless footage reception via Drive/WeTransfer, organizing media and building initial rough cuts.",
+    desc: "Ingesting native source files via cloud storage, cataloging selects, and structuring narrative rough cuts.",
   },
   {
     num: "03",
-    title: "The First Cut & Sound Design",
+    title: "Editorial Cut & Layered Sound Design",
     arabic: "المونتاج، التقطيع والمؤثرات",
-    desc: "Applying dynamic cuts, animated pop-up subtitles, visual hooks, sound Foley, and color balancing.",
+    desc: "Applying dynamic match cuts, typographic kinetic cues, visual hooks, multi-layer Foley, and balance passes.",
   },
   {
     num: "04",
-    title: "Feedback & Revisions",
+    title: "Iterative Feedback & Micro-Tuning",
     arabic: "المراجعة والتعديلات السريعة",
-    desc: "Fine-tuning rhythm, subtitle cues, and visual flow based on your precise notes and vision.",
+    desc: "Refining frame-accurate subtitle timing, pacing transitions, and narrative rhythm against your direct notes.",
   },
   {
     num: "05",
-    title: "Final 4K Master Delivery",
+    title: "4K Master Delivery & Platform Staging",
     arabic: "التسليم النهائي بأعلى جودة",
-    desc: "Delivering crisp, native 4K/1080p high-bitrate master exports optimized for TikTok, Reels, and YouTube.",
+    desc: "Delivering crisp, native 4K/1080p high-bitrate master files tailored precisely for Reels, TikTok, and YouTube.",
   },
 ];
 
@@ -723,7 +130,7 @@ const videosData = [
   {
     id: "man-u",
     title: "Manchester United Highlight Cut",
-    category: "Sports",
+    category: "Sports Dynamics",
     tab: "commercial",
     src: "/video/Man-U.mp4",
     description: "Fast-paced football edit focused on rhythm, impact, typography and music synchronization.",
@@ -898,14 +305,14 @@ const packagesData = [
     id: "01",
     name: "The Spark Pack",
     arabicName: "Clean & Fast-Paced Cut",
-    priceUSD: "$10",
+    priceUSD: "\$10",
     priceEGP: "500 EGP",
     featured: false,
-    revisions: "1 Free Revision per video based on feedback",
+    revisions: "1 Revision pass per deliverable",
     driveLink: "https://drive.google.com/file/d/1Y97S6qk9JqmONHOk-BQcj1XO1piaa0KT/view?usp=drive_link",
     features: [
       "Dynamic cutting eliminating dead spaces to ensure fluid rhythm",
-      "Clean, readable, color-coded subtitles matching voice tempo",
+      "Clean, readable, color-coded subtitles matching vocal tempo",
       "Essential Color Correction paired with balanced background music",
     ],
   },
@@ -913,26 +320,26 @@ const packagesData = [
     id: "02",
     name: "The Viral Growth",
     arabicName: "High Retention & Engaging",
-    priceUSD: "$17",
+    priceUSD: "\$17",
     priceEGP: "850 EGP",
     featured: true,
-    revisions: "Up to 2 Revisions per video",
+    revisions: "Up to 2 Iterative revision rounds",
     driveLink: "https://drive.google.com/file/d/1WtLRXTR_r5RQPndULSfyAwIqst8j7YYX/view?usp=drive_link",
     features: [
-      "Retention-first pacing calculated to maximize completion rates",
-      "Dynamic Pop-up Subtitles reacting rhythmically to vocal emphasis",
+      "Retention-first pacing engineered to maximize completion rates",
+      "Dynamic kinetic subtitles reacting rhythmically to vocal emphasis",
       "Visual zooms, sound design impacts, risers, and Foley FX",
-      "Supporting B-roll and curated stock footage integration",
+      "Curated B-roll and contextual stock media integration",
     ],
   },
   {
     id: "03",
     name: "Cinematic Prime",
     arabicName: "Commercial & Brand Showcase",
-    priceUSD: "$24",
+    priceUSD: "\$24",
     priceEGP: "1,200 EGP",
     featured: false,
-    revisions: "Up to 3 Revisions per video",
+    revisions: "Up to 3 Comprehensive revisions",
     driveLink: "https://drive.google.com/file/d/19usAUA3dCWM4rYtLkX557m793uyGFLnW/view?usp=drive_link",
     features: [
       "Bespoke cinematic pacing tailored for corporate brands and creators",
@@ -945,24 +352,24 @@ const packagesData = [
 
 const generalTerms = [
   {
-    title: "Deposit & Payment Milestones",
-    desc: "A 25% upfront deposit is required prior to project start. The remaining 75% balance is settled upon final approval before delivery of unwatermarked master exports.",
+    title: "Milestone Agreement & Deposit",
+    desc: "A 25% commitment deposit initiates the timeline. The remaining 75% balance is settled upon final approval prior to unwatermarked master exports.",
   },
   {
-    title: "Short Video Duration",
-    desc: "Listed rates apply specifically to short-form reels and TikToks with a total duration not exceeding 60 seconds.",
+    title: "Video Duration Parameters",
+    desc: "Standard tier rates apply to short-form reels, TikToks, and Shorts with a total runtime under 60 seconds.",
   },
   {
-    title: "Scheduled Batch Delivery",
-    desc: "Deliveries are organized in clear, pre-scheduled batches agreed in advance to preserve craft precision and streamline production.",
+    title: "Batch Delivery Schedule",
+    desc: "Projects are batched and scheduled with fixed milestone dates to preserve technical precision and narrative quality.",
   },
   {
-    title: "Revisions Policy",
-    desc: "Please respect the revision allocation per tier. Any additional revision rounds beyond this scope are accommodated at a minor pre-agreed rate.",
+    title: "Revision Policy",
+    desc: "Revisions within scope are respected per tier. Structural script overhauls beyond the brief are accommodated at pre-agreed rates.",
   },
   {
-    title: "Raw Footage Submission",
-    desc: "Source footage should be uploaded in full native resolution via neatly organized Google Drive or WeTransfer links.",
+    title: "Native Raw Footage Delivery",
+    desc: "Source footage is received via structured Google Drive, Dropbox, or WeTransfer folders in maximum camera resolution.",
   },
 ];
 
@@ -971,311 +378,72 @@ const clientReviews = [
     quote: "Lil transformed our raw footage into high-retention commercial reels. The pacing, audio sync, and pop-up subtitles significantly boosted our engagement.",
     client: "Ahmed Abdelkareem",
     role: "Content Creator & Entrepreneur",
-    rating: "★★★★★",
   },
   {
     quote: "Exceptional turnaround and aesthetic sense. He understands video storytelling deeply, delivering flawless color grading and slick pacing without endless revisions.",
     client: "Sameh Othman",
     role: "Business Consultant",
-    rating: "★★★★★",
   },
   {
     quote: "The retention on our educational campaigns jumped noticeably after hiring Lil. The edits are razor sharp and the communication is clear and professional.",
     client: "Rania",
     role: "E-Learning Academy Lead",
-    rating: "★★★★★",
   },
   {
     quote: "Reliable, creative, and fast. His sound design and B-roll selection gave our commercial launches a truly cinematic presence.",
     client: "Maryam",
     role: "Commercial Brand Manager",
-    rating: "★★★★★",
   },
 ];
 
 const servicesList = [
   {
     num: "01",
-    name: "Video Editing & Post-Production",
-    desc: "Crafting engaging social media reels, commercial ads, and storytelling cuts with precise timing, match cuts, and visual rhythm.",
+    name: "Video Post-Production & Craft",
+    desc: "High-retention social reels, commercial campaigns, and narrative cuts with frame-accurate timing, match cuts, and visual rhythm.",
   },
   {
     num: "02",
-    name: "Color Grading & Look Dev",
-    desc: "Cinematic color grading and palette balancing tailored to capture the emotional mood and professional visual polish.",
+    name: "Color Grading & Cinematic Look Dev",
+    desc: "Color science, scene-matching, and palette balance in DaVinci Resolve to establish emotional mood and commercial polish.",
   },
   {
     num: "03",
-    name: "High-CTR Thumbnails & Graphic Art",
-    desc: "Eye-catching graphic design for YouTube thumbnails, sports graphics, and commercial social covers designed to maximize clicks.",
+    name: "Graphic Art & High-CTR Covers",
+    desc: "Architectural, eye-catching thumbnail and poster compositions built to command attention across competitive feeds.",
   },
   {
     num: "04",
-    name: "Layered Foley Sound Design",
-    desc: "Layered Foley sound design, impacts, risers, and music mixing that immerse viewers into the scene.",
+    name: "Immersive Foley & Sound Design",
+    desc: "Multi-track sound architecture, tactile foley, spatial risers, and vocal balancing that pulls the audience directly into the scene.",
   },
 ];
 
-// --- MARQUEE CARD ---
+// --- MAIN ATELIER COMPONENT ---
 
-function MarqueeCard({ item }: { item: (typeof marqueeItems)[0] }) {
-  const [isHovered, setIsHovered] = useState(false);
-
-  return (
-    <div
-      onMouseEnter={() => item.video && setIsHovered(true)}
-      onMouseLeave={() => item.video && setIsHovered(false)}
-      className="w-[240px] h-[340px] sm:w-[280px] sm:h-[390px] rounded-3xl border border-white/15 bg-white/[0.03] backdrop-blur-xl overflow-hidden shrink-0 shadow-2xl group relative cursor-pointer"
-    >
-      {isHovered && item.video ? (
-        <video
-          src={item.video}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          className="w-full h-full object-cover"
-        />
-      ) : (
-        <img
-          src={item.image}
-          alt={item.title}
-          loading="lazy"
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-        />
-      )}
-
-      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent flex flex-col justify-end p-5 pointer-events-none">
-        <span className="text-[11px] uppercase tracking-widest text-[#B600A8] font-bold">
-          {item.category}
-          {item.video && !isHovered ? " • Hover to Preview" : ""}
-        </span>
-
-        <h4 className="text-white font-semibold text-base truncate mt-1">
-          {item.title}
-        </h4>
-      </div>
-    </div>
-  );
-}
-
-// --- VIDEO CARD ---
-
-function VideoCard({
-  item,
-  index,
-  onOpen,
-}: {
-  item: (typeof videosData)[0];
-  index: number;
-  onOpen: (item: (typeof videosData)[0]) => void;
-}) {
-  const [isHovered, setIsHovered] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const midPointRef = useRef<number>(1);
-
-  const handleLoadedMetadata = () => {
-    if (videoRef.current) {
-      const midTime = videoRef.current.duration > 2 ? videoRef.current.duration * 0.35 : 1;
-      midPointRef.current = midTime;
-      videoRef.current.currentTime = midTime;
-    }
-  };
-
-  const handleEnter = () => {
-    setIsHovered(true);
-    if (videoRef.current) {
-      videoRef.current.currentTime = 0;
-      videoRef.current.muted = true;
-      const playPromise = videoRef.current.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(() => {});
-      }
-    }
-  };
-
-  const handleLeave = () => {
-    setIsHovered(false);
-    if (videoRef.current) {
-      videoRef.current.pause();
-      videoRef.current.currentTime = midPointRef.current;
-    }
-  };
-
-  return (
-    <FadeIn delay={index * 0.05}>
-      <motion.div
-        whileHover={{ y: -8, scale: 1.01 }}
-        transition={{ duration: 0.3 }}
-        className="bg-white/[0.04] backdrop-blur-2xl border border-white/15 rounded-[28px] sm:rounded-[34px] overflow-hidden p-3 sm:p-3.5 shadow-[0_12px_40px_rgba(0,0,0,0.6)] flex flex-col justify-between h-full group hover:border-[#B600A8]/60 hover:shadow-[0_0_35px_rgba(182,0,168,0.25)] transition-all duration-300"
-      >
-        <div
-          onMouseEnter={handleEnter}
-          onMouseLeave={handleLeave}
-          onClick={() => onOpen(item)}
-          className="rounded-[20px] sm:rounded-[24px] overflow-hidden aspect-[9/16] w-full bg-black relative cursor-pointer"
-        >
-          <video
-            ref={videoRef}
-            src={item.src}
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            onLoadedMetadata={handleLoadedMetadata}
-            className="w-full h-full object-cover"
-          />
-
-          <div
-            className={`absolute inset-0 transition-all duration-300 flex items-center justify-center pointer-events-none ${
-              isHovered ? "bg-black/0" : "bg-black/20"
-            }`}
-          />
-
-          <div className="absolute top-3 sm:top-4 left-3 sm:left-4 pointer-events-none">
-            <span className="px-3 py-1.5 rounded-full bg-black/65 backdrop-blur-xl border border-white/15 text-[9px] sm:text-[10px] uppercase tracking-widest font-bold text-white shadow-lg">
-              {item.tab}
-            </span>
-          </div>
-
-          <div className="absolute bottom-3 sm:bottom-4 right-3 sm:right-4 pointer-events-none">
-            <span className="px-3 py-1.5 rounded-full bg-black/65 backdrop-blur-xl border border-white/15 text-[9px] sm:text-[10px] uppercase tracking-wider text-white/90 shadow-lg">
-              Click to watch
-            </span>
-          </div>
-        </div>
-
-        <div className="p-3.5 sm:p-4 flex items-start justify-between gap-4">
-          <div className="min-w-0">
-            <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-[#B600A8] font-bold">
-              {item.category}
-            </span>
-
-            <h3 className="text-white font-semibold text-base sm:text-lg mt-0.5 sm:mt-1 leading-snug">
-              {item.title}
-            </h3>
-          </div>
-
-          <button
-            onClick={() => onOpen(item)}
-            className="shrink-0 text-[11px] sm:text-xs uppercase font-bold text-white/50 hover:text-[#B600A8] transition-colors pt-1"
-          >
-            Expand ↗
-          </button>
-        </div>
-      </motion.div>
-    </FadeIn>
-  );
-}
-
-// --- MAIN COMPONENT ---
-
-export default function Home() {
+export default function AtelierHome() {
   const [currencyMode, setCurrencyMode] = useState<"ALL" | "USD" | "EGP">("ALL");
   const [selectedVideoTab, setSelectedVideoTab] = useState<"all" | "reels" | "commercial" | "cinematic">("all");
-  const [isVideoMenuOpen, setIsVideoMenuOpen] = useState(true);
-  const [isThumbnailsMenuOpen, setIsThumbnailsMenuOpen] = useState(false);
   const [activeModalVideo, setActiveModalVideo] = useState<(typeof videosData)[0] | null>(null);
+  const [isWorkflowOpen, setIsWorkflowOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [typedText, setTypedText] = useState("");
-  const marqueeRef = useRef<HTMLDivElement>(null);
-  const [scrollOffset, setScrollOffset] = useState(0);
   const modalVideoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(true);
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const [isModalMuted, setIsModalMuted] = useState(false);
 
-  // --- WORKFLOW MODAL STATE ---
-  const [isWorkflowOpen, setIsWorkflowOpen] = useState(false);
-
-  // --- FAST & DIRECT MOUSE TRACKING ---
-  const mouseX = useMotionValue(-200);
-  const mouseY = useMotionValue(-200);
-  const cursorRotation = useMotionValue(0);
-
-  const smoothX = useSpring(mouseX, { damping: 45, stiffness: 1000, mass: 0.1 });
-  const smoothY = useSpring(mouseY, { damping: 45, stiffness: 1000, mass: 0.1 });
-  const smoothRotation = useSpring(cursorRotation, { damping: 28, stiffness: 400 });
-
-  const prevMouseXRef = useRef(0);
-
-  useEffect(() => {
-    document.documentElement.style.cursor = "none";
-    document.body.style.cursor = "none";
-
-    const styleEl = document.createElement("style");
-    styleEl.innerHTML = `
-      @media (min-width: 768px) {
-        *, *::before, *::after, html, body, a, button, [role="button"], video, input {
-          cursor: none !important;
-        }
-      }
-    `;
-    document.head.appendChild(styleEl);
-
-    return () => {
-      document.documentElement.style.cursor = "auto";
-      document.body.style.cursor = "auto";
-      if (styleEl.parentNode) styleEl.parentNode.removeChild(styleEl);
-    };
-  }, []);
-
-  // Typewriter
-  useEffect(() => {
-    const fullText = "Hi, i'm Lil";
-    let index = 0;
-
-    const interval = setInterval(() => {
-      setTypedText(fullText.slice(0, index + 1));
-      index++;
-
-      if (index >= fullText.length) {
-        clearInterval(interval);
-      }
-    }, 120);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  // Scroll & Mouse Tracking
+  // Scroll listener
   useEffect(() => {
     const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 500);
-
-      if (!marqueeRef.current) return;
-      const rect = marqueeRef.current.getBoundingClientRect();
-      const sectionTop = window.scrollY + rect.top;
-      const offset = (window.scrollY - sectionTop + window.innerHeight) * 0.3;
-      setScrollOffset(offset);
+      setShowScrollTop(window.scrollY > 400);
     };
-
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseX.set(e.clientX);
-      mouseY.set(e.clientY);
-
-      const deltaX = e.clientX - prevMouseXRef.current;
-      prevMouseXRef.current = e.clientX;
-      const targetRotation = Math.max(Math.min(deltaX * 0.7, 20), -20);
-      cursorRotation.set(targetRotation);
-    };
-
     window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
-    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, [mouseX, mouseY, cursorRotation]);
-
+  // Modal Video controls
   const closeModal = useCallback(() => {
-    if (modalVideoRef.current) {
-      modalVideoRef.current.pause();
-    }
+    if (modalVideoRef.current) modalVideoRef.current.pause();
     setActiveModalVideo(null);
-    setIsFullscreen(false);
   }, []);
 
   const openModal = useCallback((video: (typeof videosData)[0]) => {
@@ -1284,32 +452,25 @@ export default function Home() {
   }, []);
 
   const currentVideoIndex = activeModalVideo
-    ? videosData.findIndex((video) => video.id === activeModalVideo.id)
+    ? videosData.findIndex((v) => v.id === activeModalVideo.id)
     : -1;
 
   const goNext = useCallback(() => {
     if (currentVideoIndex === -1) return;
-    const nextIndex = (currentVideoIndex + 1) % videosData.length;
-    setActiveModalVideo(videosData[nextIndex]);
+    setActiveModalVideo(videosData[(currentVideoIndex + 1) % videosData.length]);
     setIsPlaying(true);
   }, [currentVideoIndex]);
 
   const goPrevious = useCallback(() => {
     if (currentVideoIndex === -1) return;
-    const previousIndex = (currentVideoIndex - 1 + videosData.length) % videosData.length;
-    setActiveModalVideo(videosData[previousIndex]);
+    setActiveModalVideo(videosData[(currentVideoIndex - 1 + videosData.length) % videosData.length]);
     setIsPlaying(true);
   }, [currentVideoIndex]);
 
-  // Keyboard Shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!activeModalVideo) return;
-
-      if (e.key === "Escape") {
-        closeModal();
-        setIsWorkflowOpen(false);
-      }
+      if (e.key === "Escape") closeModal();
       if (e.key === "ArrowRight") goNext();
       if (e.key === "ArrowLeft") goPrevious();
       if (e.key === " ") {
@@ -1323,9 +484,7 @@ export default function Home() {
           setIsPlaying(false);
         }
       }
-      if (e.key.toLowerCase() === "f") toggleFullscreen();
     };
-
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [activeModalVideo, closeModal, goNext, goPrevious]);
@@ -1333,1053 +492,122 @@ export default function Home() {
   useEffect(() => {
     if (activeModalVideo && modalVideoRef.current) {
       modalVideoRef.current.currentTime = 0;
-      const playPromise = modalVideoRef.current.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(() => {
-          if (modalVideoRef.current) {
-            modalVideoRef.current.muted = true;
-            setIsModalMuted(true);
-            modalVideoRef.current.play().catch(() => {});
-          }
-        });
-      }
+      modalVideoRef.current.play().catch(() => {
+        if (modalVideoRef.current) {
+          modalVideoRef.current.muted = true;
+          setIsModalMuted(true);
+          modalVideoRef.current.play().catch(() => {});
+        }
+      });
     }
   }, [activeModalVideo]);
 
-  const toggleSound = () => {
-    if (!modalVideoRef.current) return;
-    modalVideoRef.current.muted = !modalVideoRef.current.muted;
-    setIsModalMuted(modalVideoRef.current.muted);
-  };
-
-  const toggleFullscreen = async () => {
-    try {
-      if (!modalVideoRef.current) return;
-      if (!document.fullscreenElement) {
-        await modalVideoRef.current.requestFullscreen();
-        setIsFullscreen(true);
-      } else {
-        await document.exitFullscreen();
-        setIsFullscreen(false);
-      }
-    } catch {
-      setIsFullscreen(false);
-    }
-  };
-
   const filteredVideos = useMemo(() => {
     if (selectedVideoTab === "all") return videosData;
-    return videosData.filter((video) => video.tab === selectedVideoTab);
+    return videosData.filter((v) => v.tab === selectedVideoTab);
   }, [selectedVideoTab]);
 
-  const tripleMarqueeItems = [...marqueeItems, ...marqueeItems, ...marqueeItems];
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   return (
-    <>
-      {/* مؤشر الماوس النيون المستقل تماماً */}
-      <motion.div
-        className="pointer-events-none fixed top-0 left-0 z-[999999] hidden md:block"
-        style={{
-          x: smoothX,
-          y: smoothY,
-          rotate: smoothRotation,
-          translateX: "-3px",
-          translateY: "-3px",
-        }}
-      >
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          style={{
-            filter: "drop-shadow(0 0 4px #B600A8) drop-shadow(0 0 10px #B600A8)",
-          }}
-        >
-          <path
-            d="M3 3L10.5 21L13.5 13.5L21 10.5L3 3Z"
-            fill="#FFFFFF"
-            stroke="#B600A8"
-            strokeWidth="1.6"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </motion.div>
+    <div className="bg-[#130e09] text-white selection:bg-white selection:text-[#130e09] font-sans antialiased min-h-screen relative overflow-x-hidden">
+      
+      {/* BACKGROUND EDITORIAL GRID */}
+      <div className="fixed inset-0 pointer-events-none z-0 flex opacity-30" aria-hidden="true">
+        {Array.from({ length: 12 }).map((_, i) => (
+          <div key={i} className="flex-1 border-r border-white/[0.035] h-full" />
+        ))}
+      </div>
 
-      {/* --- WORKFLOW MODAL POPUP --- */}
-      <AnimatePresence>
-        {isWorkflowOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setIsWorkflowOpen(false)}
-            className="fixed inset-0 z-[150] bg-black/90 backdrop-blur-2xl flex items-center justify-center p-4 sm:p-6"
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto bg-[#121216] border border-white/20 rounded-[36px] p-6 sm:p-10 shadow-[0_0_60px_rgba(182,0,168,0.3)] custom-scrollbar"
+      {/* --- HERO SECTION (ATELIER STRUCTURE) --- */}
+      <section className="relative w-full h-[100dvh] min-h-[640px] flex flex-col justify-between overflow-hidden bg-gradient-to-b from-[#0d0905] via-[#0d0a05] to-[#130e09] border-b border-white/[0.08] z-10 px-6 sm:px-12 pt-6 pb-8">
+        
+        {/* BACKGROUND AMBIENT VIDEO WITH SOFT MASKS */}
+        <div className="absolute inset-0 z-0 pointer-events-none opacity-45 flex items-center justify-center">
+          <div className="w-full h-full max-w-6xl aspect-video relative [mask-image:radial-gradient(ellipse_70%_70%_at_50%_45%,black_20%,transparent_90%)]">
+            <video
+              src="/video/The-Odyssey.mp4"
+              muted
+              loop
+              autoPlay
+              playsInline
+              className="w-full h-full object-cover grayscale contrast-125 brightness-75"
+            />
+          </div>
+        </div>
+
+        {/* TOP BAR / NAVIGATION */}
+        <header className="relative z-20 flex flex-wrap items-start justify-between gap-6 text-[11px] sm:text-[12px] uppercase tracking-[-0.03em] text-white/80">
+          {/* LOGO */}
+          <a href="#" className="flex items-center gap-2.5 group">
+            <svg viewBox="0 0 142.6 30.0" className="w-24 sm:w-28 h-auto fill-white group-hover:opacity-75 transition-opacity">
+              <rect x="0.00" y="0.00" width="8.2" height="8.2" />
+              <rect x="19.20" y="0.00" width="8.2" height="8.2" />
+              <rect x="76.80" y="0.00" width="8.2" height="8.2" />
+              <rect x="115.20" y="0.00" width="8.2" height="8.2" />
+              <rect x="57.60" y="10.90" width="8.2" height="8.2" />
+              <rect x="134.40" y="10.90" width="8.2" height="8.2" />
+              <rect x="0.00" y="21.80" width="8.2" height="8.2" />
+            </svg>
+            <span className="font-bold tracking-widest text-[10px] text-white/40 border-l border-white/20 pl-2">LIL UNIT</span>
+          </a>
+
+          {/* TAGLINE */}
+          <div className="hidden md:block leading-snug text-white/60">
+            <span>Craftwork & Editorial Systems.</span>
+            <br />
+            <span>Shaped by culture. Built with pacing & technology.</span>
+          </div>
+
+          {/* CONTACT INFO */}
+          <div className="hidden lg:block leading-snug">
+            <a href="mailto:ebrahimfadel8903@gmail.com" className="hover:text-white transition-colors underline decoration-white/20 underline-offset-4">
+              ebrahimfadel8903@gmail.com
+            </a>
+            <div className="text-white/40">Cairo / Global, EST 2026</div>
+          </div>
+
+          {/* ACTIONS */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsWorkflowOpen(true)}
+              className="px-3.5 py-1.5 bg-[#fcfcfc] text-[#141414] font-semibold text-[11px] tracking-tight hover:bg-white transition-colors flex items-center gap-1.5 shadow-sm"
             >
-              <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/10">
-                <div>
-                  <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
-                    Production Pipeline
-                  </span>
-                  <h3 className="text-2xl sm:text-3xl font-black text-white mt-1">
-                    Editing Workflow
-                  </h3>
-                </div>
-
-                <button
-                  onClick={() => setIsWorkflowOpen(false)}
-                  className="w-10 h-10 rounded-full bg-white/10 border border-white/20 text-white flex items-center justify-center text-lg hover:bg-[#B600A8] transition-all"
-                >
-                  ✕
-                </button>
-              </div>
-
-              <div className="relative border-l-2 border-white/15 ml-4 pl-6 space-y-8">
-                {processSteps.map((step, idx) => (
-                  <div key={step.num} className="relative group">
-                    <div className="absolute -left-[31px] top-1.5 w-5 h-5 rounded-full bg-[#0A0A0A] border-2 border-[#B600A8] flex items-center justify-center shadow-[0_0_12px_rgba(182,0,168,0.8)]">
-                      <div className="w-1.5 h-1.5 rounded-full bg-white" />
-                    </div>
-
-                    <div className="p-5 rounded-2xl bg-white/[0.04] border border-white/10 hover:border-[#B600A8]/50 transition-all">
-                      <div className="flex items-center justify-between gap-2 mb-1.5">
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-mono text-[#B600A8] font-bold px-2 py-0.5 rounded bg-[#B600A8]/20 border border-[#B600A8]/40">
-                            STEP {step.num}
-                          </span>
-                          <h4 className="text-base font-bold text-white">{step.title}</h4>
-                        </div>
-                        <span className="text-xs text-[#D7E2EA]/60">{step.arabic}</span>
-                      </div>
-                      <p className="text-xs sm:text-sm text-[#D7E2EA]/75 leading-relaxed">
-                        {step.desc}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-8 pt-4 border-t border-white/10 text-center">
-                <button
-                  onClick={() => setIsWorkflowOpen(false)}
-                  className="px-6 py-2.5 rounded-full bg-[#B600A8] text-white text-xs font-bold uppercase tracking-widest shadow-lg hover:bg-[#9d0091] transition-all"
-                >
-                  Got It, Let&apos;s Start
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <main
-        dir="ltr"
-        className="relative w-full min-h-screen bg-[#0A0A0A] text-[#D7E2EA] selection:bg-[#B600A8] selection:text-white overflow-x-hidden"
-      >
-        {/* VIDEO THEATER MODE */}
-        <AnimatePresence>
-          {activeModalVideo && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={closeModal}
-              className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-3xl flex items-center justify-center p-2 sm:p-6"
-            >
-              <div className="absolute top-3 sm:top-6 left-3 sm:left-6 right-3 sm:right-6 z-[130] flex items-center justify-between pointer-events-none">
-                <div className="pointer-events-auto">
-                  <span className="px-3.5 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-2xl text-[10px] sm:text-xs uppercase tracking-widest text-[#B600A8] font-bold shadow-2xl">
-                    {currentVideoIndex + 1} / {videosData.length}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2.5 pointer-events-auto">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleSound();
-                    }}
-                    className="px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-2xl text-white text-xs font-bold hover:bg-[#B600A8] transition-all flex items-center gap-1.5 shadow-xl"
-                  >
-                    {isModalMuted ? "🔇 UNMUTE" : "🔊 MUTE"}
-                  </button>
-
-                  <button
-                    onClick={closeModal}
-                    className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/10 border border-white/20 backdrop-blur-2xl text-white flex items-center justify-center text-lg hover:bg-[#B600A8] transition-all shadow-xl"
-                    aria-label="Close video"
-                  >
-                    ✕
-                  </button>
-                </div>
-              </div>
-
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  goPrevious();
-                }}
-                className="absolute left-2 sm:left-6 z-[120] w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-black/60 border border-white/20 backdrop-blur-2xl text-white flex items-center justify-center text-xl hover:bg-[#B600A8] transition-all shadow-2xl"
-                aria-label="Previous video"
-              >
-                ←
-              </button>
-
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  goNext();
-                }}
-                className="absolute right-2 sm:right-6 z-[120] w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-black/60 border border-white/20 backdrop-blur-2xl text-white flex items-center justify-center text-xl hover:bg-[#B600A8] transition-all shadow-2xl"
-                aria-label="Next video"
-              >
-                →
-              </button>
-
-              <motion.div
-                initial={{ scale: 0.94, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.94, opacity: 0 }}
-                transition={{ duration: 0.25 }}
-                onClick={(e) => e.stopPropagation()}
-                className="relative w-full max-w-[380px] sm:max-w-sm h-[84dvh] sm:h-[88vh] aspect-[9/16] bg-black rounded-[30px] sm:rounded-[38px] overflow-hidden border border-white/20 shadow-[0_0_80px_rgba(182,0,168,0.35)]"
-              >
-                <video
-                  key={activeModalVideo.id}
-                  ref={modalVideoRef}
-                  src={activeModalVideo.src}
-                  autoPlay
-                  controls
-                  playsInline
-                  loop
-                  preload="auto"
-                  onPlay={() => setIsPlaying(true)}
-                  onPause={() => setIsPlaying(false)}
-                  className="w-full h-full object-cover bg-black"
-                />
-
-                <div className="absolute left-0 right-0 bottom-0 pointer-events-none p-5 sm:p-7 bg-gradient-to-t from-black via-black/85 to-transparent">
-                  <div className="max-w-2xl">
-                    <span className="text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] text-[#B600A8] font-bold">
-                      {activeModalVideo.category}
-                    </span>
-
-                    <h3 className="text-white font-bold text-base sm:text-xl mt-0.5 leading-snug">
-                      {activeModalVideo.title}
-                    </h3>
-
-                    <p className="hidden sm:block text-white/70 text-xs sm:text-sm mt-1.5 max-w-xl leading-relaxed">
-                      {activeModalVideo.description}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="absolute top-4 left-4 right-4 flex justify-between pointer-events-none">
-                  <div className="flex gap-2 pointer-events-auto">
-                    <button
-                      onClick={() => {
-                        if (!modalVideoRef.current) return;
-                        if (modalVideoRef.current.paused) {
-                          modalVideoRef.current.play().catch(() => {});
-                          setIsPlaying(true);
-                        } else {
-                          modalVideoRef.current.pause();
-                          setIsPlaying(false);
-                        }
-                      }}
-                      className="w-10 h-10 rounded-full bg-black/60 border border-white/20 backdrop-blur-xl text-white flex items-center justify-center hover:bg-[#B600A8] transition-colors"
-                      aria-label={isPlaying ? "Pause" : "Play"}
-                    >
-                      {isPlaying ? "Ⅱ" : "▶"}
-                    </button>
-                  </div>
-
-                  <button
-                    onClick={toggleFullscreen}
-                    className="pointer-events-auto w-10 h-10 rounded-full bg-black/60 border border-white/20 backdrop-blur-xl text-white flex items-center justify-center hover:bg-[#B600A8] transition-colors"
-                    aria-label="Fullscreen"
-                  >
-                    ⛶
-                  </button>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* HERO SECTION */}
-        <section className="relative min-h-screen flex flex-col justify-between overflow-x-clip bg-[#0A0A0A] pb-8">
-          <FadeIn delay={0} y={-20} className="w-full z-30">
-            <nav className="flex justify-between items-center px-6 md:px-10 py-4 md:py-5 mt-4 mx-4 md:mx-10 rounded-3xl bg-white/[0.03] backdrop-blur-2xl border border-white/10 text-xs md:text-sm font-medium tracking-wider uppercase gap-6 shadow-2xl">
-              <div className="flex gap-4 sm:gap-7 items-center flex-wrap">
-                <a href="#about" className="hover:text-[#B600A8] transition-colors">About</a>
-                <button
-                  onClick={() => setIsWorkflowOpen(true)}
-                  className="text-[#D7E2EA] hover:text-[#B600A8] transition-colors uppercase tracking-wider font-semibold cursor-pointer"
-                >
-                  Workflow ↗
-                </button>
-                <a href="#videos" className="hover:text-[#B600A8] transition-colors">Videos</a>
-                <a href="#price" className="hover:text-[#B600A8] transition-colors">Pricing</a>
-                <a href="#reviews" className="hover:text-[#B600A8] transition-colors">Reviews</a>
-                <a href="#thumbnails" className="hover:text-[#B600A8] transition-colors">Thumbnails</a>
-                <a href="#services" className="hover:text-[#B600A8] transition-colors">Services</a>
-              </div>
-
-              <div className="flex items-center gap-3 shrink-0">
-                <a
-                  href="https://www.instagram.com/ebrahimfadel_8/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Instagram"
-                  className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300"
-                >
-                  <InstagramIcon />
-                </a>
-
-                <a
-                  href="https://www.facebook.com/EbrahimFadel8"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Facebook"
-                  className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300"
-                >
-                  <FacebookIcon />
-                </a>
-
-                <a
-                  href="https://wa.me/201211871199"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="WhatsApp"
-                  className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-[#25D366] hover:border-[#25D366] hover:bg-[#25D366]/10 transition-all duration-300"
-                >
-                  <WhatsAppIcon />
-                </a>
-
-                <a
-                  href="mailto:ebrahimfadel8903@gmail.com"
-                  aria-label="Email"
-                  className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300"
-                >
-                  <MailIcon />
-                </a>
-              </div>
-            </nav>
-          </FadeIn>
-
-          <div className="overflow-hidden w-full select-none my-auto">
-            <FadeIn delay={0.15} y={40}>
-              <h1 className="hero-heading font-black uppercase tracking-tight leading-none whitespace-nowrap w-full text-center text-[15vw] sm:text-[16vw] md:text-[18vw] inline-flex items-center justify-center">
-                <span>{typedText}</span>
-                <span className="text-[#B600A8] animate-pulse ml-2 font-light">|</span>
-              </h1>
-            </FadeIn>
-          </div>
-
-          <div className="absolute left-1/2 -translate-x-1/2 z-10 bottom-16 sm:bottom-10 pointer-events-auto">
-            <FadeIn delay={0.4} y={30}>
-              <Magnet padding={180} strength={3.5}>
-                <img
-                  src="/images/avatar.png"
-                  alt="Lil Portrait"
-                  className="w-[260px] sm:w-[340px] md:w-[420px] lg:w-[480px] object-contain select-none pointer-events-none drop-shadow-[0_20px_40px_rgba(0,0,0,0.85)]"
-                />
-              </Magnet>
-            </FadeIn>
-          </div>
-
-          <div className="flex flex-col sm:flex-row justify-between items-center sm:items-end px-6 md:px-10 gap-6 z-20 mt-12 sm:mt-0">
-            <FadeIn delay={0.3} y={20}>
-              <p className="text-[#D7E2EA] font-light leading-snug max-w-[280px] text-center sm:text-start text-xs sm:text-sm md:text-base opacity-80 uppercase tracking-wide">
-                Senior video editor shaping memorable visual stories
-              </p>
-            </FadeIn>
-
-            <FadeIn delay={0.4} y={20} className="flex gap-3 items-center">
-              <MagneticButton
-                href="#videos"
-                className="rounded-full border-2 border-white/20 bg-white/[0.04] backdrop-blur-xl text-[#D7E2EA] font-medium uppercase tracking-widest px-6 py-2.5 text-xs sm:text-sm hover:bg-white/15 transition-colors shadow-lg"
-              >
-                Watch Videos
-              </MagneticButton>
-
-              <MagneticButton
-                href="#contact"
-                className="rounded-full uppercase tracking-widest font-semibold text-white px-7 py-3 text-xs sm:text-sm shadow-xl"
-                style={{
-                  background: "linear-gradient(123deg, #18011F 7%, #B600A8 37%, #7621B0 72%, #BE4C00 100%)",
-                  boxShadow: "0px 4px 4px rgba(181, 1, 167, 0.25), inset 4px 4px 12px #7721B1",
-                  outline: "2px solid #FFFFFF",
-                  outlineOffset: "-3px",
-                }}
-              >
-                Get in touch
-              </MagneticButton>
-            </FadeIn>
-          </div>
-        </section>
-
-        {/* MARQUEE WITH DRAG HINT & VIEW ALL VIDEOS CTA */}
-        <section
-          ref={marqueeRef}
-          className="bg-[#0A0A0A] pt-16 pb-12 overflow-hidden flex flex-col gap-6 border-y border-white/5"
-        >
-          <div className="max-w-7xl mx-auto px-6 md:px-12 w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div>
-              <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
-                ← Drag / Scroll to Explore →
-              </span>
-              <h3 className="text-white text-xl sm:text-2xl font-bold mt-1">
-                Featured Highlights & Posters
-              </h3>
-            </div>
-
+              <span>Workflow</span>
+              <span className="text-[9px]">↗</span>
+            </button>
             <a
-              href="#videos"
-              className="px-5 py-2.5 rounded-full bg-white/5 border border-white/15 text-white text-xs uppercase font-bold tracking-wider hover:bg-[#B600A8] hover:border-[#B600A8] transition-all flex items-center gap-2 shadow-lg"
+              href="https://wa.me/201211871199"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3 py-1.5 border border-white/20 hover:border-white/50 text-white transition-colors"
             >
-              <span>View All Videos</span>
-              <span>↗</span>
+              WhatsApp
             </a>
           </div>
+        </header>
 
-          <div
-            className="flex gap-4 whitespace-nowrap"
-            style={{
-              transform: `translateX(${scrollOffset - 150}px)`,
-              willChange: "transform",
-            }}
-          >
-            {tripleMarqueeItems.map((item, i) => (
-              <MarqueeCard key={i} item={item} />
-            ))}
+        {/* MID-LINE: SERVICE TICKER WITH HAIRLINE RULE */}
+        <div className="relative z-20 my-auto">
+          <div className="flex justify-between items-center text-[11px] sm:text-[13px] tracking-[-0.04em] text-white/90 pb-3">
+            <span>[01] Post-Production & Cutting</span>
+            <span className="hidden sm:inline">[02] Kinetic Typography & Hooks</span>
+            <span>[03] DaVinci Color & Sound Foley</span>
           </div>
-        </section>
+          <div className="w-full h-px bg-white/[0.12] shadow-[0_1px_0_rgba(255,255,255,0.03)]" />
+        </div>
 
-        {/* ABOUT */}
-        <section id="about" className="py-24 px-6 md:px-12 bg-[#0A0A0A]">
-          <div className="max-w-5xl mx-auto">
-            <FadeIn delay={0} y={30} className="text-center mb-16">
-              <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
-                Background & Track Record
-              </span>
-              <h2 className="hero-heading font-black uppercase text-4xl sm:text-6xl md:text-7xl mt-2">
-                Who Am I
-              </h2>
-            </FadeIn>
-
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-              <FadeIn delay={0.1} className="md:col-span-7 bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[32px] p-8 sm:p-10 shadow-2xl">
-                <h3 className="text-2xl font-bold text-white mb-4">
-                  Hey, I&apos;m Lil — Senior Video Editor
-                </h3>
-
-                <p className="text-[#D7E2EA]/80 leading-relaxed text-base sm:text-lg mb-6">
-                  Specialized in building high-retention visual assets that captivate audiences. With extensive experience across Adobe Premiere Pro, After Effects, and DaVinci Resolve, I bridge the gap between creative storytelling, surgical audio design, and conversion-driven marketing.
-                </p>
-
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-white/10 text-center mb-8">
-                  <div>
-                    <div className="text-2xl sm:text-3xl font-black text-white font-mono">
-                      <CountUp target={4} suffix="+" />
-                    </div>
-                    <div className="text-[10px] sm:text-[11px] text-[#D7E2EA]/60 uppercase tracking-wider mt-1">Years Experience</div>
-                  </div>
-
-                  <div>
-                    <div className="text-2xl sm:text-3xl font-black text-white font-mono">
-                      <CountUp target={350} suffix="+" />
-                    </div>
-                    <div className="text-[10px] sm:text-[11px] text-[#D7E2EA]/60 uppercase tracking-wider mt-1">Videos Delivered</div>
-                  </div>
-
-                  <div>
-                    <div className="text-2xl sm:text-3xl font-black text-white font-mono">
-                      <CountUp target={20} suffix="+" />
-                    </div>
-                    <div className="text-[10px] sm:text-[11px] text-[#D7E2EA]/60 uppercase tracking-wider mt-1">Brands & Creators</div>
-                  </div>
-
-                  <div>
-                    <div className="text-2xl sm:text-3xl font-black text-white font-mono">
-                      <CountUp target={45} suffix="%" />
-                    </div>
-                    <div className="text-[10px] sm:text-[11px] text-[#D7E2EA]/60 uppercase tracking-wider mt-1">Retention Growth</div>
-                  </div>
-                </div>
-
-                <div className="pt-6 border-t border-white/10">
-                  <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold block mb-4">
-                    Primary Software Suite
-                  </span>
-
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    {softwareStack.map((soft, idx) => (
-                      <div
-                        key={idx}
-                        className="p-3 rounded-2xl bg-white/[0.02] border border-white/10 flex flex-col items-center text-center hover:border-[#B600A8]/60 transition-colors"
-                      >
-                        <span className="w-9 h-9 rounded-xl bg-[#B600A8]/20 border border-[#B600A8]/40 text-[#B600A8] font-black text-sm flex items-center justify-center mb-2">
-                          {soft.icon}
-                        </span>
-                        <h4 className="text-white text-xs font-semibold">{soft.name}</h4>
-                        <p className="text-[10px] text-white/50 mt-0.5 leading-tight">{soft.tag}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </FadeIn>
-
-              <FadeIn delay={0.2} className="md:col-span-5 bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[32px] p-8 sm:p-10 flex flex-col justify-between h-full shadow-2xl">
-                <div>
-                  <span className="text-xs uppercase tracking-widest text-[#B600A8] font-semibold">
-                    Client Deliverables
-                  </span>
-
-                  <h4 className="text-xl font-bold text-white mt-1 mb-4">
-                    Creators & Brands I&apos;ve Edited For
-                  </h4>
-
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {["Ahmed Abdelkareem", "Sameh Othman", "Maryam", "Sawsan", "Yasmine", "Rania", "Mai"].map((client, idx) => (
-                      <div
-                        key={idx}
-                        className="px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-[#D7E2EA]/90 flex items-center gap-1.5"
-                      >
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#B600A8]" />
-                        <span>{client}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="pt-4 border-t border-white/10">
-                  <MagneticButton
-                    href="#contact"
-                    className="block text-center w-full py-3 rounded-full bg-white/10 hover:bg-[#B600A8] text-white text-xs font-bold uppercase tracking-wider transition-colors shadow-lg"
-                  >
-                    Book Your Project
-                  </MagneticButton>
-                </div>
-              </FadeIn>
-            </div>
+        {/* BIG ARCHITECTURAL HEADLINE */}
+        <div className="relative z-20 flex flex-col justify-end pt-8">
+          <div className="text-[10px] sm:text-[12px] uppercase font-mono tracking-[0.25em] text-white/50 mb-2">
+            Senior Video Editor & Narrative Director
           </div>
-        </section>
-
-        {/* FEATURED VIDEOS */}
-        <section
-          id="videos"
-          className="py-20 sm:py-24 px-4 sm:px-8 md:px-12 bg-[#0A0A0A] border-t border-white/5"
-        >
-          <div className="max-w-6xl mx-auto">
-            <FadeIn delay={0} y={30} className="text-center mb-8">
-              <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
-                Interactive Video Portfolio
-              </span>
-
-              <div className="relative inline-block mt-3">
-                <button
-                  onClick={() => setIsVideoMenuOpen(!isVideoMenuOpen)}
-                  className="group inline-flex items-center gap-3 sm:gap-4 hero-heading font-black uppercase text-2xl sm:text-5xl md:text-6xl hover:opacity-90 transition-all cursor-pointer select-none"
-                >
-                  <span>Featured Video Cuts</span>
-                  <span
-                    className={`text-xl sm:text-4xl text-[#B600A8] transition-transform duration-300 ${
-                      isVideoMenuOpen ? "rotate-180" : "rotate-0"
-                    }`}
-                  >
-                    ▼
-                  </span>
-                </button>
-
-                <p className="text-[#D7E2EA]/60 text-xs sm:text-sm mt-2 tracking-wider">
-                  {isVideoMenuOpen
-                    ? "Click any video to open Theater Mode • Hover to preview"
-                    : "Click to reveal featured video reels & commercial campaigns"}
-                </p>
-
-                <AnimatePresence>
-                  {isVideoMenuOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="flex justify-center flex-wrap gap-2 sm:gap-3 mt-6"
-                    >
-                      {[
-                        { id: "all", label: "All Videos (11)" },
-                        { id: "reels", label: "Reels & Hooks (6)" },
-                        { id: "commercial", label: "Commercial & Sports (3)" },
-                        { id: "cinematic", label: "Cinematic & Narrative (2)" },
-                      ].map((tab) => (
-                        <button
-                          key={tab.id}
-                          onClick={() =>
-                            setSelectedVideoTab(
-                              tab.id as "all" | "reels" | "commercial" | "cinematic"
-                            )
-                          }
-                          className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all duration-200 border ${
-                            selectedVideoTab === tab.id
-                              ? "bg-[#B600A8] text-white border-[#B600A8] shadow-lg shadow-[#B600A8]/30"
-                              : "bg-white/5 text-[#D7E2EA]/70 border-white/10 hover:border-white/20 hover:text-white"
-                          }`}
-                        >
-                          {tab.label}
-                        </button>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            </FadeIn>
-
-            <AnimatePresence mode="wait">
-              {isVideoMenuOpen && (
-                <motion.div
-                  key={selectedVideoTab}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -15 }}
-                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-12"
-                >
-                  {filteredVideos.map((item, idx) => (
-                    <VideoCard
-                      key={item.id}
-                      item={item}
-                      index={idx}
-                      onOpen={openModal}
-                    />
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </section>
-
-        {/* PRICING */}
-        <section id="price" className="py-24 px-5 sm:px-8 md:px-12 bg-[#0A0A0A]">
-          <div className="max-w-6xl mx-auto">
-            <FadeIn delay={0} y={30} className="text-center mb-10">
-              <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
-                Video Editing Packages & Rates
-              </span>
-
-              <h2 className="hero-heading font-black uppercase text-4xl sm:text-6xl md:text-7xl mt-2">
-                Rates & Packages
-              </h2>
-
-              <p className="text-[#D7E2EA]/60 max-w-xl mx-auto mt-3 text-sm sm:text-base">
-                Transparent video production rates in USD and EGP with milestone delivery
-              </p>
-            </FadeIn>
-
-            <FadeIn delay={0.1} y={20} className="flex justify-center mb-16">
-              <div className="inline-flex items-center p-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl">
-                <button
-                  onClick={() => setCurrencyMode("ALL")}
-                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
-                    currencyMode === "ALL"
-                      ? "bg-[#B600A8] text-white"
-                      : "text-white/60 hover:text-white"
-                  }`}
-                >
-                  USD & EGP
-                </button>
-
-                <button
-                  onClick={() => setCurrencyMode("USD")}
-                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
-                    currencyMode === "USD"
-                      ? "bg-[#B600A8] text-white"
-                      : "text-white/60 hover:text-white"
-                  }`}
-                >
-                  USD ($)
-                </button>
-
-                <button
-                  onClick={() => setCurrencyMode("EGP")}
-                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
-                    currencyMode === "EGP"
-                      ? "bg-[#B600A8] text-white"
-                      : "text-white/60 hover:text-white"
-                  }`}
-                >
-                  EGP (ج.م)
-                </button>
-              </div>
-            </FadeIn>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch mb-20">
-              {packagesData.map((pkg, idx) => {
-                const selectedPriceText =
-                  currencyMode === "USD"
-                    ? pkg.priceUSD
-                    : currencyMode === "EGP"
-                    ? pkg.priceEGP
-                    : `${pkg.priceUSD} / ${pkg.priceEGP}`;
-
-                const whatsappPreFilledLink = `https://wa.me/201211871199?text=${encodeURIComponent(
-                  `Hey Lil! I want to book the "${pkg.name}" package (${selectedPriceText} per video). Let's discuss the project details.`
-                )}`;
-
-                return (
-                  <FadeIn key={pkg.id} delay={idx * 0.15} className="flex">
-                    <div
-                      className={`w-full rounded-[36px] p-8 flex flex-col justify-between transition-all duration-300 relative backdrop-blur-2xl ${
-                        pkg.featured
-                          ? "bg-gradient-to-b from-[#18011F]/90 to-[#121212]/90 border-2 border-[#B600A8] shadow-[0_0_40px_rgba(182,0,168,0.25)]"
-                          : "bg-white/[0.03] border border-white/10 hover:border-white/25 shadow-2xl"
-                      }`}
-                    >
-                      {pkg.featured && (
-                        <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#B600A8] text-white text-[11px] font-bold uppercase tracking-widest px-4 py-1 rounded-full shadow-lg">
-                          Most Popular
-                        </span>
-                      )}
-
-                      <div>
-                        <div className="flex justify-between items-start mb-4">
-                          <div>
-                            <h3 className="text-2xl font-bold text-white">{pkg.name}</h3>
-                            <p className="text-[#D7E2EA]/70 text-sm mt-1">{pkg.arabicName}</p>
-                          </div>
-                          <span className="font-mono text-white/30 text-lg font-bold">{pkg.id}</span>
-                        </div>
-
-                        <div className="my-6 pb-6 border-b border-white/10">
-                          {currencyMode === "ALL" && (
-                            <div>
-                              <div className="flex items-baseline gap-2">
-                                <span className="text-4xl sm:text-5xl font-black text-white">{pkg.priceUSD}</span>
-                                <span className="text-sm uppercase tracking-wider text-[#D7E2EA]/60 font-medium">/ Video</span>
-                              </div>
-                              <div className="text-sm text-[#B600A8] font-bold mt-1">
-                                ≈ {pkg.priceEGP} / Video
-                              </div>
-                            </div>
-                          )}
-
-                          {currencyMode === "USD" && (
-                            <div className="flex items-baseline gap-2">
-                              <span className="text-4xl sm:text-5xl font-black text-white">{pkg.priceUSD}</span>
-                              <span className="text-sm uppercase tracking-wider text-[#D7E2EA]/60 font-medium">/ Video</span>
-                            </div>
-                          )}
-
-                          {currencyMode === "EGP" && (
-                            <div className="flex items-baseline gap-2">
-                              <span className="text-4xl sm:text-5xl font-black text-white">{pkg.priceEGP}</span>
-                              <span className="text-sm uppercase tracking-wider text-[#D7E2EA]/60 font-medium">/ Video</span>
-                            </div>
-                          )}
-                        </div>
-
-                        <ul className="space-y-4 mb-8">
-                          {pkg.features.map((feat, i) => (
-                            <li key={i} className="flex items-start gap-3 text-sm text-[#D7E2EA]/80 leading-relaxed">
-                              <span className="text-[#B600A8] text-base mt-0.5 inline-block select-none">✦</span>
-                              <span>{feat}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      <div className="pt-6 border-t border-white/10 flex flex-col gap-3">
-                        <p className="text-xs text-[#D7E2EA]/50 text-center font-medium">{pkg.revisions}</p>
-                        <a
-                          href={pkg.driveLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-full text-center py-2.5 rounded-full border border-[#B600A8]/60 hover:bg-[#B600A8]/20 text-xs uppercase font-bold tracking-wider text-[#D7E2EA] transition-colors shadow-md"
-                        >
-                          ▶ Watch Video Sample
-                        </a>
-
-                        <MagneticButton
-                          href={whatsappPreFilledLink}
-                          className={`block w-full text-center rounded-full uppercase tracking-widest font-semibold py-3.5 text-sm transition-all duration-300 ${
-                            pkg.featured
-                              ? "bg-[#B600A8] hover:bg-[#9d0091] text-white shadow-lg shadow-[#B600A8]/30"
-                              : "border border-white/20 hover:bg-white/10 text-white shadow-md"
-                          }`}
-                        >
-                          Order via WhatsApp
-                        </MagneticButton>
-                      </div>
-                    </div>
-                  </FadeIn>
-                );
-              })}
-            </div>
-
-            <FadeIn delay={0.2} y={30}>
-              <div className="rounded-[36px] bg-white/[0.02] backdrop-blur-2xl border border-white/10 p-8 sm:p-12 shadow-2xl">
-                <div className="flex items-center gap-3 mb-8">
-                  <span className="text-[#B600A8] text-xl">✦</span>
-                  <h3 className="text-2xl sm:text-3xl font-bold text-white">General Terms & Production Flow</h3>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-                  {generalTerms.map((term, i) => (
-                    <div
-                      key={i}
-                      className={`p-6 rounded-2xl bg-white/[0.02] border border-white/5 ${
-                        i === 0 ? "md:col-span-2 border-[#B600A8]/30 bg-[#B600A8]/5" : ""
-                      }`}
-                    >
-                      <h4 className="text-lg font-semibold text-white mb-2 flex items-center gap-2">
-                        <span className="text-xs text-[#B600A8] font-mono">0{i + 1}.</span>
-                        {term.title}
-                      </h4>
-                      <p className="text-sm text-[#D7E2EA]/70 leading-relaxed">{term.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </FadeIn>
-          </div>
-        </section>
-
-        {/* REVIEWS */}
-        <section id="reviews" className="py-24 px-6 md:px-12 bg-[#0A0A0A] border-t border-white/5">
-          <div className="max-w-6xl mx-auto">
-            <FadeIn delay={0} y={30} className="text-center mb-16">
-              <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">Testimonials</span>
-              <h2 className="hero-heading font-black uppercase text-4xl sm:text-6xl md:text-7xl mt-2">Client Messages</h2>
-              <p className="text-[#D7E2EA]/60 max-w-xl mx-auto mt-3 text-sm sm:text-base">
-                Feedback from creators, entrepreneurs, and agencies I collaborate with
-              </p>
-            </FadeIn>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-              {clientReviews.map((rev, idx) => (
-                <FadeIn key={idx} delay={idx * 0.1}>
-                  <div className="p-8 rounded-[32px] bg-white/[0.03] backdrop-blur-2xl border border-white/10 flex flex-col justify-between h-full hover:border-[#B600A8]/40 transition-colors shadow-2xl">
-                    <div>
-                      <div className="flex justify-between items-center mb-4">
-                        <span className="text-[#B600A8] text-sm tracking-widest font-mono">{rev.rating}</span>
-                        <span className="text-3xl text-white/20 font-serif leading-none">“</span>
-                      </div>
-                      <p className="text-[#D7E2EA]/85 text-base sm:text-lg leading-relaxed mb-6 font-light">
-                        &quot;{rev.quote}&quot;
-                      </p>
-                    </div>
-
-                    <div className="pt-4 border-t border-white/10 flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#B600A8] to-[#7621B0] flex items-center justify-center font-bold text-white text-sm shadow-md">
-                        {rev.client.charAt(0)}
-                      </div>
-                      <div>
-                        <h4 className="text-white font-semibold text-sm sm:text-base">{rev.client}</h4>
-                        <p className="text-xs text-[#D7E2EA]/60">{rev.role}</p>
-                      </div>
-                    </div>
-                  </div>
-                </FadeIn>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* THUMBNAILS */}
-        <section id="thumbnails" className="py-24 px-5 sm:px-8 md:px-12 bg-[#0A0A0A]">
-          <div className="max-w-6xl mx-auto">
-            <FadeIn delay={0} y={30} className="text-center mb-8">
-              <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
-                Graphic Covers & Visuals
-              </span>
-
-              <div className="relative inline-block mt-3">
-                <button
-                  onClick={() => setIsThumbnailsMenuOpen(!isThumbnailsMenuOpen)}
-                  className="group inline-flex items-center gap-3 sm:gap-4 hero-heading font-black uppercase text-3xl sm:text-5xl md:text-6xl hover:opacity-90 transition-all cursor-pointer select-none"
-                >
-                  <span>Thumbnails & Posters</span>
-                  <span
-                    className={`text-2xl sm:text-4xl text-[#B600A8] transition-transform duration-300 ${
-                      isThumbnailsMenuOpen ? "rotate-180" : "rotate-0"
-                    }`}
-                  >
-                    ▼
-                  </span>
-                </button>
-
-                <p className="text-[#D7E2EA]/60 text-xs sm:text-sm mt-2 tracking-wider">
-                  {isThumbnailsMenuOpen
-                    ? "Click title to collapse gallery"
-                    : "Click to reveal high-CTR YouTube covers and commercial posters"}
-                </p>
-              </div>
-            </FadeIn>
-
-            <AnimatePresence>
-              {isThumbnailsMenuOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-12"
-                >
-                  {thumbnailsData.map((thumb, index) => (
-                    <FadeIn key={index} delay={index * 0.1}>
-                      <motion.div
-                        whileHover={{ y: -8 }}
-                        className="bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[28px] overflow-hidden shadow-2xl group hover:border-[#B600A8]/50 transition-colors duration-300"
-                      >
-                        <div className="w-full aspect-[4/5] overflow-hidden bg-black/50">
-                          <img
-                            src={thumb.src}
-                            alt={thumb.title}
-                            loading="lazy"
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
-                        </div>
-
-                        <div className="p-5 flex flex-col gap-1">
-                          <span className="text-xs uppercase tracking-widest text-[#B600A8] font-medium">{thumb.category}</span>
-                          <h3 className="text-[#D7E2EA] font-semibold text-lg sm:text-xl">{thumb.title}</h3>
-                        </div>
-                      </motion.div>
-                    </FadeIn>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </section>
-
-        {/* SERVICES */}
-        <section id="services" className="bg-white rounded-t-[40px] sm:rounded-t-[60px] px-6 sm:px-10 py-24 text-[#0C0C0C]">
-          <div className="max-w-5xl mx-auto">
-            <FadeIn delay={0} y={30}>
-              <h2 className="font-black uppercase text-center mb-16 sm:mb-24 text-4xl sm:text-6xl md:text-7xl text-[#0C0C0C]">
-                Services
-              </h2>
-            </FadeIn>
-
-            <div className="flex flex-col">
-              {servicesList.map((item, index) => (
-                <FadeIn key={item.num} delay={index * 0.1}>
-                  <motion.div
-                    whileHover={{ x: 8 }}
-                    className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-t border-[rgba(12,12,12,0.15)] py-8 sm:py-10 gap-4 sm:gap-10"
-                  >
-                    <span className="font-black text-[#0C0C0C] text-5xl sm:text-7xl leading-none shrink-0">
-                      {item.num}
-                    </span>
-
-                    <div className="flex flex-col gap-2">
-                      <h3 className="font-bold uppercase text-xl sm:text-2xl text-[#0C0C0C]">{item.name}</h3>
-                      <p className="font-normal leading-relaxed max-w-2xl text-[#0C0C0C]/70 text-sm sm:text-base">{item.desc}</p>
-                    </div>
-                  </motion.div>
-                </FadeIn>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* CONTACT */}
-        <section id="contact" className="py-24 px-6 text-center bg-[#0A0A0A] border-t border-white/10">
-          <FadeIn delay={0} y={30} className="max-w-3xl mx-auto">
-            <span className="text-xs uppercase tracking-[0.25em] text-[#B600A8] font-bold">
-              Available for new projects
-            </span>
-
-            <h2 className="hero-heading font-black uppercase text-4xl sm:text-6xl mb-4 mt-3">
-              Let&apos;s Create Together
-            </h2>
-
-            <p className="text-[#D7E2EA]/70 mb-10 max-w-xl mx-auto text-sm sm:text-base">
-              Available for commercial campaigns, ongoing reels retainers, and high-retention video post-production.
+          <h1 className="text-[12.5vw] sm:text-[13vw] font-black tracking-[-0.06em] leading-[0.88] uppercase text-white select-none">
+            CRAFTWORK
+          </h1>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mt-4 pt-4 border-t border-white/[0.08] gap-4">
+            <p className="max-w-md text-xs sm:text-sm text-white/60 leading-relaxed">
+              Bridging high-retention social media pacing, commercial polish, and surgically calibrated sound design for creators & brands.
             </p>
-
-            <div className="flex justify-center items-center gap-4 mb-10">
+            <div className="flex items-center gap-3">
               <a
-                href="https://www.instagram.com/ebrahimfadel_8/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram"
-                className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300 hover:scale-110 shadow-xl"
-              >
-                <InstagramIcon />
-              </a>
-
-              <a
-                href="https://www.facebook.com/EbrahimFadel8"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Facebook"
-                className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300 hover:scale-110 shadow-xl"
-              >
-                <FacebookIcon />
-              </a>
-
-              <a
-                href="https://wa.me/201211871199"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="WhatsApp"
-                className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/70 hover:text-[#25D366] hover:border-[#25D366] hover:bg-[#25D366]/20 transition-all duration-300 hover:scale-110 shadow-xl"
-              >
-                <WhatsAppIcon />
-              </a>
-
-              <a
-                href="mailto:ebrahimfadel8903@gmail.com"
-                aria-label="Email"
-                className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all duration-300 hover:scale-110 shadow-xl"
-              >
-                <MailIcon />
-              </a>
-            </div>
-
-            <MagneticButton
-              href="https://wa.me/201211871199?text=Hey%20Lil!%20I%20want%20to%20start%20a%20video%20editing%20project."
-              className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#B600A8] hover:bg-[#9d0091] text-white uppercase tracking-widest text-xs font-bold transition-all duration-300 shadow-[0_0_30px_rgba(182,0,168,0.35)]"
-            >
-              Start a Project
-              <span>→</span>
-            </MagneticButton>
-
-            <div className="text-xs text-white/40 mt-10">
-              © 2026 Lil. All rights reserved.
-            </div>
-          </FadeIn>
-        </section>
-
-        {/* SCROLL TOP */}
-        <AnimatePresence>
-          {showScrollTop && (
-            <motion.button
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              onClick={scrollToTop}
-              aria-label="Scroll to top"
-              className="fixed bottom-8 right-8 z-40 w-12 h-12 rounded-full bg-[#141414]/80 backdrop-blur-xl border border-white/20 text-[#B600A8] hover:bg-[#B600A8] hover:text-white hover:border-[#B600A8] shadow-2xl flex items-center justify-center font-black transition-all duration-300"
-            >
-              ↑
-            </motion.button>
-          )}
-        </AnimatePresence>
-      </main>
-    </>
-  );
-}
+                href="#videos"
+                className="text-xs uppercase tracking-wider text-white border-b border-white hover
