@@ -409,7 +409,11 @@ const clientReviews = [
 export default function Home() {
   const [currencyMode, setCurrencyMode] = useState<"ALL" | "USD" | "EGP">("ALL");
   const [selectedVideoTab, setSelectedVideoTab] = useState<"all" | "reels" | "commercial" | "cinematic">("all");
-  const [isVideoMenuOpen, setIsVideoMenuOpen] = useState(true); // قائمة الفيديوهات مفتوحة أو مقفولة
+  
+  // حالات فتح وقفل القوائم
+  const [isVideoMenuOpen, setIsVideoMenuOpen] = useState(true);
+  const [isThumbnailsMenuOpen, setIsThumbnailsMenuOpen] = useState(true);
+
   const [activeModalVideo, setActiveModalVideo] = useState<(typeof videosData)[0] | null>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [typedText, setTypedText] = useState("");
@@ -699,7 +703,7 @@ export default function Home() {
           </AnimatePresence>
         </header>
 
-        {/* --- HERO CONTENT: صورتك المفرغة في الباك والكلام فوقها تماماً --- */}
+        {/* --- HERO CONTENT: صورتك المفرغة في الباك والكلام فوقها --- */}
         <div className="relative my-auto py-10 sm:py-16 flex flex-col items-center justify-center text-center w-full min-h-[450px] sm:min-h-[530px]">
           
           {/* صورتك المفرغة police.png في الباك */}
@@ -753,7 +757,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- FEATURED HIGHLIGHTS & POSTERS (سحب يمين وشمال) --- */}
+      {/* --- FEATURED HIGHLIGHTS & POSTERS --- */}
       <section className="py-14 border-b border-white/[0.06] bg-[#0A0A0C] overflow-hidden">
         <div className="max-w-7xl mx-auto px-5 sm:px-10 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
@@ -899,7 +903,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- FEATURED VIDEOS (قائمة قابلة للفتح والإخفاء بالتفصيل) --- */}
+      {/* --- FEATURED VIDEOS (قائمة قابلة للفتح والإخفاء) --- */}
       <section id="videos" className="py-20 px-4 sm:px-8 md:px-12 border-t border-white/[0.06] bg-[#0A0A0C]">
         <div className="max-w-7xl mx-auto">
           
@@ -908,13 +912,13 @@ export default function Home() {
               Interactive Video Portfolio
             </span>
 
-            {/* زرار القائمة للفتح والإخفاء */}
+            {/* زرار القائمة */}
             <div className="mt-2">
               <button
                 onClick={() => setIsVideoMenuOpen(!isVideoMenuOpen)}
                 className="group inline-flex items-center gap-3 sm:gap-4 text-3xl sm:text-5xl font-black uppercase text-white hover:opacity-90 transition-all cursor-pointer select-none"
               >
-                <span>Featured Video Cuts</span>
+                <span>Featured Videos</span>
                 <span
                   className={`text-2xl sm:text-3xl text-[#B600A8] transition-transform duration-300 ${
                     isVideoMenuOpen ? "rotate-180" : "rotate-0"
@@ -931,7 +935,7 @@ export default function Home() {
               </p>
             </div>
 
-            {/* فلاتر التبويبات (تختفي وتظهر مع القائمة) */}
+            {/* فلاتر التبويبات */}
             <AnimatePresence>
               {isVideoMenuOpen && (
                 <motion.div
@@ -966,7 +970,7 @@ export default function Home() {
             </AnimatePresence>
           </div>
 
-          {/* شبكة الفيديوهات (بتفتح وتقفل مع القائمة) */}
+          {/* شبكة الفيديوهات */}
           <AnimatePresence>
             {isVideoMenuOpen && (
               <motion.div
@@ -1185,32 +1189,67 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- THUMBNAILS & GRAPHICS --- */}
+      {/* --- THUMBNAILS & COVERS (قائمة قابلة للفتح والإخفاء) --- */}
       <section id="thumbnails" className="py-20 px-5 sm:px-8 md:px-12 border-t border-white/[0.06]">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
+          
+          <div className="text-center mb-8">
             <span className="text-xs uppercase font-mono tracking-widest text-[#B600A8] font-bold">Graphic Art</span>
-            <h2 className="text-3xl sm:text-5xl font-black uppercase text-white mt-1">Thumbnails & Covers</h2>
+
+            {/* زرار القائمة */}
+            <div className="mt-2">
+              <button
+                onClick={() => setIsThumbnailsMenuOpen(!isThumbnailsMenuOpen)}
+                className="group inline-flex items-center gap-3 sm:gap-4 text-3xl sm:text-5xl font-black uppercase text-white hover:opacity-90 transition-all cursor-pointer select-none"
+              >
+                <span>Thumbnails & Covers</span>
+                <span
+                  className={`text-2xl sm:text-3xl text-[#B600A8] transition-transform duration-300 ${
+                    isThumbnailsMenuOpen ? "rotate-180" : "rotate-0"
+                  }`}
+                >
+                  ▼
+                </span>
+              </button>
+
+              <p className="text-white/50 text-xs sm:text-sm mt-2 tracking-wider font-mono">
+                {isThumbnailsMenuOpen
+                  ? "اضغط لإخفاء الأغلفة والبوسترات"
+                  : "اضغط لعرض الأغلفة والبوسترات عالية الـ CTR"}
+              </p>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-            {thumbnailsData.map((thumb, idx) => (
-              <div key={idx} className="rounded-3xl border border-white/10 bg-white/[0.02] overflow-hidden group">
-                <div className="aspect-[4/5] w-full overflow-hidden bg-black">
-                  <img
-                    src={thumb.src}
-                    alt={thumb.title}
-                    loading="lazy"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
-                  />
-                </div>
-                <div className="p-4 border-t border-white/10">
-                  <span className="text-[10px] font-mono uppercase text-[#B600A8] font-bold">{thumb.category}</span>
-                  <h3 className="text-white font-bold text-sm mt-0.5">{thumb.title}</h3>
-                </div>
-              </div>
-            ))}
-          </div>
+          {/* شبكة البوسترات */}
+          <AnimatePresence>
+            {isThumbnailsMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.35 }}
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 mt-8 overflow-hidden"
+              >
+                {thumbnailsData.map((thumb, idx) => (
+                  <div key={idx} className="rounded-3xl border border-white/10 bg-white/[0.02] overflow-hidden group">
+                    <div className="aspect-[4/5] w-full overflow-hidden bg-black">
+                      <img
+                        src={thumb.src}
+                        alt={thumb.title}
+                        loading="lazy"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
+                      />
+                    </div>
+                    <div className="p-4 border-t border-white/10">
+                      <span className="text-[10px] font-mono uppercase text-[#B600A8] font-bold">{thumb.category}</span>
+                      <h3 className="text-white font-bold text-sm mt-0.5">{thumb.title}</h3>
+                    </div>
+                  </div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
         </div>
       </section>
 
