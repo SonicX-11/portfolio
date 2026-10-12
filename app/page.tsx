@@ -709,7 +709,7 @@ export default function Home() {
           {/* صورتك المفرغة police.png في الباك */}
           <div className="absolute left-1/2 -translate-x-1/2 bottom-0 z-0 pointer-events-none flex justify-center items-end select-none">
             <img
-              src="/images/lil.png"
+              src="/images/police.png"
               alt="Lil Police Portrait"
               className="w-[280px] xs:w-[340px] sm:w-[420px] md:w-[490px] max-h-[75vh] object-contain drop-shadow-[0_25px_60px_rgba(0,0,0,0.95)] opacity-90 transition-transform duration-500"
             />
