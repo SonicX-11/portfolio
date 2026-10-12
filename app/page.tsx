@@ -409,6 +409,7 @@ const clientReviews = [
 export default function Home() {
   const [currencyMode, setCurrencyMode] = useState<"ALL" | "USD" | "EGP">("ALL");
   const [selectedVideoTab, setSelectedVideoTab] = useState<"all" | "reels" | "commercial" | "cinematic">("all");
+  const [isVideoMenuOpen, setIsVideoMenuOpen] = useState(true); // قائمة الفيديوهات مفتوحة أو مقفولة
   const [activeModalVideo, setActiveModalVideo] = useState<(typeof videosData)[0] | null>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [typedText, setTypedText] = useState("");
@@ -697,88 +698,43 @@ export default function Home() {
             )}
           </AnimatePresence>
         </header>
-{/* --- HERO SECTION WITH POLICE PHOTO IN BACK --- */}
-      <section className="relative min-h-[100dvh] flex flex-col justify-between px-4 sm:px-8 md:px-12 pt-4 sm:pt-6 pb-8 sm:pb-12 z-10 border-b border-white/[0.06] overflow-hidden">
-        
-        {/* شريط الملاحة العلوي */}
-        <header className="w-full max-w-6xl mx-auto z-30">
-          <nav className="flex items-center justify-between px-5 py-3 sm:py-3.5 rounded-full bg-black/40 backdrop-blur-2xl border border-white/10 shadow-2xl text-xs uppercase font-mono">
-            <a href="#about" className="font-bold tracking-widest text-sm text-white flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#B600A8] shadow-[0_0_8px_#B600A8]" />
-              <span>LIL</span>
-            </a>
 
-            <div className="hidden md:flex items-center gap-6 tracking-wider text-[11px]">
-              <a href="#about" className="hover:text-[#B600A8] transition-colors">About</a>
-              <button
-                onClick={() => setIsWorkflowOpen(true)}
-                className="text-white hover:text-[#B600A8] transition-colors flex items-center gap-1 font-bold"
-              >
-                <span>Workflow</span>
-                <span className="text-[10px]">↗</span>
-              </button>
-              <a href="#videos" className="hover:text-[#B600A8] transition-colors">Videos</a>
-              <a href="#price" className="hover:text-[#B600A8] transition-colors">Pricing</a>
-              <a href="#reviews" className="hover:text-[#B600A8] transition-colors">Reviews</a>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <a
-                href="https://wa.me/201211871199"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3.5 sm:px-4 py-1.5 rounded-full bg-[#B600A8]/20 border border-[#B600A8]/50 text-white font-bold hover:bg-[#B600A8] transition-all flex items-center gap-1.5 text-[11px] sm:text-xs shadow-[0_0_12px_rgba(182,0,168,0.3)]"
-              >
-                <WhatsAppIcon />
-                <span className="hidden xs:inline">WhatsApp</span>
-              </a>
-
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="md:hidden w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white text-base active:scale-95 transition-transform"
-                aria-label="Toggle menu"
-              >
-                {isMobileMenuOpen ? "✕" : "☰"}
-              </button>
-            </div>
-          </nav>
-        </header>
-
-        {/* 1. صورتك في الباك مع تلاشي الحواف بسلاسة */}
-        <div className="absolute inset-0 z-0 pointer-events-none flex items-center justify-center overflow-hidden">
-          <img
-            src="/images/police.png"
-            alt="Lil Police Background"
-            className="w-[320px] xs:w-[380px] sm:w-[480px] md:w-[580px] lg:w-[650px] max-h-[80vh] object-cover object-top opacity-50 filter contrast-125 brightness-90 [mask-image:radial-gradient(ellipse_65%_75%_at_50%_45%,black_40%,transparent_85%)] transition-opacity duration-700"
-          />
-          {/* فيد سفلي وعلوي عشان الاندماج الكامل مع سواد الصفحة */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#070709] via-transparent to-[#070709]/80" />
-        </div>
-
-        {/* 2. الكلام مكتوب فوق صورتك مباشرة بوضوح */}
-        <div className="relative my-auto py-12 sm:py-16 flex flex-col items-center justify-center text-center w-full z-20">
+        {/* --- HERO CONTENT: صورتك المفرغة في الباك والكلام فوقها تماماً --- */}
+        <div className="relative my-auto py-10 sm:py-16 flex flex-col items-center justify-center text-center w-full min-h-[450px] sm:min-h-[530px]">
           
-          <FadeIn delay={0.05} y={15} className="mb-4">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/70 backdrop-blur-md border border-white/15 text-[10px] sm:text-xs font-mono text-[#D7E2EA]/90 shadow-xl">
+          {/* صورتك المفرغة police.png في الباك */}
+          <div className="absolute left-1/2 -translate-x-1/2 bottom-0 z-0 pointer-events-none flex justify-center items-end select-none">
+            <img
+              src="/images/police.png"
+              alt="Lil Police Portrait"
+              className="w-[280px] xs:w-[340px] sm:w-[420px] md:w-[490px] max-h-[75vh] object-contain drop-shadow-[0_25px_60px_rgba(0,0,0,0.95)] opacity-90 transition-transform duration-500"
+            />
+            <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#070709] via-[#070709]/80 to-transparent" />
+          </div>
+
+          <FadeIn delay={0.05} y={15} className="mb-4 relative z-20">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-[10px] sm:text-xs font-mono text-[#D7E2EA]/85 shadow-xl">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-              <span>Commercial & Retention Video Editor</span>
+              <span>Commercial & Retention Editor</span>
             </div>
           </FadeIn>
 
-          {/* التكست الكبير فوق الصورة */}
-          <h1 className="text-[15vw] sm:text-[14vw] md:text-[13vw] font-black uppercase tracking-tight leading-none text-white select-none drop-shadow-[0_15px_35px_rgba(0,0,0,1)]">
-            <span>{typedText}</span>
-            <span className="text-[#B600A8] animate-pulse ml-1.5">|</span>
-          </h1>
+          {/* التكست بيتكتب فوق الصورة */}
+          <div className="relative z-20 select-none">
+            <h1 className="text-[15vw] sm:text-[14vw] md:text-[13vw] font-black uppercase tracking-tight leading-none text-white drop-shadow-[0_15px_35px_rgba(0,0,0,0.95)]">
+              <span>{typedText}</span>
+              <span className="text-[#B600A8] animate-pulse ml-1.5">|</span>
+            </h1>
+          </div>
 
-          <p className="max-w-md text-xs sm:text-sm text-white/90 uppercase tracking-widest font-light leading-relaxed mt-5 px-4 drop-shadow-[0_4px_16px_rgba(0,0,0,1)]">
+          <p className="relative z-20 max-w-md text-xs sm:text-sm text-white/90 uppercase tracking-widest font-light leading-relaxed mt-5 px-4 drop-shadow-[0_4px_14px_rgba(0,0,0,0.95)]">
             Senior video editor shaping memorable visual stories with retention-driven pacing & sound design.
           </p>
 
-          <div className="flex flex-col xs:flex-row gap-3 items-center mt-7 w-full xs:w-auto px-6 xs:px-0">
+          <div className="relative z-20 flex flex-col xs:flex-row gap-3 items-center mt-7 w-full xs:w-auto px-6 xs:px-0">
             <a
               href="#videos"
-              className="w-full xs:w-auto text-center px-6 py-3 rounded-full border border-white/25 bg-black/60 backdrop-blur-xl text-white text-xs uppercase font-bold tracking-widest hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all shadow-xl active:scale-95"
+              className="w-full xs:w-auto text-center px-6 py-3 rounded-full border border-white/25 bg-black/50 backdrop-blur-xl text-white text-xs uppercase font-bold tracking-widest hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all shadow-xl active:scale-95"
             >
               Watch Videos ({videosData.length})
             </a>
@@ -791,14 +747,13 @@ export default function Home() {
           </div>
         </div>
 
-        {/* الفوتر الصغير أسفل الهيرو */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-[10px] sm:text-xs font-mono text-white/40 border-t border-white/[0.06] pt-4 text-center z-20">
           <div>Post-Production • Foley Sound • Color Grading</div>
           <div>Available for Retainers 2026</div>
         </div>
       </section>
-      
-      {/* --- FEATURED HIGHLIGHTS & POSTERS --- */}
+
+      {/* --- FEATURED HIGHLIGHTS & POSTERS (سحب يمين وشمال) --- */}
       <section className="py-14 border-b border-white/[0.06] bg-[#0A0A0C] overflow-hidden">
         <div className="max-w-7xl mx-auto px-5 sm:px-10 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
@@ -944,84 +899,126 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- VIDEO PORTFOLIO --- */}
+      {/* --- FEATURED VIDEOS (قائمة قابلة للفتح والإخفاء بالتفصيل) --- */}
       <section id="videos" className="py-20 px-4 sm:px-8 md:px-12 border-t border-white/[0.06] bg-[#0A0A0C]">
         <div className="max-w-7xl mx-auto">
           
-          <div className="flex flex-col md:flex-row justify-between md:items-end gap-5 mb-8 sm:mb-12">
-            <div>
-              <span className="text-xs uppercase font-mono tracking-widest text-[#B600A8] font-bold">
-                Archive & Showcase
-              </span>
-              <h2 className="text-3xl sm:text-5xl font-black uppercase text-white mt-1">
-                Featured Videos
-              </h2>
-            </div>
+          <div className="text-center mb-8">
+            <span className="text-xs uppercase font-mono tracking-widest text-[#B600A8] font-bold">
+              Interactive Video Portfolio
+            </span>
 
-            <div className="flex overflow-x-auto no-scrollbar gap-1 p-1 rounded-full bg-white/[0.04] border border-white/10 font-mono text-xs touch-pan-x">
-              {[
-                { id: "all", label: "All (11)" },
-                { id: "reels", label: "Reels (6)" },
-                { id: "commercial", label: "Commercial (3)" },
-                { id: "cinematic", label: "Cinematic (2)" },
-              ].map((tab) => {
-                const isActive = selectedVideoTab === tab.id;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setSelectedVideoTab(tab.id as any)}
-                    className={`shrink-0 px-3.5 py-1.5 rounded-full uppercase tracking-wider transition-all ${
-                      isActive ? "bg-[#B600A8] text-white font-bold shadow-md" : "text-white/50 hover:text-white"
-                    }`}
-                  >
-                    {tab.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8">
-            {filteredVideos.map((item, idx) => (
-              <FadeIn key={item.id} delay={idx * 0.04}>
-                <div
-                  onClick={() => openModal(item)}
-                  className="group rounded-3xl bg-white/[0.03] border border-white/10 hover:border-[#B600A8]/60 overflow-hidden cursor-pointer transition-all duration-300 shadow-xl flex flex-col justify-between active:scale-[0.99]"
+            {/* زرار القائمة للفتح والإخفاء */}
+            <div className="mt-2">
+              <button
+                onClick={() => setIsVideoMenuOpen(!isVideoMenuOpen)}
+                className="group inline-flex items-center gap-3 sm:gap-4 text-3xl sm:text-5xl font-black uppercase text-white hover:opacity-90 transition-all cursor-pointer select-none"
+              >
+                <span>Featured Video Cuts</span>
+                <span
+                  className={`text-2xl sm:text-3xl text-[#B600A8] transition-transform duration-300 ${
+                    isVideoMenuOpen ? "rotate-180" : "rotate-0"
+                  }`}
                 >
-                  <div className="relative aspect-[9/16] w-full bg-black overflow-hidden">
-                    <video
-                      src={item.src}
-                      muted
-                      loop
-                      playsInline
-                      preload="metadata"
-                      className="w-full h-full object-cover opacity-90 group-hover:opacity-100"
-                    />
+                  ▼
+                </span>
+              </button>
 
-                    <div className="absolute top-3.5 left-3.5 px-3 py-1 rounded-full bg-black/75 backdrop-blur-md border border-white/10 text-[9px] font-mono uppercase text-white font-bold">
-                      {item.tab}
-                    </div>
+              <p className="text-white/50 text-xs sm:text-sm mt-2 tracking-wider font-mono">
+                {isVideoMenuOpen
+                  ? "اضغط لإخفاء الفيديوهات • انقر على أي فيديو لمشاهدته بالكامل"
+                  : "اضغط لعرض الفيديوهات والأعمال المختارة (11)"}
+              </p>
+            </div>
 
-                    <div className="absolute bottom-3.5 right-3.5 px-3.5 py-1.5 rounded-full bg-black/80 backdrop-blur-md border border-white/15 text-[11px] text-white font-mono font-bold uppercase shadow-lg group-hover:bg-[#B600A8] transition-all">
-                      ▶ Watch Cut
-                    </div>
-                  </div>
-
-                  <div className="p-4 sm:p-5 border-t border-white/10 bg-[#0A0A0C]">
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-[#B600A8] font-bold block mb-1">
-                      {item.category}
-                    </span>
-                    <h3 className="text-white font-bold text-base leading-snug">
-                      {item.title}
-                    </h3>
-                    <p className="text-xs text-[#D7E2EA]/60 mt-1 leading-relaxed line-clamp-2 font-light">
-                      {item.description}
-                    </p>
-                  </div>
-                </div>
-              </FadeIn>
-            ))}
+            {/* فلاتر التبويبات (تختفي وتظهر مع القائمة) */}
+            <AnimatePresence>
+              {isVideoMenuOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="flex justify-center flex-wrap gap-1.5 p-1 mt-6"
+                >
+                  {[
+                    { id: "all", label: "الكل (11)" },
+                    { id: "reels", label: "ريلز وهوكات (6)" },
+                    { id: "commercial", label: "إعلانات ورياضة (3)" },
+                    { id: "cinematic", label: "سينمائي (2)" },
+                  ].map((tab) => {
+                    const isActive = selectedVideoTab === tab.id;
+                    return (
+                      <button
+                        key={tab.id}
+                        onClick={() => setSelectedVideoTab(tab.id as any)}
+                        className={`px-4 py-2 rounded-full uppercase font-mono text-xs tracking-wider transition-all ${
+                          isActive
+                            ? "bg-[#B600A8] text-white font-bold shadow-lg shadow-[#B600A8]/30"
+                            : "bg-white/5 text-white/60 hover:text-white border border-white/10"
+                        }`}
+                      >
+                        {tab.label}
+                      </button>
+                    );
+                  })}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
+
+          {/* شبكة الفيديوهات (بتفتح وتقفل مع القائمة) */}
+          <AnimatePresence>
+            {isVideoMenuOpen && (
+              <motion.div
+                key={selectedVideoTab}
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.35 }}
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8 mt-8 overflow-hidden"
+              >
+                {filteredVideos.map((item, idx) => (
+                  <FadeIn key={item.id} delay={idx * 0.04}>
+                    <div
+                      onClick={() => openModal(item)}
+                      className="group rounded-3xl bg-white/[0.03] border border-white/10 hover:border-[#B600A8]/60 overflow-hidden cursor-pointer transition-all duration-300 shadow-xl flex flex-col justify-between active:scale-[0.99]"
+                    >
+                      <div className="relative aspect-[9/16] w-full bg-black overflow-hidden">
+                        <video
+                          src={item.src}
+                          muted
+                          loop
+                          playsInline
+                          preload="metadata"
+                          className="w-full h-full object-cover opacity-90 group-hover:opacity-100"
+                        />
+
+                        <div className="absolute top-3.5 left-3.5 px-3 py-1 rounded-full bg-black/75 backdrop-blur-md border border-white/10 text-[9px] font-mono uppercase text-white font-bold">
+                          {item.tab}
+                        </div>
+
+                        <div className="absolute bottom-3.5 right-3.5 px-3.5 py-1.5 rounded-full bg-black/80 backdrop-blur-md border border-white/15 text-[11px] text-white font-mono font-bold uppercase shadow-lg group-hover:bg-[#B600A8] transition-all">
+                          ▶ Watch Cut
+                        </div>
+                      </div>
+
+                      <div className="p-4 sm:p-5 border-t border-white/10 bg-[#0A0A0C]">
+                        <span className="text-[10px] font-mono uppercase tracking-wider text-[#B600A8] font-bold block mb-1">
+                          {item.category}
+                        </span>
+                        <h3 className="text-white font-bold text-base leading-snug">
+                          {item.title}
+                        </h3>
+                        <p className="text-xs text-[#D7E2EA]/60 mt-1 leading-relaxed line-clamp-2 font-light">
+                          {item.description}
+                        </p>
+                      </div>
+                    </div>
+                  </FadeIn>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
 
         </div>
       </section>
