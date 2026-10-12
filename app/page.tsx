@@ -417,11 +417,8 @@ export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const modalVideoRef = useRef<HTMLVideoElement>(null);
-  
-  // Ref مخصص للسكرول يمين وشمال في فقرة الـ Highlights
   const highlightsScrollRef = useRef<HTMLDivElement>(null);
 
-  // دالة التحكم في السكرول لليمين واليسار
   const scrollHighlights = (direction: "left" | "right") => {
     if (highlightsScrollRef.current) {
       const scrollDistance = highlightsScrollRef.current.clientWidth * 0.75;
@@ -598,10 +595,11 @@ export default function Home() {
       </motion.div>
 
       {/* --- HERO SECTION --- */}
-      <section className="relative min-h-[100dvh] flex flex-col justify-between px-4 sm:px-8 md:px-12 pt-4 sm:pt-6 pb-8 sm:pb-12 z-10 border-b border-white/[0.06]">
+      <section className="relative min-h-[100dvh] flex flex-col justify-between px-4 sm:px-8 md:px-12 pt-4 sm:pt-6 pb-8 sm:pb-12 z-10 border-b border-white/[0.06] overflow-hidden">
         
+        {/* Navigation Bar */}
         <header className="w-full max-w-6xl mx-auto z-30">
-          <nav className="flex items-center justify-between px-5 py-3 sm:py-3.5 rounded-full bg-white/[0.03] backdrop-blur-2xl border border-white/10 shadow-2xl text-xs uppercase font-mono">
+          <nav className="flex items-center justify-between px-5 py-3 sm:py-3.5 rounded-full bg-black/40 backdrop-blur-2xl border border-white/10 shadow-2xl text-xs uppercase font-mono">
             <a href="#about" className="font-bold tracking-widest text-sm text-white flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-[#B600A8] shadow-[0_0_8px_#B600A8]" />
               <span>LIL</span>
@@ -700,54 +698,62 @@ export default function Home() {
           </AnimatePresence>
         </header>
 
-        <div className="relative my-auto py-8 sm:py-12 flex flex-col items-center justify-center text-center w-full">
-          <FadeIn delay={0.05} y={15} className="mb-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/10 text-[10px] sm:text-xs font-mono text-[#D7E2EA]/75">
+        {/* --- HERO CONTENT: صورتك في الباك والكلام فوقها تماماً --- */}
+        <div className="relative my-auto py-10 sm:py-16 flex flex-col items-center justify-center text-center w-full min-h-[440px] sm:min-h-[520px]">
+          
+          {/* صورتك بالبوليس في الباك بخلفية سينمائية */}
+          <div className="absolute left-1/2 -translate-x-1/2 bottom-0 z-0 pointer-events-none flex justify-center items-end select-none">
+            <img
+              src="/images/police.png"
+              alt="Lil Police Portrait"
+              className="w-[280px] xs:w-[340px] sm:w-[420px] md:w-[490px] max-h-[72vh] object-contain drop-shadow-[0_25px_60px_rgba(0,0,0,0.95)] opacity-90 transition-transform duration-500"
+            />
+            {/* فيد خفيف في أسفل الصورة عشان تندمج مع سواد الصفحة */}
+            <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#070709] via-[#070709]/80 to-transparent" />
+          </div>
+
+          <FadeIn delay={0.05} y={15} className="mb-4 relative z-20">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-[10px] sm:text-xs font-mono text-[#D7E2EA]/85 shadow-lg">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
               <span>Commercial & Retention Editor</span>
             </div>
           </FadeIn>
 
-          <h1 className="text-[15vw] sm:text-[14vw] md:text-[13vw] font-black uppercase tracking-tight leading-none text-white select-none drop-shadow-[0_15px_30px_rgba(0,0,0,0.8)]">
-            <span>{typedText}</span>
-            <span className="text-[#B600A8] animate-pulse ml-1.5">|</span>
-          </h1>
-
-          <div className="relative -my-6 sm:-my-10 md:-my-14 z-10">
-            <img
-              src="/images/avatar.png"
-              alt="Lil Portrait"
-              className="w-[220px] xs:w-[260px] sm:w-[320px] md:w-[400px] object-contain drop-shadow-[0_20px_45px_rgba(182,0,168,0.35)] select-none pointer-events-none"
-            />
+          {/* التكست بيتكتب فوق الصورة مباشرة */}
+          <div className="relative z-20 select-none">
+            <h1 className="text-[15vw] sm:text-[14vw] md:text-[13vw] font-black uppercase tracking-tight leading-none text-white drop-shadow-[0_15px_35px_rgba(0,0,0,0.95)]">
+              <span>{typedText}</span>
+              <span className="text-[#B600A8] animate-pulse ml-1.5">|</span>
+            </h1>
           </div>
 
-          <p className="max-w-md text-xs sm:text-sm text-[#D7E2EA]/70 uppercase tracking-widest font-light leading-relaxed mt-4 px-4">
+          <p className="relative z-20 max-w-md text-xs sm:text-sm text-white/90 uppercase tracking-widest font-light leading-relaxed mt-5 px-4 drop-shadow-[0_4px_14px_rgba(0,0,0,0.95)]">
             Senior video editor shaping memorable visual stories with retention-driven pacing & sound design.
           </p>
 
-          <div className="flex flex-col xs:flex-row gap-3 items-center mt-6 w-full xs:w-auto px-6 xs:px-0">
+          <div className="relative z-20 flex flex-col xs:flex-row gap-3 items-center mt-7 w-full xs:w-auto px-6 xs:px-0">
             <a
               href="#videos"
-              className="w-full xs:w-auto text-center px-6 py-3 rounded-full border border-white/20 bg-white/[0.03] backdrop-blur-xl text-white text-xs uppercase font-bold tracking-widest hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all shadow-lg active:scale-95"
+              className="w-full xs:w-auto text-center px-6 py-3 rounded-full border border-white/25 bg-black/50 backdrop-blur-xl text-white text-xs uppercase font-bold tracking-widest hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all shadow-xl active:scale-95"
             >
               Watch Videos ({videosData.length})
             </a>
             <a
               href="#contact"
-              className="w-full xs:w-auto text-center px-6 py-3 rounded-full bg-gradient-to-r from-[#B600A8] to-[#7621B0] text-white text-xs uppercase font-bold tracking-widest hover:opacity-90 transition-all shadow-[0_0_20px_rgba(182,0,168,0.4)] active:scale-95"
+              className="w-full xs:w-auto text-center px-6 py-3 rounded-full bg-gradient-to-r from-[#B600A8] to-[#7621B0] text-white text-xs uppercase font-bold tracking-widest hover:opacity-90 transition-all shadow-[0_0_25px_rgba(182,0,168,0.4)] active:scale-95"
             >
               Get in Touch →
             </a>
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-[10px] sm:text-xs font-mono text-white/40 border-t border-white/[0.06] pt-4 text-center">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-[10px] sm:text-xs font-mono text-white/40 border-t border-white/[0.06] pt-4 text-center z-20">
           <div>Post-Production • Foley Sound • Color Grading</div>
           <div>Available for Retainers 2026</div>
         </div>
       </section>
 
-      {/* --- FEATURED HIGHLIGHTS & POSTERS (مع أزرار وسكرول يمين وشمال) --- */}
+      {/* --- FEATURED HIGHLIGHTS & POSTERS --- */}
       <section className="py-14 border-b border-white/[0.06] bg-[#0A0A0C] overflow-hidden">
         <div className="max-w-7xl mx-auto px-5 sm:px-10 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
@@ -759,7 +765,6 @@ export default function Home() {
             </h3>
           </div>
 
-          {/* أزرار الأسهم للتحكم في السكرول يمين ويسار */}
           <div className="flex items-center gap-2 self-end sm:self-center">
             <button
               onClick={() => scrollHighlights("left")}
@@ -778,7 +783,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* حاوية الكروت القابلة للسكرول */}
         <div
           ref={highlightsScrollRef}
           className="flex gap-4 sm:gap-6 overflow-x-auto scroll-smooth no-scrollbar px-5 sm:px-10 pb-4 touch-pan-x"
