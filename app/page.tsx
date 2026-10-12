@@ -305,7 +305,7 @@ const packagesData = [
     id: "01",
     name: "The Spark Pack",
     arabicName: "Clean & Fast-Paced Cut",
-    priceUSD: "\$10",
+    priceUSD: "$10",
     priceEGP: "500 EGP",
     featured: false,
     revisions: "1 Revision pass per deliverable",
@@ -320,7 +320,7 @@ const packagesData = [
     id: "02",
     name: "The Viral Growth",
     arabicName: "High Retention & Engaging",
-    priceUSD: "\$17",
+    priceUSD: "$17",
     priceEGP: "850 EGP",
     featured: true,
     revisions: "Up to 2 Iterative revision rounds",
@@ -336,7 +336,7 @@ const packagesData = [
     id: "03",
     name: "Cinematic Prime",
     arabicName: "Commercial & Brand Showcase",
-    priceUSD: "\$24",
+    priceUSD: "$24",
     priceEGP: "1,200 EGP",
     featured: false,
     revisions: "Up to 3 Comprehensive revisions",
@@ -610,4 +610,630 @@ export default function AtelierHome() {
             <div className="flex items-center gap-3">
               <a
                 href="#videos"
-                className="text-xs uppercase tracking-wider text-white border-b border-white hover
+                className="text-xs uppercase tracking-wider text-white border-b border-white hover:text-white/70 transition-colors pb-0.5"
+              >
+                Explore Archive (11) ↓
+              </a>
+              <span className="text-white/20">/</span>
+              <a
+                href="#pricing"
+                className="text-xs uppercase tracking-wider text-white/60 hover:text-white transition-colors"
+              >
+                Rates & Milestones
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* --- NUMERICAL STATS TICKER --- */}
+      <section className="border-b border-white/[0.08] bg-[#0d0905]/80 backdrop-blur-md py-8 px-6 sm:px-12 relative z-10">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div>
+            <div className="text-3xl sm:text-4xl font-bold font-mono tracking-tight text-white">
+              <CountUp target={4} suffix="+" />
+            </div>
+            <div className="text-[11px] uppercase tracking-wider text-white/40 mt-1">Years Operating</div>
+          </div>
+          <div>
+            <div className="text-3xl sm:text-4xl font-bold font-mono tracking-tight text-white">
+              <CountUp target={350} suffix="+" />
+            </div>
+            <div className="text-[11px] uppercase tracking-wider text-white/40 mt-1">Masters Delivered</div>
+          </div>
+          <div>
+            <div className="text-3xl sm:text-4xl font-bold font-mono tracking-tight text-white">
+              <CountUp target={20} suffix="+" />
+            </div>
+            <div className="text-[11px] uppercase tracking-wider text-white/40 mt-1">Brands & Creators</div>
+          </div>
+          <div>
+            <div className="text-3xl sm:text-4xl font-bold font-mono tracking-tight text-white">
+              <CountUp target={45} suffix="%" />
+            </div>
+            <div className="text-[11px] uppercase tracking-wider text-white/40 mt-1">Avg. Retention Lift</div>
+          </div>
+        </div>
+      </section>
+
+      {/* --- MARQUEE HIGHLIGHT CAROUSEL --- */}
+      <section className="py-16 border-b border-white/[0.08] overflow-hidden relative z-10 bg-[#130e09]">
+        <div className="px-6 sm:px-12 max-w-7xl mx-auto mb-8 flex justify-between items-end">
+          <div>
+            <span className="text-[10px] uppercase font-mono tracking-[0.2em] text-white/40">Visual Catalogue</span>
+            <h2 className="text-xl sm:text-2xl font-bold uppercase tracking-tight text-white mt-1">Selected Highlights & Covers</h2>
+          </div>
+          <div className="text-xs text-white/40 hidden sm:block">Horizontal Scan Reel</div>
+        </div>
+
+        <div className="flex gap-5 px-6 sm:px-12 overflow-x-auto no-scrollbar pb-4">
+          {marqueeItems.map((item, idx) => (
+            <div
+              key={idx}
+              className="w-[240px] sm:w-[280px] shrink-0 border border-white/[0.08] bg-[#0d0905] overflow-hidden group relative flex flex-col justify-between"
+            >
+              <div className="aspect-[4/5] w-full overflow-hidden relative bg-black">
+                {item.video ? (
+                  <video
+                    src={item.video}
+                    muted
+                    loop
+                    autoPlay
+                    playsInline
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-80 group-hover:opacity-100"
+                  />
+                ) : (
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-85 group-hover:opacity-100"
+                  />
+                )}
+                <div className="absolute top-2 left-2 px-2 py-0.5 bg-black/70 backdrop-blur-md text-[9px] uppercase tracking-wider font-mono text-white/70">
+                  {item.category}
+                </div>
+              </div>
+              <div className="p-3.5 border-t border-white/[0.08]">
+                <h4 className="text-xs font-semibold uppercase tracking-tight text-white truncate">{item.title}</h4>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* --- ABOUT & SOFTWARE SUITE --- */}
+      <section id="about" className="py-24 px-6 sm:px-12 border-b border-white/[0.08] relative z-10">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          
+          <div className="lg:col-span-4">
+            <span className="text-[10px] uppercase font-mono tracking-[0.2em] text-white/40 block mb-2">[Overview]</span>
+            <h2 className="text-3xl sm:text-4xl font-bold uppercase tracking-tight text-white leading-none">
+              Behind The Timeline
+            </h2>
+            <div className="mt-8 pt-8 border-t border-white/[0.08] space-y-4">
+              <div className="text-xs font-mono uppercase text-white/40">Collaborated with</div>
+              <div className="flex flex-wrap gap-2">
+                {["Ahmed Abdelkareem", "Sameh Othman", "Maryam", "Sawsan", "Yasmine", "Rania", "Mai"].map((client, i) => (
+                  <span key={i} className="text-xs border border-white/[0.1] px-2.5 py-1 text-white/80">
+                    {client}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="lg:col-span-8 space-y-8">
+            <p className="text-lg sm:text-xl text-white/80 leading-relaxed font-light">
+              Specialized in engineering visual assets that respect attention spans while delivering undeniable retention metrics. Leveraging surgical audio design and high-velocity timeline workflows across Adobe Premiere Pro, After Effects, and DaVinci Resolve to translate raw footage into memorable brand stories.
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-6 border-t border-white/[0.08]">
+              {softwareStack.map((soft, i) => (
+                <div key={i} className="p-4 border border-white/[0.08] bg-[#0d0905]/60 flex items-start gap-4">
+                  <span className="text-xs font-mono font-bold px-2 py-1 bg-white/[0.06] border border-white/[0.1] text-white">
+                    {soft.icon}
+                  </span>
+                  <div>
+                    <h4 className="text-sm font-semibold uppercase text-white">{soft.name}</h4>
+                    <p className="text-xs text-white/50 mt-0.5">{soft.tag}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* --- FEATURED VIDEO ARCHIVE (INTERACTIVE) --- */}
+      <section id="videos" className="py-24 px-6 sm:px-12 border-b border-white/[0.08] relative z-10">
+        <div className="max-w-7xl mx-auto">
+          
+          <div className="flex flex-col md:flex-row justify-between md:items-end gap-6 mb-12">
+            <div>
+              <span className="text-[10px] uppercase font-mono tracking-[0.2em] text-white/40">[Archive]</span>
+              <h2 className="text-3xl sm:text-5xl font-bold uppercase tracking-tight text-white mt-1">
+                Selected Video Cuts
+              </h2>
+            </div>
+
+            {/* TAB FILTER */}
+            <div className="flex flex-wrap gap-1 border border-white/[0.1] p-1 bg-[#0d0905]">
+              {[
+                { id: "all", label: "All (11)" },
+                { id: "reels", label: "Reels & Hooks (6)" },
+                { id: "commercial", label: "Commercial & Sports (3)" },
+                { id: "cinematic", label: "Cinematic (2)" },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setSelectedVideoTab(tab.id as "all" | "reels" | "commercial" | "cinematic")}
+                  className={`px-3 py-1.5 text-xs uppercase tracking-tight transition-colors ${
+                    selectedVideoTab === tab.id
+                      ? "bg-white text-[#130e09] font-bold"
+                      : "text-white/60 hover:text-white"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* VIDEO GRID */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            {filteredVideos.map((item, idx) => (
+              <FadeIn key={item.id} delay={idx * 0.05}>
+                <div
+                  onClick={() => openModal(item)}
+                  className="border border-white/[0.09] bg-[#0d0905] overflow-hidden group cursor-pointer flex flex-col justify-between hover:border-white/30 transition-colors"
+                >
+                  <div className="relative aspect-[9/16] w-full overflow-hidden bg-black">
+                    <video
+                      src={item.src}
+                      muted
+                      loop
+                      playsInline
+                      preload="metadata"
+                      className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500 opacity-80 group-hover:opacity-100"
+                    />
+                    <div className="absolute top-3 left-3 px-2.5 py-1 bg-black/70 backdrop-blur-md border border-white/[0.1] text-[9px] font-mono uppercase tracking-wider text-white">
+                      {item.tab}
+                    </div>
+                    <div className="absolute bottom-3 right-3 px-2 py-0.5 bg-black/80 text-[10px] uppercase font-mono tracking-wider text-white/70 group-hover:text-white">
+                      Inspect Cut ↗
+                    </div>
+                  </div>
+
+                  <div className="p-5 border-t border-white/[0.08]">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-white/40 block mb-1">
+                      {item.category}
+                    </span>
+                    <h3 className="text-base font-bold uppercase tracking-tight text-white group-hover:text-white/90">
+                      {item.title}
+                    </h3>
+                    <p className="text-xs text-white/50 mt-2 line-clamp-2 leading-relaxed">
+                      {item.description}
+                    </p>
+                  </div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+
+        </div>
+      </section>
+
+      {/* --- RATES & MILESTONES (PRICING) --- */}
+      <section id="pricing" className="py-24 px-6 sm:px-12 border-b border-white/[0.08] relative z-10 bg-[#0d0905]">
+        <div className="max-w-7xl mx-auto">
+          
+          <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-6 mb-16">
+            <div>
+              <span className="text-[10px] uppercase font-mono tracking-[0.2em] text-white/40">[Production Rates]</span>
+              <h2 className="text-3xl sm:text-5xl font-bold uppercase tracking-tight text-white mt-1">
+                Packages & Milestones
+              </h2>
+            </div>
+
+            {/* CURRENCY TOGGLE */}
+            <div className="flex items-center gap-1 border border-white/[0.12] p-1 bg-[#130e09]">
+              <button
+                onClick={() => setCurrencyMode("ALL")}
+                className={`px-3 py-1 text-xs uppercase ${currencyMode === "ALL" ? "bg-white text-[#130e09] font-bold" : "text-white/60 hover:text-white"}`}
+              >
+                USD & EGP
+              </button>
+              <button
+                onClick={() => setCurrencyMode("USD")}
+                className={`px-3 py-1 text-xs uppercase ${currencyMode === "USD" ? "bg-white text-[#130e09] font-bold" : "text-white/60 hover:text-white"}`}
+              >
+                USD (\$)
+              </button>
+              <button
+                onClick={() => setCurrencyMode("EGP")}
+                className={`px-3 py-1 text-xs uppercase ${currencyMode === "EGP" ? "bg-white text-[#130e09] font-bold" : "text-white/60 hover:text-white"}`}
+              >
+                EGP (ج.م)
+              </button>
+            </div>
+          </div>
+
+          {/* PACKAGES TIERS */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {packagesData.map((pkg) => {
+              const priceDisplay =
+                currencyMode === "USD"
+                  ? pkg.priceUSD
+                  : currencyMode === "EGP"
+                  ? pkg.priceEGP
+                  : `${pkg.priceUSD} / ${pkg.priceEGP}`;
+
+              const waMessage = `https://wa.me/201211871199?text=${encodeURIComponent(
+                `Hey Lil! I want to book the "${pkg.name}" tier (${priceDisplay} per cut). Let's review the timeline.`
+              )}`;
+
+              return (
+                <div
+                  key={pkg.id}
+                  className={`border p-8 flex flex-col justify-between ${
+                    pkg.featured
+                      ? "border-white bg-[#130e09] relative shadow-2xl"
+                      : "border-white/[0.1] bg-[#0d0905]"
+                  }`}
+                >
+                  <div>
+                    <div className="flex justify-between items-baseline mb-4">
+                      <span className="text-xs font-mono text-white/40">TIER {pkg.id}</span>
+                      {pkg.featured && (
+                        <span className="text-[10px] uppercase font-mono bg-white text-[#130e09] px-2 py-0.5 font-bold">
+                          Featured Tier
+                        </span>
+                      )}
+                    </div>
+
+                    <h3 className="text-2xl font-bold uppercase tracking-tight text-white">{pkg.name}</h3>
+                    <p className="text-xs text-white/50 mt-1">{pkg.arabicName}</p>
+
+                    <div className="my-8 pb-6 border-b border-white/[0.08]">
+                      <div className="text-3xl sm:text-4xl font-mono font-bold text-white">{priceDisplay}</div>
+                      <div className="text-xs text-white/40 mt-1 uppercase">Per Video Master</div>
+                    </div>
+
+                    <ul className="space-y-3 mb-8 text-xs text-white/70">
+                      {pkg.features.map((feat, i) => (
+                        <li key={i} className="flex items-start gap-2.5">
+                          <span className="text-white/30 font-mono mt-0.5">—</span>
+                          <span>{feat}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="pt-6 border-t border-white/[0.08] space-y-3">
+                    <div className="text-[11px] font-mono text-white/40 text-center">{pkg.revisions}</div>
+                    <a
+                      href={pkg.driveLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block text-center py-2 text-xs uppercase tracking-wider border border-white/[0.15] text-white/80 hover:text-white hover:border-white transition-colors"
+                    >
+                      Drive Reference Cut ↗
+                    </a>
+                    <a
+                      href={waMessage}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`block text-center py-2.5 text-xs uppercase tracking-wider font-bold transition-colors ${
+                        pkg.featured
+                          ? "bg-white text-[#130e09] hover:bg-white/90"
+                          : "border border-white/20 hover:border-white text-white"
+                      }`}
+                    >
+                      Book on WhatsApp
+                    </a>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* GENERAL TERMS OF OPERATION */}
+          <div className="mt-16 p-8 border border-white/[0.08] bg-[#130e09]/50">
+            <h3 className="text-lg font-bold uppercase tracking-tight text-white mb-6">
+              Terms & Operational Flow
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-white/60">
+              {generalTerms.map((term, i) => (
+                <div key={i} className="space-y-1">
+                  <div className="text-white font-semibold uppercase">{i + 1}. {term.title}</div>
+                  <p className="leading-relaxed">{term.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* --- CLIENT REVIEWS & DISPATCHES --- */}
+      <section className="py-24 px-6 sm:px-12 border-b border-white/[0.08] relative z-10">
+        <div className="max-w-7xl mx-auto">
+          <span className="text-[10px] uppercase font-mono tracking-[0.2em] text-white/40 block mb-2">[Dispatches]</span>
+          <h2 className="text-3xl sm:text-5xl font-bold uppercase tracking-tight text-white mb-16">
+            Client Messages
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {clientReviews.map((rev, i) => (
+              <div key={i} className="p-8 border border-white/[0.08] bg-[#0d0905] flex flex-col justify-between">
+                <p className="text-base sm:text-lg text-white/80 font-light leading-relaxed mb-8">
+                  &ldquo;{rev.quote}&rdquo;
+                </p>
+                <div className="pt-4 border-t border-white/[0.08] flex justify-between items-end text-xs">
+                  <div>
+                    <h4 className="font-semibold text-white uppercase">{rev.client}</h4>
+                    <p className="text-white/40 mt-0.5">{rev.role}</p>
+                  </div>
+                  <span className="font-mono text-white/30 text-[11px]">VERIFIED REVIEW</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* --- THUMBNAILS & GRAPHICS --- */}
+      <section id="thumbnails" className="py-24 px-6 sm:px-12 border-b border-white/[0.08] relative z-10 bg-[#0d0905]">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex justify-between items-end mb-12">
+            <div>
+              <span className="text-[10px] uppercase font-mono tracking-[0.2em] text-white/40">[Artwork]</span>
+              <h2 className="text-3xl sm:text-5xl font-bold uppercase tracking-tight text-white mt-1">
+                Posters & High-CTR Covers
+              </h2>
+            </div>
+            <span className="text-xs text-white/40 hidden sm:block">Full Graphic Suite</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {thumbnailsData.map((thumb, i) => (
+              <div key={i} className="border border-white/[0.08] bg-[#130e09] overflow-hidden group">
+                <div className="aspect-[4/5] w-full overflow-hidden bg-black">
+                  <img
+                    src={thumb.src}
+                    alt={thumb.title}
+                    loading="lazy"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100"
+                  />
+                </div>
+                <div className="p-4 border-t border-white/[0.08]">
+                  <span className="text-[10px] font-mono uppercase text-white/40">{thumb.category}</span>
+                  <h3 className="text-sm font-semibold uppercase text-white mt-0.5">{thumb.title}</h3>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* --- SERVICES (ATELIER MINIMAL LIST) --- */}
+      <section id="services" className="py-24 px-6 sm:px-12 border-b border-white/[0.08] relative z-10">
+        <div className="max-w-7xl mx-auto">
+          <span className="text-[10px] uppercase font-mono tracking-[0.2em] text-white/40 block mb-2">[Capabilities]</span>
+          <h2 className="text-3xl sm:text-5xl font-bold uppercase tracking-tight text-white mb-16">
+            Core Disciplines
+          </h2>
+
+          <div className="divide-y divide-white/[0.08] border-y border-white/[0.08]">
+            {servicesList.map((srv) => (
+              <div key={srv.num} className="py-8 sm:py-10 flex flex-col md:flex-row md:items-center justify-between gap-4 group">
+                <div className="flex items-baseline gap-6">
+                  <span className="font-mono text-xs text-white/30">{srv.num}</span>
+                  <h3 className="text-xl sm:text-2xl font-bold uppercase tracking-tight text-white group-hover:text-white/80 transition-colors">
+                    {srv.name}
+                  </h3>
+                </div>
+                <p className="text-xs sm:text-sm text-white/50 max-w-xl leading-relaxed">
+                  {srv.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* --- CONTACT & FOOTER --- */}
+      <footer id="contact" className="py-24 px-6 sm:px-12 relative z-10 bg-[#0d0905]">
+        <div className="max-w-7xl mx-auto flex flex-col items-center text-center">
+          <span className="text-[10px] uppercase font-mono tracking-[0.2em] text-white/40 mb-3">Initiate Collaboration</span>
+          <h2 className="text-4xl sm:text-7xl font-black uppercase tracking-tight text-white mb-6">
+            Let&apos;s Create.
+          </h2>
+          <p className="text-sm sm:text-base text-white/60 max-w-lg mb-10 font-light">
+            Available for recurring brand campaigns, retainers, and high-retention post-production.
+          </p>
+
+          <div className="flex flex-wrap justify-center items-center gap-3 mb-12">
+            <a
+              href="https://wa.me/201211871199?text=Hey%20Lil!%20I%20want%20to%20start%20a%20video%20editing%20project."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-3 bg-white text-[#130e09] font-bold text-xs uppercase tracking-wider hover:bg-white/90 transition-colors"
+            >
+              Start Project via WhatsApp →
+            </a>
+            <a
+              href="mailto:ebrahimfadel8903@gmail.com"
+              className="px-6 py-3 border border-white/20 text-white font-medium text-xs uppercase tracking-wider hover:border-white transition-colors"
+            >
+              Email Direct
+            </a>
+          </div>
+
+          <div className="flex items-center gap-6 pt-8 border-t border-white/[0.08] w-full justify-between flex-wrap text-xs text-white/40">
+            <div>© 2026 Lil Unit. All rights reserved.</div>
+            <div className="flex items-center gap-4">
+              <a href="https://www.instagram.com/ebrahimfadel_8/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="Instagram">
+                <InstagramIcon />
+              </a>
+              <a href="https://www.facebook.com/EbrahimFadel8" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="Facebook">
+                <FacebookIcon />
+              </a>
+              <a href="https://wa.me/201211871199" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" aria-label="WhatsApp">
+                <WhatsAppIcon />
+              </a>
+              <a href="mailto:ebrahimfadel8903@gmail.com" className="hover:text-white transition-colors" aria-label="Email">
+                <MailIcon />
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+      {/* --- THEATER MODE VIDEO MODAL --- */}
+      <AnimatePresence>
+        {activeModalVideo && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={closeModal}
+            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-4 sm:p-8"
+          >
+            <div className="absolute top-6 left-6 right-6 flex justify-between items-center z-10 pointer-events-none text-xs">
+              <span className="font-mono text-white/60 pointer-events-auto">
+                [{currentVideoIndex + 1} / {videosData.length}] — {activeModalVideo.title}
+              </span>
+              <div className="flex items-center gap-3 pointer-events-auto">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (!modalVideoRef.current) return;
+                    modalVideoRef.current.muted = !modalVideoRef.current.muted;
+                    setIsModalMuted(modalVideoRef.current.muted);
+                  }}
+                  className="px-3 py-1 border border-white/20 text-white text-[11px] uppercase hover:bg-white hover:text-black transition-colors"
+                >
+                  {isModalMuted ? "Unmute" : "Mute"}
+                </button>
+                <button
+                  onClick={closeModal}
+                  className="w-8 h-8 border border-white/20 text-white flex items-center justify-center text-sm hover:bg-white hover:text-black transition-colors"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+
+            <button
+              onClick={(e) => { e.stopPropagation(); goPrevious(); }}
+              className="absolute left-4 sm:left-8 w-10 h-10 border border-white/20 text-white flex items-center justify-center text-sm hover:bg-white hover:text-black transition-colors z-10"
+            >
+              ←
+            </button>
+
+            <button
+              onClick={(e) => { e.stopPropagation(); goNext(); }}
+              className="absolute right-4 sm:right-8 w-10 h-10 border border-white/20 text-white flex items-center justify-center text-sm hover:bg-white hover:text-black transition-colors z-10"
+            >
+              →
+            </button>
+
+            <motion.div
+              initial={{ scale: 0.95 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.95 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-w-sm w-full h-[85vh] aspect-[9/16] bg-black border border-white/20 overflow-hidden shadow-2xl"
+            >
+              <video
+                ref={modalVideoRef}
+                src={activeModalVideo.src}
+                controls
+                autoPlay
+                playsInline
+                loop
+                className="w-full h-full object-cover"
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* --- PRODUCTION WORKFLOW MODAL --- */}
+      <AnimatePresence>
+        {isWorkflowOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsWorkflowOpen(false)}
+            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-6"
+          >
+            <motion.div
+              initial={{ scale: 0.96, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.96, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto bg-[#130e09] border border-white/20 p-6 sm:p-10 shadow-2xl custom-scrollbar"
+            >
+              <div className="flex justify-between items-start pb-6 border-b border-white/[0.08] mb-8">
+                <div>
+                  <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/40 block mb-1">
+                    System Architecture
+                  </span>
+                  <h3 className="text-2xl font-bold uppercase tracking-tight text-white">
+                    Production Pipeline
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setIsWorkflowOpen(false)}
+                  className="w-8 h-8 border border-white/20 text-white flex items-center justify-center text-sm hover:bg-white hover:text-black transition-colors"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="space-y-6">
+                {processSteps.map((step) => (
+                  <div key={step.num} className="p-5 border border-white/[0.08] bg-[#0d0905]">
+                    <div className="flex justify-between items-baseline mb-2">
+                      <span className="text-xs font-mono text-white/40">STEP {step.num}</span>
+                      <span className="text-xs text-white/50">{step.arabic}</span>
+                    </div>
+                    <h4 className="text-base font-bold uppercase text-white mb-1">{step.title}</h4>
+                    <p className="text-xs sm:text-sm text-white/60 leading-relaxed">{step.desc}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-white/[0.08] text-center">
+                <button
+                  onClick={() => setIsWorkflowOpen(false)}
+                  className="px-6 py-2.5 bg-white text-[#130e09] text-xs uppercase font-bold tracking-wider hover:bg-white/90 transition-colors"
+                >
+                  Proceed to Timeline
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* --- SCROLL BACK TO TOP --- */}
+      <AnimatePresence>
+        {showScrollTop && (
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="fixed bottom-6 right-6 z-40 w-10 h-10 bg-white text-[#130e09] font-mono font-bold flex items-center justify-center text-sm shadow-xl hover:bg-white/90 transition-all"
+            aria-label="Scroll Top"
+          >
+            ↑
+          </button>
+        )}
+      </AnimatePresence>
+
+    </div>
+  );
+}
