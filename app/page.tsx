@@ -6,30 +6,30 @@ import { motion, AnimatePresence, useSpring, useMotionValue, useInView } from "f
 // --- SVG SOCIAL & SOFTWARE ICONS ---
 
 const InstagramIcon = () => (
-  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
     <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
   </svg>
 );
 
 const FacebookIcon = () => (
-  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
     <path d="M9 8H6v4h3v12h5V12h3.642L18 8h-4V6.333C14 5.374 14.5 5 15.667 5H18V0h-3.889C10.5 0 9 1.582 9 4.615V8z" />
   </svg>
 );
 
 const WhatsAppIcon = () => (
-  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
     <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
   </svg>
 );
 
 const MailIcon = () => (
-  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
     <path d="M0 3v18h24v-18h-24zm6.623 7.929l-4.623 5.712v-9.458l4.623 3.746zm-4.141-5.929h19.035l-9.517 7.713-9.518-7.713zm5.694 7.188l3.824 3.099 3.83-3.104 5.612 6.817h-18.779l5.513-6.812zm9.208-1.264l4.616-3.741v9.348l-4.616-5.607z" />
   </svg>
 );
 
-// --- ANIMATION HELPERS ---
+// --- REUSABLE ANIMATION COMPONENTS ---
 
 interface FadeInProps {
   children: React.ReactNode;
@@ -110,7 +110,7 @@ function MagneticButton({
   href?: string;
   className?: string;
   style?: React.CSSProperties;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 }) {
   const btnRef = useRef<HTMLAnchorElement>(null);
   const [pos, setPos] = useState({ x: 0, y: 0 });
@@ -160,31 +160,31 @@ const processSteps = [
   {
     num: "01",
     title: "Project Brief & Creative Vision",
-    arabic: "الاتفاق وفهم فكرة الفيديو",
+    tag: "Creative Direction",
     desc: "Understanding target audience, platform format, desired pacing, tone, and visual references.",
   },
   {
     num: "02",
     title: "Footage Upload & Assembly",
-    arabic: "رفع الماتريال والفرز السريع",
+    tag: "Media Intake",
     desc: "Seamless footage reception via Drive/WeTransfer, organizing media and building initial rough cuts.",
   },
   {
     num: "03",
     title: "The First Cut & Sound Design",
-    arabic: "المونتاج، التقطيع والمؤثرات",
+    tag: "Editorial & SFX",
     desc: "Applying dynamic cuts, animated pop-up subtitles, visual hooks, sound Foley, and color balancing.",
   },
   {
     num: "04",
     title: "Feedback & Revisions",
-    arabic: "المراجعة والتعديلات السريعة",
+    tag: "Refinement Round",
     desc: "Fine-tuning rhythm, subtitle cues, and visual flow based on your precise notes and vision.",
   },
   {
     num: "05",
     title: "Final 4K Master Delivery",
-    arabic: "التسليم النهائي بأعلى جودة",
+    tag: "Master Export",
     desc: "Delivering crisp, native 4K/1080p high-bitrate master exports optimized for TikTok, Reels, and YouTube.",
   },
 ];
@@ -356,7 +356,7 @@ const packagesData = [
   {
     id: "01",
     name: "The Spark Pack",
-    arabicName: "Clean & Fast-Paced Cut",
+    subtitle: "Clean & Fast-Paced Cut",
     priceUSD: "$10",
     priceEGP: "500 EGP",
     featured: false,
@@ -371,7 +371,7 @@ const packagesData = [
   {
     id: "02",
     name: "The Viral Growth",
-    arabicName: "High Retention & Engaging",
+    subtitle: "High Retention & Engaging",
     priceUSD: "$17",
     priceEGP: "850 EGP",
     featured: true,
@@ -387,7 +387,7 @@ const packagesData = [
   {
     id: "03",
     name: "Cinematic Prime",
-    arabicName: "Commercial & Brand Showcase",
+    subtitle: "Commercial & Brand Showcase",
     priceUSD: "$24",
     priceEGP: "1,200 EGP",
     featured: false,
@@ -481,7 +481,7 @@ export default function Home() {
   const [currencyMode, setCurrencyMode] = useState<"ALL" | "USD" | "EGP">("ALL");
   const [selectedVideoTab, setSelectedVideoTab] = useState<"all" | "reels" | "commercial" | "cinematic">("all");
   
-  // القوائم التفاعلية
+  // Accordions state
   const [isVideoMenuOpen, setIsVideoMenuOpen] = useState(true);
   const [isThumbnailsMenuOpen, setIsThumbnailsMenuOpen] = useState(true);
 
@@ -501,6 +501,17 @@ export default function Home() {
         left: direction === "left" ? -scrollDistance : scrollDistance,
         behavior: "smooth",
       });
+    }
+  };
+
+  // --- SMOOTH SCROLL HANDLER (الانتقال السلس إلى الأقسام) ---
+  const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>, id: string) => {
+    e.preventDefault();
+    const element = document.querySelector(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+      // Update browser history with section ID seamlessly without refresh
+      window.history.pushState(null, "", id);
     }
   };
 
@@ -712,7 +723,7 @@ export default function Home() {
                           </span>
                           <h4 className="text-base font-bold text-white">{step.title}</h4>
                         </div>
-                        <span className="text-xs text-[#D7E2EA]/60">{step.arabic}</span>
+                        <span className="text-xs text-[#D7E2EA]/50 font-mono">{step.tag}</span>
                       </div>
                       <p className="text-xs sm:text-sm text-[#D7E2EA]/75 leading-relaxed font-light">
                         {step.desc}
@@ -739,25 +750,93 @@ export default function Home() {
         dir="ltr"
         className="relative w-full min-h-screen bg-[#0A0A0A] text-[#D7E2EA] selection:bg-[#B600A8] selection:text-white overflow-x-hidden font-sans"
       >
-        {/* --- HERO SECTION (CLEAN TYPOGRAPHY WITHOUT PHOTO OR BADGE) --- */}
+        {/* --- HERO SECTION (NO PHOTO / NO BADGE / SUBTLE DUAL-VIDEO BACKGROUND) --- */}
         <section className="relative min-h-screen flex flex-col justify-between overflow-x-clip bg-[#0A0A0A] pb-8">
           
+          {/* خلفية الفيديوهات الخفيفة جداً من ورا (Autoplaying, Muted, 8% Opacity Split-Video Backing) */}
+          <div className="absolute inset-0 z-0 flex pointer-events-none overflow-hidden opacity-[0.08] blur-[1px] select-none">
+            {/* Man Utd View (Left) */}
+            <div className="w-1/2 h-full relative border-r border-white/[0.03]">
+              <video
+                src="/video/Man-U.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="metadata"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            {/* Odyssey View (Right) */}
+            <div className="w-1/2 h-full relative">
+              <video
+                src="/video/The-Odyssey.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="metadata"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            
+            {/* Overlay Gradient for optimal legibility */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/40 to-[#0A0A0A]" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0A0A0A] via-transparent to-[#0A0A0A]" />
+          </div>
+
           {/* Navigation Bar */}
           <FadeIn delay={0} y={-20} className="w-full z-30">
             <nav className="flex justify-between items-center px-6 md:px-10 py-4 md:py-5 mt-4 mx-4 md:mx-10 rounded-3xl bg-white/[0.03] backdrop-blur-2xl border border-white/10 text-xs md:text-sm font-medium tracking-wider uppercase gap-6 shadow-2xl">
               <div className="flex gap-4 sm:gap-7 items-center flex-wrap">
-                <a href="#about" className="hover:text-[#B600A8] transition-colors">About</a>
+                <a
+                  href="#about"
+                  onClick={(e) => handleScrollTo(e, "#about")}
+                  className="hover:text-[#B600A8] transition-colors"
+                >
+                  About
+                </a>
                 <button
                   onClick={() => setIsWorkflowOpen(true)}
                   className="text-[#D7E2EA] hover:text-[#B600A8] transition-colors uppercase tracking-wider font-semibold cursor-pointer"
                 >
                   Workflow ↗
                 </button>
-                <a href="#videos" className="hover:text-[#B600A8] transition-colors">Videos</a>
-                <a href="#price" className="hover:text-[#B600A8] transition-colors">Pricing</a>
-                <a href="#reviews" className="hover:text-[#B600A8] transition-colors">Reviews</a>
-                <a href="#thumbnails" className="hover:text-[#B600A8] transition-colors">Thumbnails</a>
-                <a href="#services" className="hover:text-[#B600A8] transition-colors">Services</a>
+                <a
+                  href="#videos"
+                  onClick={(e) => handleScrollTo(e, "#videos")}
+                  className="hover:text-[#B600A8] transition-colors"
+                >
+                  Videos
+                </a>
+                <a
+                  href="#price"
+                  onClick={(e) => handleScrollTo(e, "#price")}
+                  className="hover:text-[#B600A8] transition-colors"
+                >
+                  Pricing
+                </a>
+                <a
+                  href="#reviews"
+                  onClick={(e) => handleScrollTo(e, "#reviews")}
+                  className="hover:text-[#B600A8] transition-colors"
+                >
+                  Reviews
+                </a>
+                <a
+                  href="#thumbnails"
+                  onClick={(e) => handleScrollTo(e, "#thumbnails")}
+                  className="hover:text-[#B600A8] transition-colors"
+                >
+                  Thumbnails
+                </a>
+                <a
+                  href="#services"
+                  onClick={(e) => handleScrollTo(e, "#services")}
+                  className="hover:text-[#B600A8] transition-colors"
+                >
+                  Services
+                </a>
               </div>
 
               <div className="flex items-center gap-3 shrink-0">
@@ -777,7 +856,7 @@ export default function Home() {
             </nav>
           </FadeIn>
 
-          {/* النص الضخم متمركز في قلب الشاشة بدون أي تداخل */}
+          {/* Clean Big Title Overlay */}
           <div className="overflow-hidden w-full select-none my-auto z-10">
             <FadeIn delay={0.15} y={40}>
               <h1 className="hero-heading font-black uppercase tracking-tight leading-none whitespace-nowrap w-full text-center text-[15vw] sm:text-[16vw] md:text-[18vw] inline-flex items-center justify-center">
@@ -787,7 +866,7 @@ export default function Home() {
             </FadeIn>
           </div>
 
-          {/* الجزء السفلي: النص على اليسار والأزرار الكبسولة على اليمين */}
+          {/* Hero Bottom Navigation with Smooth Transition */}
           <div className="flex flex-col sm:flex-row justify-between items-center sm:items-end px-6 md:px-10 gap-6 z-20 mt-12 sm:mt-0">
             <FadeIn delay={0.3} y={20}>
               <p className="text-[#D7E2EA] font-light leading-snug max-w-[280px] text-center sm:text-start text-xs sm:text-sm md:text-base opacity-80 uppercase tracking-wide">
@@ -798,14 +877,16 @@ export default function Home() {
             <FadeIn delay={0.4} y={20} className="flex gap-3 items-center">
               <MagneticButton
                 href="#videos"
-                className="rounded-full border-2 border-white/20 bg-white/[0.04] backdrop-blur-xl text-[#D7E2EA] font-medium uppercase tracking-widest px-6 py-2.5 text-xs sm:text-sm hover:bg-white/15 transition-colors shadow-lg"
+                onClick={(e) => handleScrollTo(e, "#videos")}
+                className="rounded-full border-2 border-white/20 bg-white/[0.04] backdrop-blur-xl text-[#D7E2EA] font-medium uppercase tracking-widest px-6 py-2.5 text-xs sm:text-sm hover:bg-white/15 transition-colors shadow-lg cursor-pointer"
               >
                 Watch Videos
               </MagneticButton>
 
               <MagneticButton
                 href="#contact"
-                className="rounded-full uppercase tracking-widest font-semibold text-white px-7 py-3 text-xs sm:text-sm shadow-xl"
+                onClick={(e) => handleScrollTo(e, "#contact")}
+                className="rounded-full uppercase tracking-widest font-semibold text-white px-7 py-3 text-xs sm:text-sm shadow-xl cursor-pointer"
                 style={{
                   background: "linear-gradient(123deg, #18011F 7%, #B600A8 37%, #7621B0 72%, #BE4C00 100%)",
                   boxShadow: "0px 4px 4px rgba(181, 1, 167, 0.25), inset 4px 4px 12px #7721B1",
@@ -819,7 +900,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* --- HIGHLIGHTS SECTION (مع سكرول يمين ويسار بالأسهم) --- */}
+        {/* --- HIGHLIGHTS SECTION --- */}
         <section className="bg-[#0A0A0A] pt-16 pb-12 overflow-hidden flex flex-col gap-6 border-y border-white/5">
           <div className="max-w-7xl mx-auto px-6 md:px-12 w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
@@ -834,14 +915,14 @@ export default function Home() {
             <div className="flex items-center gap-3 self-end sm:self-center">
               <button
                 onClick={() => scrollHighlights("left")}
-                className="w-9 h-9 rounded-full bg-white/5 border border-white/15 text-white flex items-center justify-center hover:bg-[#B600A8] hover:border-[#B600A8] transition-all text-sm active:scale-95 shadow-md"
+                className="w-9 h-9 rounded-full bg-white/5 border border-white/15 text-white flex items-center justify-center hover:bg-[#B600A8] hover:border-[#B600A8] transition-all text-sm active:scale-95 shadow-md cursor-pointer"
                 aria-label="Scroll left"
               >
                 ←
               </button>
               <button
                 onClick={() => scrollHighlights("right")}
-                className="w-9 h-9 rounded-full bg-white/5 border border-white/15 text-white flex items-center justify-center hover:bg-[#B600A8] hover:border-[#B600A8] transition-all text-sm active:scale-95 shadow-md"
+                className="w-9 h-9 rounded-full bg-white/5 border border-white/15 text-white flex items-center justify-center hover:bg-[#B600A8] hover:border-[#B600A8] transition-all text-sm active:scale-95 shadow-md cursor-pointer"
                 aria-label="Scroll right"
               >
                 →
@@ -849,6 +930,7 @@ export default function Home() {
 
               <a
                 href="#videos"
+                onClick={(e) => handleScrollTo(e, "#videos")}
                 className="px-5 py-2 rounded-full bg-white/5 border border-white/15 text-white text-xs uppercase font-bold tracking-wider hover:bg-[#B600A8] hover:border-[#B600A8] transition-all flex items-center gap-2 shadow-lg"
               >
                 <span>View All Videos</span>
@@ -985,7 +1067,8 @@ export default function Home() {
                 <div className="pt-4 border-t border-white/10">
                   <MagneticButton
                     href="#contact"
-                    className="block text-center w-full py-3 rounded-full bg-white/10 hover:bg-[#B600A8] text-white text-xs font-bold uppercase tracking-wider transition-colors shadow-lg"
+                    onClick={(e) => handleScrollTo(e, "#contact")}
+                    className="block text-center w-full py-3 rounded-full bg-white/10 hover:bg-[#B600A8] text-white text-xs font-bold uppercase tracking-wider transition-colors shadow-lg cursor-pointer"
                   >
                     Book Your Project
                   </MagneticButton>
@@ -995,13 +1078,13 @@ export default function Home() {
           </div>
         </section>
 
-        {/* --- FEATURED VIDEOS (قائمة قابلة للفتح والإغلاق) --- */}
+        {/* --- FEATURED VIDEOS (COLLAPSIBLE - SMOOTH) --- */}
         <section
           id="videos"
           className="py-20 sm:py-24 px-4 sm:px-8 md:px-12 bg-[#0A0A0A] border-t border-white/5"
         >
           <div className="max-w-6xl mx-auto">
-            <FadeIn delay={0} y={30} className="text-center mb-8">
+            <FadeIn delay={0} y={30} className="text-center mb-4">
               <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
                 Interactive Video Portfolio
               </span>
@@ -1020,12 +1103,6 @@ export default function Home() {
                     ▼
                   </span>
                 </button>
-
-                <p className="text-[#D7E2EA]/60 text-xs sm:text-sm mt-2 tracking-wider">
-                  {isVideoMenuOpen
-                    ? "Click title to collapse videos • Hover to preview"
-                    : "Click to reveal featured video reels & commercial campaigns"}
-                </p>
 
                 <AnimatePresence>
                   {isVideoMenuOpen && (
@@ -1048,7 +1125,7 @@ export default function Home() {
                               tab.id as "all" | "reels" | "commercial" | "cinematic"
                             )
                           }
-                          className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all duration-200 border ${
+                          className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all duration-200 border cursor-pointer ${
                             selectedVideoTab === tab.id
                               ? "bg-[#B600A8] text-white border-[#B600A8] shadow-lg shadow-[#B600A8]/30"
                               : "bg-white/5 text-[#D7E2EA]/70 border-white/10 hover:border-white/20 hover:text-white"
@@ -1070,8 +1147,8 @@ export default function Home() {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-12 overflow-hidden"
+                  transition={{ duration: 0.35 }}
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-10 overflow-hidden"
                 >
                   {filteredVideos.map((item, idx) => (
                     <FadeIn key={item.id} delay={idx * 0.05}>
@@ -1130,16 +1207,16 @@ export default function Home() {
                 Rates & Packages
               </h2>
 
-              <p className="text-[#D7E2EA]/60 max-w-xl mx-auto mt-3 text-sm sm:text-base">
+              <p className="text-[#D7E2EA]/60 max-w-xl mx-auto mt-3 text-sm sm:text-base font-light">
                 Transparent video production rates in USD and EGP with milestone delivery
               </p>
             </FadeIn>
 
             <FadeIn delay={0.1} y={20} className="flex justify-center mb-16">
-              <div className="inline-flex items-center p-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl">
+              <div className="inline-flex items-center p-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl font-mono">
                 <button
                   onClick={() => setCurrencyMode("ALL")}
-                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
                     currencyMode === "ALL"
                       ? "bg-[#B600A8] text-white"
                       : "text-white/60 hover:text-white"
@@ -1150,7 +1227,7 @@ export default function Home() {
 
                 <button
                   onClick={() => setCurrencyMode("USD")}
-                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
                     currencyMode === "USD"
                       ? "bg-[#B600A8] text-white"
                       : "text-white/60 hover:text-white"
@@ -1161,13 +1238,13 @@ export default function Home() {
 
                 <button
                   onClick={() => setCurrencyMode("EGP")}
-                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
                     currencyMode === "EGP"
                       ? "bg-[#B600A8] text-white"
                       : "text-white/60 hover:text-white"
                   }`}
                 >
-                  EGP (ج.م)
+                  EGP
                 </button>
               </div>
             </FadeIn>
@@ -1204,7 +1281,7 @@ export default function Home() {
                         <div className="flex justify-between items-start mb-4">
                           <div>
                             <h3 className="text-2xl font-bold text-white">{pkg.name}</h3>
-                            <p className="text-[#D7E2EA]/70 text-sm mt-1">{pkg.arabicName}</p>
+                            <p className="text-[#D7E2EA]/70 text-sm mt-1">{pkg.subtitle}</p>
                           </div>
                           <span className="font-mono text-white/30 text-lg font-bold">{pkg.id}</span>
                         </div>
@@ -1246,7 +1323,7 @@ export default function Home() {
 
                         <MagneticButton
                           href={whatsappPreFilledLink}
-                          className={`block w-full text-center rounded-full uppercase tracking-widest font-semibold py-3.5 text-sm transition-all duration-300 ${
+                          className={`block w-full text-center rounded-full uppercase tracking-widest font-semibold py-3.5 text-sm transition-all duration-300 cursor-pointer ${
                             pkg.featured
                               ? "bg-[#B600A8] hover:bg-[#9d0091] text-white shadow-lg shadow-[#B600A8]/30"
                               : "border border-white/20 hover:bg-white/10 text-white shadow-md"
@@ -1327,10 +1404,10 @@ export default function Home() {
           </div>
         </section>
 
-        {/* --- THUMBNAILS & COVERS (قائمة قابلة للفتح والإغلاق) --- */}
+        {/* --- THUMBNAILS & COVERS (COLLAPSIBLE - NO HELPER TEXT) --- */}
         <section id="thumbnails" className="py-24 px-5 sm:px-8 md:px-12 bg-[#0A0A0A]">
           <div className="max-w-6xl mx-auto">
-            <FadeIn delay={0} y={30} className="text-center mb-8">
+            <FadeIn delay={0} y={30} className="text-center mb-4">
               <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
                 Graphic Covers & Visuals
               </span>
@@ -1350,45 +1427,39 @@ export default function Home() {
                   </span>
                 </button>
 
-                <p className="text-[#D7E2EA]/60 text-xs sm:text-sm mt-2 tracking-wider">
-                  {isThumbnailsMenuOpen
-                    ? "Click title to collapse gallery"
-                    : "Click to reveal high-CTR YouTube covers and commercial posters"}
-                </p>
+                <AnimatePresence>
+                  {isThumbnailsMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-12 overflow-hidden"
+                    >
+                      {thumbnailsData.map((thumb, index) => (
+                        <FadeIn key={index} delay={index * 0.1}>
+                          <div className="bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[28px] overflow-hidden shadow-2xl group hover:border-[#B600A8]/50 transition-colors duration-300">
+                            <div className="w-full aspect-[4/5] overflow-hidden bg-black/50">
+                              <img
+                                src={thumb.src}
+                                alt={thumb.title}
+                                loading="lazy"
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                              />
+                            </div>
+
+                            <div className="p-5 flex flex-col gap-1 text-left">
+                              <span className="text-xs uppercase tracking-widest text-[#B600A8] font-medium">{thumb.category}</span>
+                              <h3 className="text-[#D7E2EA] font-semibold text-lg sm:text-xl">{thumb.title}</h3>
+                            </div>
+                          </div>
+                        </FadeIn>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </FadeIn>
-
-            <AnimatePresence>
-              {isThumbnailsMenuOpen && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-12 overflow-hidden"
-                >
-                  {thumbnailsData.map((thumb, index) => (
-                    <FadeIn key={index} delay={index * 0.1}>
-                      <div className="bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[28px] overflow-hidden shadow-2xl group hover:border-[#B600A8]/50 transition-colors duration-300">
-                        <div className="w-full aspect-[4/5] overflow-hidden bg-black/50">
-                          <img
-                            src={thumb.src}
-                            alt={thumb.title}
-                            loading="lazy"
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
-                        </div>
-
-                        <div className="p-5 flex flex-col gap-1">
-                          <span className="text-xs uppercase tracking-widest text-[#B600A8] font-medium">{thumb.category}</span>
-                          <h3 className="text-[#D7E2EA] font-semibold text-lg sm:text-xl">{thumb.title}</h3>
-                        </div>
-                      </div>
-                    </FadeIn>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
           </div>
         </section>
 
@@ -1452,7 +1523,7 @@ export default function Home() {
 
             <MagneticButton
               href="https://wa.me/201211871199?text=Hey%20Lil!%20I%20want%20to%20start%20a%20video%20editing%20project."
-              className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#B600A8] hover:bg-[#9d0091] text-white uppercase tracking-widest text-xs font-bold transition-all shadow-[0_0_30px_rgba(182,0,168,0.35)]"
+              className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#B600A8] hover:bg-[#9d0091] text-white uppercase tracking-widest text-xs font-bold transition-all shadow-[0_0_30px_rgba(182,0,168,0.35)] cursor-pointer"
             >
               Start a Project
               <span>→</span>
