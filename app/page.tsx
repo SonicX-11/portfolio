@@ -697,44 +697,88 @@ export default function Home() {
             )}
           </AnimatePresence>
         </header>
+{/* --- HERO SECTION WITH POLICE PHOTO IN BACK --- */}
+      <section className="relative min-h-[100dvh] flex flex-col justify-between px-4 sm:px-8 md:px-12 pt-4 sm:pt-6 pb-8 sm:pb-12 z-10 border-b border-white/[0.06] overflow-hidden">
+        
+        {/* شريط الملاحة العلوي */}
+        <header className="w-full max-w-6xl mx-auto z-30">
+          <nav className="flex items-center justify-between px-5 py-3 sm:py-3.5 rounded-full bg-black/40 backdrop-blur-2xl border border-white/10 shadow-2xl text-xs uppercase font-mono">
+            <a href="#about" className="font-bold tracking-widest text-sm text-white flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#B600A8] shadow-[0_0_8px_#B600A8]" />
+              <span>LIL</span>
+            </a>
 
-        {/* --- HERO CONTENT: صورتك في الباك والكلام فوقها تماماً --- */}
-        <div className="relative my-auto py-10 sm:py-16 flex flex-col items-center justify-center text-center w-full min-h-[440px] sm:min-h-[520px]">
+            <div className="hidden md:flex items-center gap-6 tracking-wider text-[11px]">
+              <a href="#about" className="hover:text-[#B600A8] transition-colors">About</a>
+              <button
+                onClick={() => setIsWorkflowOpen(true)}
+                className="text-white hover:text-[#B600A8] transition-colors flex items-center gap-1 font-bold"
+              >
+                <span>Workflow</span>
+                <span className="text-[10px]">↗</span>
+              </button>
+              <a href="#videos" className="hover:text-[#B600A8] transition-colors">Videos</a>
+              <a href="#price" className="hover:text-[#B600A8] transition-colors">Pricing</a>
+              <a href="#reviews" className="hover:text-[#B600A8] transition-colors">Reviews</a>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <a
+                href="https://wa.me/201211871199"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3.5 sm:px-4 py-1.5 rounded-full bg-[#B600A8]/20 border border-[#B600A8]/50 text-white font-bold hover:bg-[#B600A8] transition-all flex items-center gap-1.5 text-[11px] sm:text-xs shadow-[0_0_12px_rgba(182,0,168,0.3)]"
+              >
+                <WhatsAppIcon />
+                <span className="hidden xs:inline">WhatsApp</span>
+              </a>
+
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="md:hidden w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white text-base active:scale-95 transition-transform"
+                aria-label="Toggle menu"
+              >
+                {isMobileMenuOpen ? "✕" : "☰"}
+              </button>
+            </div>
+          </nav>
+        </header>
+
+        {/* 1. صورتك في الباك مع تلاشي الحواف بسلاسة */}
+        <div className="absolute inset-0 z-0 pointer-events-none flex items-center justify-center overflow-hidden">
+          <img
+            src="/images/police.png"
+            alt="Lil Police Background"
+            className="w-[320px] xs:w-[380px] sm:w-[480px] md:w-[580px] lg:w-[650px] max-h-[80vh] object-cover object-top opacity-50 filter contrast-125 brightness-90 [mask-image:radial-gradient(ellipse_65%_75%_at_50%_45%,black_40%,transparent_85%)] transition-opacity duration-700"
+          />
+          {/* فيد سفلي وعلوي عشان الاندماج الكامل مع سواد الصفحة */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#070709] via-transparent to-[#070709]/80" />
+        </div>
+
+        {/* 2. الكلام مكتوب فوق صورتك مباشرة بوضوح */}
+        <div className="relative my-auto py-12 sm:py-16 flex flex-col items-center justify-center text-center w-full z-20">
           
-          {/* صورتك بالبوليس في الباك بخلفية سينمائية */}
-          <div className="absolute left-1/2 -translate-x-1/2 bottom-0 z-0 pointer-events-none flex justify-center items-end select-none">
-            <img
-              src="/images/police.png"
-              alt="Lil Police Portrait"
-              className="w-[280px] xs:w-[340px] sm:w-[420px] md:w-[490px] max-h-[72vh] object-contain drop-shadow-[0_25px_60px_rgba(0,0,0,0.95)] opacity-90 transition-transform duration-500"
-            />
-            {/* فيد خفيف في أسفل الصورة عشان تندمج مع سواد الصفحة */}
-            <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#070709] via-[#070709]/80 to-transparent" />
-          </div>
-
-          <FadeIn delay={0.05} y={15} className="mb-4 relative z-20">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-[10px] sm:text-xs font-mono text-[#D7E2EA]/85 shadow-lg">
+          <FadeIn delay={0.05} y={15} className="mb-4">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/70 backdrop-blur-md border border-white/15 text-[10px] sm:text-xs font-mono text-[#D7E2EA]/90 shadow-xl">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-              <span>Commercial & Retention Editor</span>
+              <span>Commercial & Retention Video Editor</span>
             </div>
           </FadeIn>
 
-          {/* التكست بيتكتب فوق الصورة مباشرة */}
-          <div className="relative z-20 select-none">
-            <h1 className="text-[15vw] sm:text-[14vw] md:text-[13vw] font-black uppercase tracking-tight leading-none text-white drop-shadow-[0_15px_35px_rgba(0,0,0,0.95)]">
-              <span>{typedText}</span>
-              <span className="text-[#B600A8] animate-pulse ml-1.5">|</span>
-            </h1>
-          </div>
+          {/* التكست الكبير فوق الصورة */}
+          <h1 className="text-[15vw] sm:text-[14vw] md:text-[13vw] font-black uppercase tracking-tight leading-none text-white select-none drop-shadow-[0_15px_35px_rgba(0,0,0,1)]">
+            <span>{typedText}</span>
+            <span className="text-[#B600A8] animate-pulse ml-1.5">|</span>
+          </h1>
 
-          <p className="relative z-20 max-w-md text-xs sm:text-sm text-white/90 uppercase tracking-widest font-light leading-relaxed mt-5 px-4 drop-shadow-[0_4px_14px_rgba(0,0,0,0.95)]">
+          <p className="max-w-md text-xs sm:text-sm text-white/90 uppercase tracking-widest font-light leading-relaxed mt-5 px-4 drop-shadow-[0_4px_16px_rgba(0,0,0,1)]">
             Senior video editor shaping memorable visual stories with retention-driven pacing & sound design.
           </p>
 
-          <div className="relative z-20 flex flex-col xs:flex-row gap-3 items-center mt-7 w-full xs:w-auto px-6 xs:px-0">
+          <div className="flex flex-col xs:flex-row gap-3 items-center mt-7 w-full xs:w-auto px-6 xs:px-0">
             <a
               href="#videos"
-              className="w-full xs:w-auto text-center px-6 py-3 rounded-full border border-white/25 bg-black/50 backdrop-blur-xl text-white text-xs uppercase font-bold tracking-widest hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all shadow-xl active:scale-95"
+              className="w-full xs:w-auto text-center px-6 py-3 rounded-full border border-white/25 bg-black/60 backdrop-blur-xl text-white text-xs uppercase font-bold tracking-widest hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all shadow-xl active:scale-95"
             >
               Watch Videos ({videosData.length})
             </a>
@@ -747,12 +791,13 @@ export default function Home() {
           </div>
         </div>
 
+        {/* الفوتر الصغير أسفل الهيرو */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-[10px] sm:text-xs font-mono text-white/40 border-t border-white/[0.06] pt-4 text-center z-20">
           <div>Post-Production • Foley Sound • Color Grading</div>
           <div>Available for Retainers 2026</div>
         </div>
       </section>
-
+      
       {/* --- FEATURED HIGHLIGHTS & POSTERS --- */}
       <section className="py-14 border-b border-white/[0.06] bg-[#0A0A0C] overflow-hidden">
         <div className="max-w-7xl mx-auto px-5 sm:px-10 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
