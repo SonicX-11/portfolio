@@ -4,8 +4,7 @@ import React, { useRef, useState, useEffect, useMemo, useCallback } from "react"
 import { motion, AnimatePresence, useSpring, useMotionValue, useInView } from "framer-motion";
 
 // Add your live payment-page URL here when it is published.
-const PAYMENT_PAGE_URL = "/payment.html";
-
+const PAYMENT_PAGE_URL = "/payment";
 // --- SVG SOCIAL & SOFTWARE ICONS ---
 
 const InstagramIcon = () => (
@@ -1324,19 +1323,16 @@ export default function Home() {
                           ▶ Watch Video Sample
                         </a>
 
-                        <MagneticButton
-                          href={PAYMENT_PAGE_URL || "#payment-link-needed"}
-                          onClick={(event) => {
-                            if (!PAYMENT_PAGE_URL) {
-                              event.preventDefault();
-                              alert("Payment page link will be added here once it is published.");
-                            }
-                          }}
-                          className={`block w-full text-center rounded-full uppercase tracking-widest font-semibold py-3.5 text-sm transition-all duration-300 cursor-pointer ${
-                            pkg.featured
-                              ? "bg-[#B600A8] hover:bg-[#9d0091] text-white shadow-lg shadow-[#B600A8]/30"
-                              : "border border-white/20 hover:bg-white/10 text-white shadow-md"
-                          }`}
+                        <<button
+  type="button"
+  onClick={() => {
+    window.location.assign("/payment.html");
+  }}
+  className={`block w-full text-center rounded-full uppercase tracking-widest font-semibold py-3.5 text-sm transition-all duration-300 cursor-pointer ${
+    pkg.featured
+      ? "bg-[#B600A8] hover:bg-[#9d0091] text-white shadow-lg shadow-[#B600A8]/30"
+      : "border border-white/20 hover:bg-white/10 text-white shadow-md"
+  }`}
                         >
                           <span className="inline-flex items-center justify-center gap-2.5">
                             <svg

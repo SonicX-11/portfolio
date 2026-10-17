@@ -712,19 +712,20 @@ html.no-assets .planet .orb.is-shown{display:block; width:97%; margin:1.5%}
 
       <div class="fsec rv">
         <label style="margin-bottom:12px"><span class="gicon sm"><svg class="ic"><use href="#i-layers"/></svg></span> اختر الباقة</label>
-        <div class="radio-pills">
-          <div class="radio-pill">
-            <input type="radio" name="tier" id="tier1" value="basic" data-name="بيزيك" data-price="500">
-            <label for="tier1"><span class="gicon"><svg class="ic"><use href="#i-play"/></svg></span>بيزيك<small>500 ج/فيديو</small></label>
-          </div>
-          <div class="radio-pill">
-            <input type="radio" name="tier" id="tier2" value="pro" data-name="برو" data-price="850" checked>
-            <label for="tier2"><span class="gicon"><svg class="ic"><use href="#i-star"/></svg></span>برو (الأكثر طلباً)<small>850 ج/فيديو</small></label>
-          </div>
-          <div class="radio-pill">
-            <input type="radio" name="tier" id="tier3" value="elite" data-name="إيليت" data-price="1200">
-            <label for="tier3"><span class="gicon"><svg class="ic"><use href="#i-crown"/></svg></span>إيليت<small>1200 ج/فيديو</small></label>
-          </div>
+       <div class="radio-pills">
+  <div class="radio-pill">
+    <input type="radio" name="tier" id="tier1" value="basic" data-name="The Spark Pack" data-price="500">
+    <label for="tier1"><span class="gicon"><svg class="ic"><use href="#i-play"/></svg></span>The Spark Pack<small>500 ج/فيديو</small></label>
+  </div>
+  <div class="radio-pill">
+    <input type="radio" name="tier" id="tier2" value="pro" data-name="The Viral Growth" data-price="850" checked>
+    <label for="tier2"><span class="gicon"><svg class="ic"><use href="#i-star"/></svg></span>The Viral Growth (الأكثر طلباً)<small>850 ج/فيديو</small></label>
+  </div>
+  <div class="radio-pill">
+    <input type="radio" name="tier" id="tier3" value="elite" data-name="Cinematic Prime" data-price="1200">
+    <label for="tier3"><span class="gicon"><svg class="ic"><use href="#i-crown"/></svg></span>Cinematic Prime<small>1200 ج/فيديو</small></label>
+  </div>
+</div>
         </div>
         <div class="form-group" style="margin-top:16px">
           <label for="videoCount"><span class="gicon sm"><svg class="ic"><use href="#i-film"/></svg></span> عدد الفيديوهات</label>
@@ -828,8 +829,8 @@ html.no-assets .planet .orb.is-shown{display:block; width:97%; margin:1.5%}
 const WHATSAPP_NUMBER = "201211871199";
 const OWNER_NAME      = "إبراهيم فاضل";
 const OWNER_NAME_EN   = "Ibrahim Fadel";
-const PAYMENT_NUMBER  = "010XXXXXXXX";            // TODO: رقم فودافون كاش / إنستاباي
-const PAYMENT_EMAIL   = "your-email@example.com"; // TODO: إيميلك (بيتحط نسخة (CC) في إيميل التأكيد)
+const PAYMENT_NUMBER  = "01211871199";            // TODO: رقم فودافون كاش / إنستاباي
+const PAYMENT_EMAIL   = "ebrahimfadel8903@gmail.com"; // TODO: إيميلك (بيتحط نسخة (CC) في إيميل التأكيد)
 const DEPOSIT_RATE    = 0.25;
 const PRIORITY_FEE    = 500;                      // رسوم الأولوية
 const FLEX_DAYS       = 3;                        // مهلة المرونة بعد موعد التسليم
@@ -1349,6 +1350,24 @@ function backToForm(){
     if (e.key === 'Escape' && navrow.dataset.open === 'true'){ setOpen(false); burger.focus(); }
   });
   document.querySelectorAll('.links a').forEach(function(a){ a.addEventListener('click', function(){ setOpen(false); }); });
+})();
+
+// قراءة الباقة المختارة من الرابط وتحديدها تلقائياً
+(function autoSelectPackageFromUrl() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const pkgParam = urlParams.get('package');
+  if (pkgParam) {
+    const pkgMap = {
+      'The Spark Pack': 'basic',
+      'The Viral Growth': 'pro',
+      'Cinematic Prime': 'elite'
+    };
+    const tierVal = pkgMap[pkgParam];
+    if (tierVal) {
+      const radio = document.querySelector(`input[name="tier"][value="${tierVal}"]`);
+      if (radio) radio.checked = true;
+    }
+  }
 })();
 
 calculate();
