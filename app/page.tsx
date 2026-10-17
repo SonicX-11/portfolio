@@ -802,7 +802,7 @@ export default function Home() {
                   onClick={() => setIsWorkflowOpen(true)}
                   className="text-[#D7E2EA] hover:text-[#B600A8] transition-colors uppercase tracking-wider font-semibold cursor-pointer"
                 >
-                  Workflow ↗
+                  Workflow 
                 </button>
                 <a
                   href="#videos"
@@ -1185,7 +1185,7 @@ export default function Home() {
                             </h3>
                           </div>
                           <span className="shrink-0 text-xs uppercase font-bold text-white/50 group-hover:text-[#B600A8] transition-colors pt-1">
-                            Expand ↗
+                            Expand 
                           </span>
                         </div>
                       </div>
