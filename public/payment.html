@@ -1353,23 +1353,21 @@ function backToForm(){
 })();
 
 // قراءة الباقة المختارة من الرابط وتحديدها تلقائياً
-(function autoSelectPackageFromUrl() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const pkgParam = urlParams.get('package');
-  if (pkgParam) {
-    const pkgMap = {
-      'The Spark Pack': 'basic',
-      'The Viral Growth': 'pro',
-      'Cinematic Prime': 'elite'
-    };
-    const tierVal = pkgMap[pkgParam];
-    if (tierVal) {
-      const radio = document.querySelector(`input[name="tier"][value="${tierVal}"]`);
-      if (radio) radio.checked = true;
-    }
+document.addEventListener('DOMContentLoaded', function () {
+  const pkgParam = new URLSearchParams(window.location.search).get('package');
+  const pkgMap = {
+    'The Spark Pack': 'basic',
+    'The Viral Growth': 'pro',
+    'Cinematic Prime': 'elite'
+  };
+  const tierVal = pkgMap[pkgParam];
+  if (!tierVal) return;
+  const radio = document.querySelector('input[name="tier"][value="' + tierVal + '"]');
+  if (radio) {
+    radio.checked = true;
+    radio.dispatchEvent(new Event('change', { bubbles: true }));
   }
-})();
-
+});
 calculate();
 </script>
 <script>

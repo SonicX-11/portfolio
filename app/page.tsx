@@ -1323,47 +1323,7 @@ export default function Home() {
                           ▶ Watch Video Sample
                         </a>
 
-                        <<button
-  type="button"
-  onClick={() => {
-    window.location.assign("/payment.html");
-  }}
-  className={`block w-full text-center rounded-full uppercase tracking-widest font-semibold py-3.5 text-sm transition-all duration-300 cursor-pointer ${
-    pkg.featured
-      ? "bg-[#B600A8] hover:bg-[#9d0091] text-white shadow-lg shadow-[#B600A8]/30"
-      : "border border-white/20 hover:bg-white/10 text-white shadow-md"
-  }`}
-                        >
-                          <span className="inline-flex items-center justify-center gap-2.5">
-                            <svg
-                              aria-hidden="true"
-                              className="w-5 h-5 shrink-0"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <rect x="2.5" y="5" width="19" height="14" rx="2.5" stroke="currentColor" strokeWidth="1.8" />
-                              <path d="M3 9.5H21" stroke="currentColor" strokeWidth="1.8" />
-                              <path d="M6 15H10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                            </svg>
-                            <span>Proceed to Payment</span>
-                            <svg
-                              aria-hidden="true"
-                              className="w-4 h-4 shrink-0"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path d="M7 17L17 7M7 7H17V17" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
-                          </span>
-                        </MagneticButton>
-                      </div>
-                    </div>
-                  </FadeIn>
-                );
-              })}
-            </div>
+                       href={`${PAYMENT_PAGE_URL
 
             <FadeIn delay={0.2} y={30}>
               <div className="rounded-[36px] bg-white/[0.02] backdrop-blur-2xl border border-white/10 p-8 sm:p-12 shadow-2xl">
