@@ -763,7 +763,7 @@ export default function Home() {
                 muted
                 playsInline
                 preload="metadata"
-                className="w-full h-full object-cover opacity-15 filter contrast-125 brightness-90"
+                className="w-full h-full object-cover opacity-25 filter contrast-125 brightness-90"
               />
             </div>
 
@@ -776,7 +776,7 @@ export default function Home() {
                 muted
                 playsInline
                 preload="metadata"
-                className="w-full h-full object-cover opacity-15 filter contrast-125 brightness-90"
+                className="w-full h-full object-cover opacity-25 filter contrast-125 brightness-90"
               />
             </div>
             
@@ -1329,7 +1329,7 @@ export default function Home() {
                               : "border border-white/20 hover:bg-white/10 text-white shadow-md"
                           }`}
                         >
-                          Order via WhatsApp
+                          PAY NOW 
                         </MagneticButton>
                       </div>
                     </div>
