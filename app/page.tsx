@@ -4,7 +4,7 @@ import React, { useRef, useState, useEffect, useMemo, useCallback } from "react"
 import { motion, AnimatePresence, useSpring, useMotionValue, useInView } from "framer-motion";
 
 // Add your live payment-page URL here when it is published.
-const PAYMENT_PAGE_URL = "/payment";
+const PAYMENT_PAGE_URL = "/payment.html";
 // --- SVG SOCIAL & SOFTWARE ICONS ---
 
 const InstagramIcon = () => (
@@ -1197,7 +1197,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* --- PRICING --- */}
+               {/* --- PRICING --- */}
         <section id="price" className="py-24 px-5 sm:px-8 md:px-12 bg-[#0A0A0A]">
           <div className="max-w-6xl mx-auto">
             <FadeIn delay={0} y={30} className="text-center mb-10">
@@ -1219,31 +1219,23 @@ export default function Home() {
                 <button
                   onClick={() => setCurrencyMode("ALL")}
                   className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                    currencyMode === "ALL"
-                      ? "bg-[#B600A8] text-white"
-                      : "text-white/60 hover:text-white"
+                    currencyMode === "ALL" ? "bg-[#B600A8] text-white" : "text-white/60 hover:text-white"
                   }`}
                 >
                   USD & EGP
                 </button>
-
                 <button
                   onClick={() => setCurrencyMode("USD")}
                   className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                    currencyMode === "USD"
-                      ? "bg-[#B600A8] text-white"
-                      : "text-white/60 hover:text-white"
+                    currencyMode === "USD" ? "bg-[#B600A8] text-white" : "text-white/60 hover:text-white"
                   }`}
                 >
-                  USD (\$)
+                  USD ($)
                 </button>
-
                 <button
                   onClick={() => setCurrencyMode("EGP")}
                   className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                    currencyMode === "EGP"
-                      ? "bg-[#B600A8] text-white"
-                      : "text-white/60 hover:text-white"
+                    currencyMode === "EGP" ? "bg-[#B600A8] text-white" : "text-white/60 hover:text-white"
                   }`}
                 >
                   EGP
@@ -1252,84 +1244,96 @@ export default function Home() {
             </FadeIn>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch mb-20">
-              {packagesData.map((pkg, idx) => {
-                const selectedPriceText =
-                  currencyMode === "USD"
-                    ? pkg.priceUSD
-                    : currencyMode === "EGP"
-                    ? pkg.priceEGP
-                    : `${pkg.priceUSD} / ${pkg.priceEGP}`;
+              {packagesData.map((pkg, idx) => (
+                <FadeIn key={pkg.id} delay={idx * 0.15} className="flex">
+                  <div
+                    className={`w-full rounded-[36px] p-8 flex flex-col justify-between transition-all duration-300 relative backdrop-blur-2xl ${
+                      pkg.featured
+                        ? "bg-gradient-to-b from-[#18011F]/90 to-[#121212]/90 border-2 border-[#B600A8] shadow-[0_0_40px_rgba(182,0,168,0.25)]"
+                        : "bg-white/[0.03] border border-white/10 hover:border-white/25 shadow-2xl"
+                    }`}
+                  >
+                    {pkg.featured && (
+                      <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#B600A8] text-white text-[11px] font-bold uppercase tracking-widest px-4 py-1 rounded-full shadow-lg">
+                        Most Popular
+                      </span>
+                    )}
 
-                const whatsappPreFilledLink = `https://wa.me/201211871199?text=${encodeURIComponent(
-                  `Hey Lil! I want to book the "${pkg.name}" package (${selectedPriceText} per video). Let's discuss the project details.`
-                )}`;
-
-                return (
-                  <FadeIn key={pkg.id} delay={idx * 0.15} className="flex">
-                    <div
-                      className={`w-full rounded-[36px] p-8 flex flex-col justify-between transition-all duration-300 relative backdrop-blur-2xl ${
-                        pkg.featured
-                          ? "bg-gradient-to-b from-[#18011F]/90 to-[#121212]/90 border-2 border-[#B600A8] shadow-[0_0_40px_rgba(182,0,168,0.25)]"
-                          : "bg-white/[0.03] border border-white/10 hover:border-white/25 shadow-2xl"
-                      }`}
-                    >
-                      {pkg.featured && (
-                        <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#B600A8] text-white text-[11px] font-bold uppercase tracking-widest px-4 py-1 rounded-full shadow-lg">
-                          Most Popular
-                        </span>
-                      )}
-
-                      <div>
-                        <div className="flex justify-between items-start mb-4">
-                          <div>
-                            <h3 className="text-2xl font-bold text-white">{pkg.name}</h3>
-                            <p className="text-[#D7E2EA]/70 text-sm mt-1">{pkg.subtitle}</p>
-                          </div>
-                          <span className="font-mono text-white/30 text-lg font-bold">{pkg.id}</span>
+                    <div>
+                      <div className="flex justify-between items-start mb-4">
+                        <div>
+                          <h3 className="text-2xl font-bold text-white">{pkg.name}</h3>
+                          <p className="text-[#D7E2EA]/70 text-sm mt-1">{pkg.subtitle}</p>
                         </div>
-
-                        <div className="my-6 pb-6 border-b border-white/10">
-                          <div className="flex items-baseline gap-2">
-                            <span className="text-4xl sm:text-5xl font-black text-white">
-                              {currencyMode === "USD" ? pkg.priceUSD : currencyMode === "EGP" ? pkg.priceEGP : pkg.priceUSD}
-                            </span>
-                            <span className="text-sm uppercase tracking-wider text-[#D7E2EA]/60 font-medium">/ Video</span>
-                          </div>
-                          {currencyMode === "ALL" && (
-                            <div className="text-sm text-[#B600A8] font-bold mt-1">
-                              ≈ {pkg.priceEGP} / Video
-                            </div>
-                          )}
-                        </div>
-
-                        <ul className="space-y-4 mb-8">
-                          {pkg.features.map((feat, i) => (
-                            <li key={i} className="flex items-start gap-3 text-sm text-[#D7E2EA]/80 leading-relaxed font-light">
-                              <span className="text-[#B600A8] text-base mt-0.5 inline-block select-none">✦</span>
-                              <span>{feat}</span>
-                            </li>
-                          ))}
-                        </ul>
+                        <span className="font-mono text-white/30 text-lg font-bold">{pkg.id}</span>
                       </div>
 
-                      <div className="pt-6 border-t border-white/10 flex flex-col gap-3">
-                        <p className="text-xs text-[#D7E2EA]/50 text-center font-medium font-mono">{pkg.revisions}</p>
-                        <a
-                          href={pkg.driveLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-full text-center py-2.5 rounded-full border border-[#B600A8]/60 hover:bg-[#B600A8]/20 text-xs uppercase font-bold tracking-wider text-[#D7E2EA] transition-colors shadow-md"
-                        >
-                          ▶ Watch Video Sample
-                        </a>
+                      <div className="my-6 pb-6 border-b border-white/10">
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-4xl sm:text-5xl font-black text-white">
+                            {currencyMode === "EGP" ? pkg.priceEGP : pkg.priceUSD}
+                          </span>
+                          <span className="text-sm uppercase tracking-wider text-[#D7E2EA]/60 font-medium">
+                            / Video
+                          </span>
+                        </div>
+                        {currencyMode === "ALL" && (
+                          <div className="text-sm text-[#B600A8] font-bold mt-1">
+                            ≈ {pkg.priceEGP} / Video
+                          </div>
+                        )}
+                      </div>
 
-                       href={`${PAYMENT_PAGE_URL
+                      <ul className="space-y-4 mb-8">
+                        {pkg.features.map((feat, i) => (
+                          <li
+                            key={i}
+                            className="flex items-start gap-3 text-sm text-[#D7E2EA]/80 leading-relaxed font-light"
+                          >
+                            <span className="text-[#B600A8] text-base mt-0.5 inline-block select-none">✦</span>
+                            <span>{feat}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="pt-6 border-t border-white/10 flex flex-col gap-3">
+                      <p className="text-xs text-[#D7E2EA]/50 text-center font-medium font-mono">
+                        {pkg.revisions}
+                      </p>
+
+                      <a
+                        href={pkg.driveLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full text-center py-2.5 rounded-full border border-[#B600A8]/60 hover:bg-[#B600A8]/20 text-xs uppercase font-bold tracking-wider text-[#D7E2EA] transition-colors shadow-md"
+                      >
+                        ▶ Watch Video Sample
+                      </a>
+
+                      <MagneticButton>
+                        href={`${PAYMENT_PAGE_URL}?package=${encodeURIComponent(pkg.name)}`}
+                        className={`block w-full text-center rounded-full uppercase tracking-widest font-semibold py-3.5 text-sm transition-all duration-300 cursor-pointer ${
+                          pkg.featured
+                            ? "bg-[#B600A8] hover:bg-[#9d0091] text-white shadow-lg shadow-[#B600A8]/30"
+                            : "border border-white/20 hover:bg-white/10 text-white shadow-md"
+                        }`}
+                      >
+                        Book This Package
+                      </MagneticButton>
+                    </div>
+                  </div>
+                </FadeIn>
+              ))}
+            </div>
 
             <FadeIn delay={0.2} y={30}>
               <div className="rounded-[36px] bg-white/[0.02] backdrop-blur-2xl border border-white/10 p-8 sm:p-12 shadow-2xl">
                 <div className="flex items-center gap-3 mb-8">
                   <span className="text-[#B600A8] text-xl">✦</span>
-                  <h3 className="text-2xl sm:text-3xl font-bold text-white">General Terms & Production Flow</h3>
+                  <h3 className="text-2xl sm:text-3xl font-bold text-white">
+                    General Terms & Production Flow
+                  </h3>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
