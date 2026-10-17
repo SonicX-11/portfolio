@@ -4,7 +4,7 @@ import React, { useRef, useState, useEffect, useMemo, useCallback } from "react"
 import { motion, AnimatePresence, useSpring, useMotionValue, useInView } from "framer-motion";
 
 // Add your live payment-page URL here when it is published.
-const PAYMENT_PAGE_URL = "";
+const PAYMENT_PAGE_URL = "/payment.html";
 
 // --- SVG SOCIAL & SOFTWARE ICONS ---
 
@@ -1338,7 +1338,29 @@ export default function Home() {
                               : "border border-white/20 hover:bg-white/10 text-white shadow-md"
                           }`}
                         >
-                          Proceed to Payment
+                          <span className="inline-flex items-center justify-center gap-2.5">
+                            <svg
+                              aria-hidden="true"
+                              className="w-5 h-5 shrink-0"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <rect x="2.5" y="5" width="19" height="14" rx="2.5" stroke="currentColor" strokeWidth="1.8" />
+                              <path d="M3 9.5H21" stroke="currentColor" strokeWidth="1.8" />
+                              <path d="M6 15H10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                            </svg>
+                            <span>Proceed to Payment</span>
+                            <svg
+                              aria-hidden="true"
+                              className="w-4 h-4 shrink-0"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path d="M7 17L17 7M7 7H17V17" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                          </span>
                         </MagneticButton>
                       </div>
                     </div>
