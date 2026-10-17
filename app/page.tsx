@@ -3,8 +3,9 @@
 import React, { useRef, useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence, useSpring, useMotionValue, useInView } from "framer-motion";
 
-// Add your live payment-page URL here when it is published.
+// Static payment page served from /public/payment.html
 const PAYMENT_PAGE_URL = "/payment.html";
+
 // --- SVG SOCIAL & SOFTWARE ICONS ---
 
 const InstagramIcon = () => (
@@ -482,7 +483,7 @@ const servicesList = [
 export default function Home() {
   const [currencyMode, setCurrencyMode] = useState<"ALL" | "USD" | "EGP">("ALL");
   const [selectedVideoTab, setSelectedVideoTab] = useState<"all" | "reels" | "commercial" | "cinematic">("all");
-  
+
   // Accordions state
   const [isVideoMenuOpen, setIsVideoMenuOpen] = useState(true);
   const [isThumbnailsMenuOpen, setIsThumbnailsMenuOpen] = useState(true);
@@ -753,7 +754,6 @@ export default function Home() {
       >
         {/* --- HERO SECTION WITH SUBTLE AMBIENT DUAL-VIDEO BACKGROUND --- */}
         <section className="relative min-h-screen flex flex-col justify-between overflow-x-clip bg-[#0A0A0A] pb-8">
-          
           {/* Subtle Split Ambient Video Background */}
           <div className="absolute inset-0 z-0 flex pointer-events-none overflow-hidden select-none">
             {/* Man Utd View (Left) */}
@@ -781,7 +781,7 @@ export default function Home() {
                 className="w-full h-full object-cover opacity-15 filter contrast-125 brightness-90"
               />
             </div>
-            
+
             {/* Gradient Mask Overlay to ensure complete text readability */}
             <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/50 to-[#0A0A0A]/90" />
             <div className="absolute inset-0 bg-gradient-to-r from-[#0A0A0A] via-transparent to-[#0A0A0A]" />
@@ -1080,7 +1080,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* --- FEATURED VIDEOS (COLLAPSIBLE - PURE ENGLISH) --- */}
+        {/* --- FEATURED VIDEOS (COLLAPSIBLE) --- */}
         <section
           id="videos"
           className="py-20 sm:py-24 px-4 sm:px-8 md:px-12 bg-[#0A0A0A] border-t border-white/5"
@@ -1197,7 +1197,7 @@ export default function Home() {
           </div>
         </section>
 
-               {/* --- PRICING --- */}
+        {/* --- PRICING --- */}
         <section id="price" className="py-24 px-5 sm:px-8 md:px-12 bg-[#0A0A0A]">
           <div className="max-w-6xl mx-auto">
             <FadeIn delay={0} y={30} className="text-center mb-10">
@@ -1311,7 +1311,7 @@ export default function Home() {
                         ▶ Watch Video Sample
                       </a>
 
-                      <MagneticButton>
+                      <MagneticButton
                         href={`${PAYMENT_PAGE_URL}?package=${encodeURIComponent(pkg.name)}`}
                         className={`block w-full text-center rounded-full uppercase tracking-widest font-semibold py-3.5 text-sm transition-all duration-300 cursor-pointer ${
                           pkg.featured
@@ -1395,7 +1395,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* --- THUMBNAILS & COVERS (COLLAPSIBLE - PURE ENGLISH) --- */}
+        {/* --- THUMBNAILS & COVERS (COLLAPSIBLE) --- */}
         <section id="thumbnails" className="py-24 px-5 sm:px-8 md:px-12 bg-[#0A0A0A]">
           <div className="max-w-6xl mx-auto">
             <FadeIn delay={0} y={30} className="text-center mb-4">
@@ -1578,14 +1578,20 @@ export default function Home() {
             </div>
 
             <button
-              onClick={(e) => { e.stopPropagation(); goPrevious(); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                goPrevious();
+              }}
               className="absolute left-2 sm:left-6 z-[120] w-11 h-11 rounded-full bg-black/60 border border-white/20 text-white flex items-center justify-center text-xl hover:bg-[#B600A8] transition-all cursor-pointer"
             >
               ←
             </button>
 
             <button
-              onClick={(e) => { e.stopPropagation(); goNext(); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                goNext();
+              }}
               className="absolute right-2 sm:right-6 z-[120] w-11 h-11 rounded-full bg-black/60 border border-white/20 text-white flex items-center justify-center text-xl hover:bg-[#B600A8] transition-all cursor-pointer"
             >
               →
