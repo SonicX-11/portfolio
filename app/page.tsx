@@ -3,6 +3,9 @@
 import React, { useRef, useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence, useSpring, useMotionValue, useInView } from "framer-motion";
 
+// Add your live payment-page URL here when it is published.
+const PAYMENT_PAGE_URL = "";
+
 // --- SVG SOCIAL & SOFTWARE ICONS ---
 
 const InstagramIcon = () => (
@@ -763,7 +766,7 @@ export default function Home() {
                 muted
                 playsInline
                 preload="metadata"
-                className="w-full h-full object-cover opacity-25 filter contrast-125 brightness-90"
+                className="w-full h-full object-cover opacity-15 filter contrast-125 brightness-90"
               />
             </div>
 
@@ -776,7 +779,7 @@ export default function Home() {
                 muted
                 playsInline
                 preload="metadata"
-                className="w-full h-full object-cover opacity-25 filter contrast-125 brightness-90"
+                className="w-full h-full object-cover opacity-15 filter contrast-125 brightness-90"
               />
             </div>
             
@@ -1322,14 +1325,20 @@ export default function Home() {
                         </a>
 
                         <MagneticButton
-                          href={whatsappPreFilledLink}
+                          href={PAYMENT_PAGE_URL || "#payment-link-needed"}
+                          onClick={(event) => {
+                            if (!PAYMENT_PAGE_URL) {
+                              event.preventDefault();
+                              alert("Payment page link will be added here once it is published.");
+                            }
+                          }}
                           className={`block w-full text-center rounded-full uppercase tracking-widest font-semibold py-3.5 text-sm transition-all duration-300 cursor-pointer ${
                             pkg.featured
                               ? "bg-[#B600A8] hover:bg-[#9d0091] text-white shadow-lg shadow-[#B600A8]/30"
                               : "border border-white/20 hover:bg-white/10 text-white shadow-md"
                           }`}
                         >
-                          PAY NOW 
+                          Proceed to Payment
                         </MagneticButton>
                       </div>
                     </div>
