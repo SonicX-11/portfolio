@@ -834,6 +834,9 @@ const DEPOSIT_RATE    = 0.25;
 const PRIORITY_FEE    = 500;                      // رسوم الأولوية
 const FLEX_DAYS       = 3;                        // مهلة المرونة بعد موعد التسليم
 const COUPONS = { 'VIP100':100, 'FRIENDS50':50, 'SPECIAL200':200 };
+// رابط الـ Webhook من Make.com (Custom webhook). سيبه فاضي لو مش عايز إرسال تلقائي
+const WEBHOOK_URL = 'https://hook.us2.make.com/bbhbivrc2luwcvf2p1kqsm62sf5qx937';
+const WEBHOOK_SECRET = 'ibf-7Kq92xLm4Pz'; // فلتر عليه في Make: secret = القيمة دي
 
 /* ----- جدول الأعمال ----- */
 // أيام الإجازة الأسبوعية (0=الأحد ... 5=الجمعة ... 6=السبت). مثال: [5] يعني الجمعة إجازة
@@ -1150,6 +1153,47 @@ function buildEmail(inv){
   return { subject, body: en.join('\n') + '\n\n' + ar.join('\n') };
 }
 
+/* ===== إرسال الطلب لـ Make.com (Webhook) ===== */
+let sessionInvoiceNo = null, lastInv = null, lastSentSig = null, webhookSentOnce = false;
+
+function sendToWebhook(inv){
+  if (!WEBHOOK_URL || !inv) return;
+  const t = inv.t, s = t.s;
+  const payload = {
+    secret: WEBHOOK_SECRET,
+    invoice_no: inv.no,
+    order_date: iso(inv.issued),
+    client_name: inv.name,
+    phone: inv.phone,
+    whatsapp: inv.wa,
+    email: inv.email,
+    package_details: t.tierName + ' x ' + t.count + ' فيديو' + (s.mode==='urgent' ? ' (مستعجل)' : ''),
+    package_name: t.tierName,
+    videos_count: t.count,
+    priority: s.mode==='urgent' ? 'مستعجل' : 'عادي',
+    coupon: appliedCoupon ? appliedCoupon.code : '',
+    drive_link: inv.drive,
+    ref_link: inv.ref,
+    total: t.finalTotal,
+    deposit: 0,                              // المدفوع فعلياً (صفر لحد ما العربون يوصل)
+    deposit_required: t.deposit,             // العربون المطلوب (25%)
+    remaining: t.finalTotal,                 // المتبقي = الإجمالي - المدفوع
+    delivery_date: iso(s.delivery),
+    max_delivery_date: iso(s.max),
+    status: 'قيد التنفيذ'
+  };
+  // حماية من التكرار: نفس البيانات ما تتبعتش مرتين
+  const sig = JSON.stringify(payload);
+  if (sig === lastSentSig) return;
+  // لو العميل عدّل بياناته وبعت تاني بنفس رقم الفاتورة => is_update = yes (في Make: حدّث الصف بدل ما تضيف)
+  payload.is_update = webhookSentOnce ? 'yes' : 'no';
+  lastSentSig = sig; webhookSentOnce = true;
+  try {
+    // form-urlencoded + no-cors = طلب بسيط بدون مشاكل CORS، و Make بيقرأه عادي
+    fetch(WEBHOOK_URL, { method:'POST', mode:'no-cors', keepalive:true, body:new URLSearchParams(payload) }).catch(function(){});
+  } catch(e) {}
+}
+
 function generateInvoice(){
   if (!validateForm()) return;
   const t = calculate(), s = t.s;
@@ -1164,7 +1208,7 @@ function generateInvoice(){
     issued: today()
   };
   const d = inv.issued;
-  inv.no = 'IF-' + String(d.getFullYear()).slice(2) + String(d.getMonth()+1).padStart(2,'0') + String(d.getDate()).padStart(2,'0') + '-' + Math.floor(1000+Math.random()*9000);
+  inv.no = sessionInvoiceNo = sessionInvoiceNo || 'IF-' + String(d.getFullYear()).slice(2) + String(d.getMonth()+1).padStart(2,'0') + String(d.getDate()).padStart(2,'0') + '-' + Math.floor(1000+Math.random()*9000);
 
   const tierIcon = { basic:'play', pro:'star', elite:'crown' }[t.tier];
   const rows = [
@@ -1204,6 +1248,8 @@ function generateInvoice(){
     '<div class="inv-foot">شكراً لاختياركم ' + esc(OWNER_NAME) + ' 🙏 — يبدأ العمل فور استلام إيصال التحويل.</div>';
 
   document.getElementById('whatsappBtn').href = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(buildWhatsApp(inv));
+  lastInv = inv;
+  document.getElementById('whatsappBtn').onclick = function(){ sendToWebhook(lastInv); };
 
   const em = buildEmail(inv);
   const eb = document.getElementById('emailBtn'), cb = document.getElementById('copyEmailBtn'), hint = document.getElementById('emailHint');
