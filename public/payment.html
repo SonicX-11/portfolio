@@ -390,7 +390,8 @@ p.lede{top:calc(433.2 * var(--u)); font-size:calc(18.36 * var(--u)); font-weight
 .cal-grid .d.blank{visibility:hidden}
 .cal-grid .d.past, .cal-grid .d.off{opacity:.3; cursor:default}
 .cal-grid .d.off{background:repeating-linear-gradient(135deg, rgba(255,255,255,.08) 0 4px, transparent 4px 8px)}
-.cal-grid .d.busy{background:rgba(255,80,80,.22); border-color:rgba(255,100,100,.45); color:#ffb4b4; cursor:default}
+.cal-grid .d.busy{background:rgba(239,68,68,.38); border-color:rgba(239,68,68,.75); color:#fca5a5; cursor:not-allowed; flex-direction:column; line-height:1.1; gap:1px}
+.cal-grid .d.busy small{font-size:.56rem; font-weight:700; color:#fecaca}
 .cal-grid .d.work{background:rgba(var(--tint-rgb),.2); border-color:rgba(var(--tint-rgb),.4)}
 .cal-grid .d.today{box-shadow:inset 0 0 0 2px rgba(255,255,255,.7)}
 .cal-grid .d.deliv{background:linear-gradient(145deg, rgba(var(--tint-rgb),.95), rgba(var(--tint-rgb),.55)); border-color:#fff; color:#fff;
@@ -853,7 +854,7 @@ let schedule = [
 ];
 // اختياري: رابط Google Sheet منشور كـ CSV (File > Share > Publish to web > CSV)
 // أول عمودين: تاريخ البداية، تاريخ النهاية (بصيغة YYYY-MM-DD)
-const SCHEDULE_CSV_URL = '';
+const SCHEDULE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTvnJUkqFlydVc_L3n8eXu1R_wvfogzISIB8bgFLMIxY-rnJHsS9j7r8nP-bestEftglJNc3NVxYXyz/pubhtml?gid=696447279&single=true"
 /* ================================= */
 
 let appliedCoupon = null;
@@ -1015,7 +1016,7 @@ function renderCalendar(s){
     if (k===delIso) cls.push('deliv');
     if (k===chIso) cls.push('chosen');
     const dis = past || off || bz || s.override;
-    html += '<button type="button" class="'+cls.join(' ')+'" data-d="'+k+'"'+(dis?' disabled':'')+' aria-label="'+esc(dfAr.format(d))+'">'+day+'</button>';
+    html += '<button type="button" class="'+cls.join(' ')+'" data-d="'+k+'"'+(dis?' disabled':'')+' aria-label="'+esc(dfAr.format(d))+'">'+day+(bz?'<small>محجوز</small>':'')+'</button>';
   }
   grid.innerHTML = html;
 }
@@ -1031,17 +1032,30 @@ document.getElementById('clearChosen').addEventListener('click', () => { chosenD
 document.getElementById('urgentToggle').addEventListener('change', calculate);
 document.getElementById('videoCount').addEventListener('change', calculate);
 
-/* ----- تحميل الجدول من Google Sheet (اختياري) ----- */
-if (SCHEDULE_CSV_URL){
-  fetch(SCHEDULE_CSV_URL, { cache:'no-store' }).then(r => r.text()).then(txt => {
-    const re = /^\d{4}-\d{2}-\d{2}$/, out = [];
-    txt.split(/\r?\n/).forEach(line => {
-      const c = line.split(',').map(x => x.trim().replace(/^"|"$/g,''));
-      if (re.test(c[0]) && (!c[1] || re.test(c[1]))) out.push({ from:c[0], to:c[1]||c[0] });
-    });
-    schedule = out; rebuildBusy(); calculate();
-  }).catch(err => console.warn('schedule load failed', err));
+/* ----- جلب جدول المواعيد تلقائياً من رابط CSV المنشور ----- */
+function loadSchedule(){
+  if (!SCHEDULE_CSV_URL) return;
+  const url = SCHEDULE_CSV_URL + (SCHEDULE_CSV_URL.indexOf('?') > -1 ? '&' : '?') + 't=' + Date.now();
+  fetch(url, { cache: 'no-store' })
+    .then(r => r.text())
+    .then(txt => {
+      const re = /^\d{4}-\d{2}-\d{2}$/, out = [];
+      txt.split(/\r?\n/).forEach(line => {
+        const dates = line.split(',').map(x => x.trim().replace(/^"|"$/g, '')).filter(x => re.test(x));
+        if (dates.length) out.push({ from: dates[0], to: dates[1] || dates[0] });
+      });
+      if (out.length) {
+        schedule = out;
+        rebuildBusy();
+        calculate();
+      }
+    })
+    .catch(err => console.warn('schedule load failed', err));
 }
+
+loadSchedule();
+setInterval(loadSchedule, 300000); // تحديث كل 5 دقائق
+document.addEventListener('visibilitychange', () => { if (!document.hidden) loadSchedule(); });
 
 /* ----- كوبون ----- */
 function applyCoupon(){
@@ -1178,6 +1192,7 @@ function sendToWebhook(inv){
     deposit: 0,                              // المدفوع فعلياً (صفر لحد ما العربون يوصل)
     deposit_required: t.deposit,             // العربون المطلوب (25%)
     remaining: t.finalTotal,                 // المتبقي = الإجمالي - المدفوع
+    work_start: iso(s.days.length ? s.days[0] : s.start),
     delivery_date: iso(s.delivery),
     max_delivery_date: iso(s.max),
     status: 'قيد التنفيذ'
