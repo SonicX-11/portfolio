@@ -1249,7 +1249,7 @@ function generateInvoice(){
 
   document.getElementById('whatsappBtn').href = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(buildWhatsApp(inv));
   lastInv = inv;
-  document.getElementById('whatsappBtn').onclick = function(){ sendToWebhook(lastInv); };
+  sendToWebhook(inv);
 
   const em = buildEmail(inv);
   const eb = document.getElementById('emailBtn'), cb = document.getElementById('copyEmailBtn'), hint = document.getElementById('emailHint');
