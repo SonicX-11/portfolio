@@ -1031,29 +1031,17 @@ document.getElementById('clearChosen').addEventListener('click', () => { chosenD
 document.getElementById('urgentToggle').addEventListener('change', calculate);
 document.getElementById('videoCount').addEventListener('change', calculate);
 
-/* ----- جلب المواعيد المحجوزة بأمان دون إيقاف التقويم ----- */
-const GOOGLE_SCRIPT_BUSY_URL = "https://script.google.com/macros/s/AKfycbwthW3IqDp4AStCjIByJNuzx7m-EJYl02Q3BwghWW38rIw5ZswspRyOc3YRa_dqOao/exec";
-
-if (typeof GOOGLE_SCRIPT_BUSY_URL !== 'undefined' && GOOGLE_SCRIPT_BUSY_URL) {
-  fetch(GOOGLE_SCRIPT_BUSY_URL)
-    .then(res => {
-      if (!res.ok) throw new Error("Network response was not ok");
-      return res.json();
-    })
-    .then(data => {
-      if (Array.isArray(data) && data.length > 0) {
-        schedule = data;
-        rebuildBusy();
-        calculate();
-      }
-    })
-    .catch(err => {
-      console.warn("تعذر جلب الحجوزات من الشيت، سيستمر التقويم بالعمل العادي:", err);
+/* ----- تحميل الجدول من Google Sheet (اختياري) ----- */
+if (SCHEDULE_CSV_URL){
+  fetch(SCHEDULE_CSV_URL, { cache:'no-store' }).then(r => r.text()).then(txt => {
+    const re = /^\d{4}-\d{2}-\d{2}$/, out = [];
+    txt.split(/\r?\n/).forEach(line => {
+      const c = line.split(',').map(x => x.trim().replace(/^"|"$/g,''));
+      if (re.test(c[0]) && (!c[1] || re.test(c[1]))) out.push({ from:c[0], to:c[1]||c[0] });
     });
+    schedule = out; rebuildBusy(); calculate();
+  }).catch(err => console.warn('schedule load failed', err));
 }
-
-// تشغيل الجلب فور فتح الصفحة
-fetchBusySchedule();}
 
 /* ----- كوبون ----- */
 function applyCoupon(){
