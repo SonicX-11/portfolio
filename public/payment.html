@@ -1043,7 +1043,7 @@ function loadSchedule(){
         const dates = line.split(',').map(x => x.trim().replace(/^"|"$/g, '')).filter(x => re.test(x));
         if (dates.length) out.push({ from: dates[0], to: dates[1] || dates[0] });
       });
-      if (out.length) {
+      {
         schedule = out;
         rebuildBusy();
         calculate();
