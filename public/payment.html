@@ -1053,7 +1053,7 @@ function loadSchedule(){
 }
 
 loadSchedule();
-setInterval(loadSchedule, 300000); // تحديث كل 5 دقائق
+setInterval(() => { if (!document.hidden) loadSchedule(); }, 15000); // تحديث حالة الحجز كل 15 ثانية للصفحات المفتوحة
 document.addEventListener('visibilitychange', () => { if (!document.hidden) loadSchedule(); });
 
 /* ----- كوبون ----- */
