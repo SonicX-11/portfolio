@@ -143,7 +143,7 @@ export default function PricingPage() {
 
                   <div className="my-6 border-b border-white/10 pb-6">
                     <div className="flex flex-wrap items-baseline justify-center gap-x-2 gap-y-1">
-                      <span className="whitespace-nowrap text-4xl font-black text-white sm:text-5xl lg:text-[2.6rem] xl:text-5xl">
+                      <span className="whitespace-nowrap text-4xl font-black text-white sm:text-5xl lg:text-[2.6rem] xl:text-[2.6rem] 2xl:text-[2.6rem]">
                         {pkg.priceEGP}
                       </span>
                       <span className="whitespace-nowrap text-sm font-medium uppercase tracking-wider text-[#D7E2EA]/60">
