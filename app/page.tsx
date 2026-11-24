@@ -199,6 +199,7 @@ const videosData = [
     category: "Automotive Hook",
     tab: "commercial",
     src: "/video/17-car-hook-reel.mp4",
+    poster: "/video/1-17-car-hook-reel.jpg",
     description: "Short-form automotive hook edit built for instant attention and fast retention.",
   },
   {
@@ -207,6 +208,7 @@ const videosData = [
     category: "Interior Commercial",
     tab: "commercial",
     src: "/video/20-interior-showcase-basma.mp4",
+    poster: "/video/2-20-interior-showcase-basma.jpg",
     description: "Clean interior showcase edit with smooth pacing, polished transitions and premium visual rhythm.",
   },
   {
@@ -215,6 +217,7 @@ const videosData = [
     category: "Social Reel",
     tab: "reels",
     src: "/video/4-shahenda-reel-1.mp4",
+    poster: "/video/3-4-shahenda-reel-1.jpg",
     description: "High-retention social reel with sharp cuts, subtitles and platform-native pacing.",
   },
   {
@@ -223,6 +226,7 @@ const videosData = [
     category: "Social Reel",
     tab: "reels",
     src: "/video/5-shahenda-reel-2.mp4",
+    poster: "/video/4-5-shahenda-reel-2.jpg",
     description: "High-retention social reel with sharp cuts, subtitles and platform-native pacing.",
   },
   {
@@ -231,6 +235,7 @@ const videosData = [
     category: "Book Review",
     tab: "reels",
     src: "/video/21-doaa-book-review.mp4",
+    poster: "/video/5-21-doaa-book-review.jpg",
     description: "Talking-head review edit with clean pacing, emphasis cuts and social-first framing.",
   },
   {
@@ -239,6 +244,7 @@ const videosData = [
     category: "Coach Content",
     tab: "reels",
     src: "/video/7-doaa-talk.mp4",
+    poster: "/video/6-7-doaa-talk.jpg",
     description: "Coach talking-head edit shaped for clarity, retention and polished subtitle flow.",
   },
   {
@@ -247,6 +253,7 @@ const videosData = [
     category: "Coach Review",
     tab: "reels",
     src: "/video/8-fatma-review-1.mp4",
+    poster: "/video/7-8-fatma-review-1.jpg",
     description: "Coach review edit with clean structure, caption emphasis and social-native pacing.",
   },
   {
@@ -255,6 +262,7 @@ const videosData = [
     category: "Coach Review",
     tab: "reels",
     src: "/video/9-fatma-review-2.mp4",
+    poster: "/video/8-9-fatma-review-2.jpg",
     description: "Coach review edit with clean structure, caption emphasis and social-native pacing.",
   },
   {
@@ -263,6 +271,7 @@ const videosData = [
     category: "Real Estate Commercial",
     tab: "commercial",
     src: "/video/6-real-estate-ad.mp4",
+    poster: "/video/9-6-real-estate-ad.jpg",
     description: "Commercial real-estate edit built around property highlights, pacing and premium presentation.",
   },
   {
@@ -271,6 +280,7 @@ const videosData = [
     category: "Client Reel",
     tab: "reels",
     src: "/video/10-yasmin-reel-1.mp4",
+    poster: "/video/10-10-yasmin-reel-1.jpg",
     description: "High-retention client reel with sharp pacing, caption rhythm and social-first polish.",
   },
   {
@@ -279,6 +289,7 @@ const videosData = [
     category: "Client Reel",
     tab: "reels",
     src: "/video/11-yasmin-reel-2.mp4",
+    poster: "/video/11-11-yasmin-reel-2.jpg",
     description: "High-retention client reel with sharp pacing, caption rhythm and social-first polish.",
   },
   {
@@ -287,6 +298,7 @@ const videosData = [
     category: "Client Reel",
     tab: "reels",
     src: "/video/12-yasmin-reel-3.mp4",
+    poster: "/video/12-12-yasmin-reel-3.jpg",
     description: "High-retention client reel with sharp pacing, caption rhythm and social-first polish.",
   },
   {
@@ -295,6 +307,7 @@ const videosData = [
     category: "Social Reel",
     tab: "reels",
     src: "/video/13-shahenda-reel-3.mp4",
+    poster: "/video/13-13-shahenda-reel-3.jpg",
     description: "High-retention social reel with sharp cuts, subtitles and platform-native pacing.",
   },
   {
@@ -303,6 +316,7 @@ const videosData = [
     category: "Coach Reel",
     tab: "reels",
     src: "/video/14-doaa-reel-2.mp4",
+    poster: "/video/14-14-doaa-reel-2.jpg",
     description: "Coach reel edit with clean structure, caption emphasis and social-native pacing.",
   },
   {
@@ -311,6 +325,7 @@ const videosData = [
     category: "Coach Review",
     tab: "reels",
     src: "/video/15-fatma-review-3.mp4",
+    poster: "/video/15-15-fatma-review-3.jpg",
     description: "Coach review edit with clean structure, caption emphasis and social-native pacing.",
   },
 ];
@@ -1204,6 +1219,7 @@ export default function Home() {
                         <div className="rounded-[20px] overflow-hidden aspect-[9/16] w-full bg-black relative">
                           <video
                             src={item.src}
+                            poster={item.poster}
                             muted
                             loop
                             playsInline
