@@ -1386,7 +1386,7 @@ function backToForm(){
     if (promise && promise.catch) promise.catch(function(){});
   }
 
-  if (!ambient.panes[0].stills.length){
+  if (!ambient.panes[0].stills){
     ambient.panes.forEach(function(pane){
       pane.stills = Array.prototype.slice.call(pane.videos[0].parentElement.querySelectorAll('.ambient-still'));
     });
