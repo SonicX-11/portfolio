@@ -69,8 +69,8 @@ body{background:#020617; color:var(--ink); font-family:var(--font-body);
     linear-gradient(180deg, rgba(2,6,18,.78), rgba(2,6,18,.48) 46%, rgba(2,6,18,.84)),
     linear-gradient(90deg, rgba(2,6,18,.58), rgba(2,6,18,.10) 32%, rgba(2,6,18,.10) 68%, rgba(2,6,18,.58))}
 @media (max-width:600px){
-  .ambient-pane video{filter:blur(12px) contrast(1.16) brightness(.72) saturate(1.06)}
-  .ambient-pane video.is-active{opacity:.28}
+  .ambient-still, .ambient-pane video{filter:blur(12px) contrast(1.16) brightness(.72) saturate(1.06)}
+  .ambient-still.is-active, .ambient-pane video.is-active{opacity:.28}
 }
 @media (prefers-reduced-motion:reduce){ .ambient-bg video{display:none} }
 
@@ -616,10 +616,14 @@ html.no-assets .planet .orb.is-shown{display:block; width:97%; margin:1.5%}
 <body>
 <div class="ambient-bg" aria-hidden="true">
   <div class="ambient-pane">
+    <div class="ambient-still"></div>
+    <div class="ambient-still"></div>
     <video id="ambientLeftA" muted autoplay loop playsinline preload="metadata"></video>
     <video id="ambientLeftB" muted autoplay loop playsinline preload="metadata"></video>
   </div>
   <div class="ambient-pane">
+    <div class="ambient-still"></div>
+    <div class="ambient-still"></div>
     <video id="ambientRightA" muted autoplay loop playsinline preload="metadata"></video>
     <video id="ambientRightB" muted autoplay loop playsinline preload="metadata"></video>
   </div>
@@ -1382,9 +1386,17 @@ function backToForm(){
     if (promise && promise.catch) promise.catch(function(){});
   }
 
+  if (!ambient.panes[0].stills.length){
+    ambient.panes.forEach(function(pane){
+      pane.stills = Array.prototype.slice.call(pane.videos[0].parentElement.querySelectorAll('.ambient-still'));
+    });
+  }
+
   function preparePane(pane, sample){
     if (!pane || !sample) return null;
     var incoming = pane.videos[1 - pane.active];
+    var incomingStill = pane.stills[1 - pane.active];
+    if (incomingStill && sample.poster) incomingStill.style.backgroundImage = 'url("' + sample.poster + '")';
     if (incoming.dataset.sampleSrc !== sample.src){
       incoming.dataset.sampleSrc = sample.src;
       incoming.poster = sample.poster || '';
@@ -1399,12 +1411,21 @@ function backToForm(){
     var outgoing = pane.videos[pane.active];
     var incoming = preparePane(pane, sample);
     if (!incoming) { if (done) done(); return; }
+    var outgoingStill = pane.stills[pane.active];
+    var incomingStill = pane.stills[1 - pane.active];
     var activated = false;
+    var revealed = false;
+    var reveal = function(){
+      if (revealed) return;
+      revealed = true;
+      incoming.classList.add('is-active');
+      playAmbient(incoming);
+    };
     var finish = function(){
       if (activated) return;
       activated = true;
-      playAmbient(incoming);
-      incoming.classList.add('is-active');
+      if (incomingStill) incomingStill.classList.add('is-active');
+      if (outgoingStill) outgoingStill.classList.remove('is-active');
       if (outgoing){
         outgoing.classList.remove('is-active');
         setTimeout(function(){
@@ -1412,15 +1433,15 @@ function backToForm(){
         }, 1450);
       }
       pane.active = 1 - pane.active;
+      if (incoming.readyState >= 2) reveal();
+      else {
+        incoming.addEventListener('loadeddata', reveal, { once:true });
+        incoming.addEventListener('canplay', reveal, { once:true });
+        playAmbient(incoming);
+      }
       if (done) done();
     };
-    if (incoming.readyState >= 2) finish();
-    else {
-      incoming.addEventListener('loadeddata', finish, { once:true });
-      incoming.addEventListener('canplay', finish, { once:true });
-      setTimeout(finish, 4500);
-      playAmbient(incoming);
-    }
+    finish();
   }
 
   function prefetchAmbient(next){
