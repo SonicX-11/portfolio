@@ -1305,15 +1305,16 @@ export default function Home() {
                     ▼
                   </span>
                 </button>
+              </div>
 
-                {isThumbnailsMenuOpen && (
-                  <MobileCarouselControls
-                    onScroll={(direction) => scrollCarousel(thumbnailsScrollRef, direction)}
-                    className="my-6 sm:hidden"
-                  />
-                )}
+              {isThumbnailsMenuOpen && (
+                <MobileCarouselControls
+                  onScroll={(direction) => scrollCarousel(thumbnailsScrollRef, direction)}
+                  className="my-6 sm:hidden"
+                />
+              )}
 
-                <AnimatePresence>
+              <AnimatePresence>
                   {isThumbnailsMenuOpen && (
                     <motion.div
                       initial={{ opacity: 0, height: 0 }}
@@ -1344,8 +1345,7 @@ export default function Home() {
                       ))}
                     </motion.div>
                   )}
-                </AnimatePresence>
-              </div>
+              </AnimatePresence>
             </FadeIn>
           </div>
         </section>
