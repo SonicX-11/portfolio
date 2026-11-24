@@ -21,18 +21,17 @@ body {
   overflow-x: clip;
 }
 
-/* إخفاء مؤشر ماوس الويندوز تماماً على شاشات الكمبيوتر */
+/* Hide the native cursor only while the homepage custom cursor is active. */
 @media (min-width: 768px) {
-  html,
-  body,
-  *,
-  *::before,
-  *::after,
-  a,
-  button,
-  video,
-  input,
-  [role="button"] {
+  body.custom-cursor,
+  body.custom-cursor *,
+  body.custom-cursor *::before,
+  body.custom-cursor *::after,
+  body.custom-cursor a,
+  body.custom-cursor button,
+  body.custom-cursor video,
+  body.custom-cursor input,
+  body.custom-cursor [role="button"] {
     cursor: none !important;
   }
 }

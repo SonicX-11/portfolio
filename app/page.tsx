@@ -555,11 +555,13 @@ export default function Home() {
     if (isDesktop) {
       document.documentElement.style.cursor = "none";
       document.body.style.cursor = "none";
+      document.body.classList.add("custom-cursor");
     }
 
     return () => {
       document.documentElement.style.cursor = "auto";
       document.body.style.cursor = "auto";
+      document.body.classList.remove("custom-cursor");
     };
   }, []);
 
