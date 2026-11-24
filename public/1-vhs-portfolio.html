@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ebrahim Fadel — Curved Video Archive</title>
+<meta name="description" content="A curved VHS-style video editing archive for Ebrahim Fadel: reels, commercials, clients, packages and contact.">
+<style>
+  :root{
+    --paper:#f3ead8;
+    --paper-2:#ead9bf;
+    --ink:#17130f;
+    --muted:#776b5d;
+    --cobalt:#1746a2;
+    --blue:#2d65d8;
+    --pink:#b600a8;
+    --orange:#e06a2d;
+    --tape:#211c18;
+    --shadow:rgba(34,23,12,.34);
+    --vh:1vh;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    overflow:hidden;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 16% 22%, rgba(23,70,162,.16) 0 1px, transparent 1.7px) 0 0/9px 9px,
+      radial-gradient(circle at 84% 28%, rgba(182,0,168,.12) 0 1px, transparent 1.6px) 0 0/8px 8px,
+      linear-gradient(110deg, rgba(255,255,255,.52), transparent 35% 65%, rgba(99,64,22,.12)),
+      var(--paper);
+    font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  body::before{
+    content:"";
+    position:fixed;inset:0;pointer-events:none;mix-blend-mode:multiply;
+    background-image:
+      linear-gradient(90deg, rgba(0,0,0,.035) 1px, transparent 1px),
+      linear-gradient(rgba(0,0,0,.028) 1px, transparent 1px);
+    background-size:42px 42px;
+    mask-image:linear-gradient(to bottom, transparent, black 12% 88%, transparent);
+  }
+  .kanji{
+    position:fixed;top:7vh;bottom:12vh;z-index:0;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+    color:transparent;
+    -webkit-text-stroke:1px rgba(23,70,162,.24);
+    font-family:"Arial Black", Impact, sans-serif;
+    font-size:clamp(7rem, 18vw, 20rem);
+    font-weight:900;letter-spacing:-.12em;line-height:.78;
+    writing-mode:vertical-rl;text-orientation:upright;
+    filter:contrast(1.25);
+  }
+  .kanji::after{
+    content:"";position:absolute;inset:0;
+    background:radial-gradient(circle, rgba(23,70,162,.34) 0 1px, transparent 1.7px) 0 0/7px 7px;
+    mix-blend-mode:screen;
+  }
+  .kanji.left{left:-2vw;transform:rotate(180deg)}
+  .kanji.right{right:-2vw;color:rgba(182,0,168,.06);-webkit-text-stroke:1px rgba(182,0,168,.22)}
+  .page{
+    position:relative;z-index:1;height:100vh;height:calc(var(--vh)*100);
+    display:grid;grid-template-rows:auto 1fr auto;
+    padding:clamp(14px,2vw,26px) clamp(18px,3vw,44px) clamp(16px,2vw,28px);
+  }
+  header{
+    display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:18px;
+    text-transform:uppercase;letter-spacing:.12em;font-size:12px;font-weight:800;
+  }
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand-mark{
+    width:42px;height:42px;border:2px solid var(--ink);border-radius:50%;
+    display:grid;place-items:center;background:var(--cobalt);color:var(--paper);
+    box-shadow:4px 4px 0 var(--ink);font-weight:950;
+  }
+  .brand strong{display:block;font-size:13px;letter-spacing:.18em}
+  .brand span{display:block;color:var(--muted);font-size:10px;letter-spacing:.16em;margin-top:2px}
+  .archive-label{justify-self:center;text-align:center;color:var(--cobalt)}
+  .archive-label b{display:block;font-size:clamp(18px,3vw,34px);letter-spacing:.08em;line-height:1}
+  .archive-label span{display:block;margin-top:6px;color:var(--muted);font-size:10px;letter-spacing:.28em}
+  .contact{justify-self:end;display:flex;gap:8px;align-items:center}
+  .pill{
+    border:1.5px solid rgba(23,19,15,.82);border-radius:999px;padding:9px 12px;
+    text-decoration:none;color:var(--ink);background:rgba(255,255,255,.26);
+    box-shadow:3px 3px 0 rgba(23,19,15,.18);font-size:10px;font-weight:900;letter-spacing:.12em;
+  }
+  .pill.primary{background:var(--ink);color:var(--paper)}
+  main{position:relative;min-height:0;display:grid;grid-template-rows:1fr auto;align-items:end}
+  .shelf-wrap{
+    position:relative;height:min(59vh,620px);min-height:360px;
+    perspective:1200px;perspective-origin:50% 58%;
+  }
+  .floor{
+    position:absolute;left:50%;bottom:7%;width:min(82vw,1000px);height:110px;
+    transform:translateX(-50%);
+    background:radial-gradient(ellipse at center, rgba(30,21,13,.32), rgba(30,21,13,.08) 46%, transparent 72%);
+    filter:blur(2px);
+  }
+  .shelf-line{
+    position:absolute;left:50%;bottom:10%;width:min(78vw,980px);height:80px;
+    transform:translateX(-50%);border-bottom:10px solid rgba(31,24,17,.9);
+    border-radius:50%;box-shadow:0 12px 0 rgba(182,0,168,.18);
+  }
+  .tape{
+    --w:58px;--h:272px;--x:0;--y:0;--z:0;--ry:0deg;--s:1;
+    position:absolute;left:50%;bottom:11%;width:var(--w);height:var(--h);
+    border:0;padding:0;background:transparent;cursor:pointer;
+    transform-style:preserve-3d;
+    transform:translateX(calc(-50% + var(--x))) translateY(var(--y)) translateZ(var(--z)) rotateY(var(--ry)) scale(var(--s));
+    will-change:transform;
+    transition:filter .25s ease;
+  }
+  .tape .spine,.tape .cover{
+    position:absolute;inset:0;border-radius:7px;overflow:hidden;
+    background:var(--tape);border:1px solid rgba(0,0,0,.52);
+    box-shadow:10px 16px 25px rgba(23,17,12,.28);
+    backface-visibility:hidden;
+  }
+  .tape .spine{
+    display:flex;align-items:center;justify-content:center;
+    background-image:linear-gradient(90deg, rgba(0,0,0,.7), rgba(0,0,0,.15) 45%, rgba(255,255,255,.22) 52%, rgba(0,0,0,.32)), var(--img);
+    background-size:cover;background-position:center;
+    clip-path:inset(0 0 0 0 round 7px);
+  }
+  .tape .spine::before{
+    content:"";position:absolute;inset:9px 5px;border:1px solid rgba(255,255,255,.28);border-radius:4px;
+  }
+  .tape .spine::after{
+    content:attr(data-title);writing-mode:vertical-rl;text-orientation:mixed;
+    color:#fff;font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;
+    text-shadow:0 2px 3px #000;max-height:88%;overflow:hidden;
+  }
+  .tape .cover{
+    transform:rotateY(0deg);
+    background-image:linear-gradient(rgba(0,0,0,.02), rgba(0,0,0,.18)), var(--img);
+    background-size:cover;background-position:center;
+    clip-path:inset(0 100% 0 0 round 7px);
+  }
+  .tape .cover::before{
+    content:"";position:absolute;inset:10px;border:2px solid rgba(255,255,255,.72);border-radius:5px;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.22);
+  }
+  .tape .cover::after{
+    content:"PLAY";position:absolute;left:13px;bottom:13px;padding:6px 8px;border-radius:4px;
+    background:var(--paper);color:var(--cobalt);font-size:10px;font-weight:950;letter-spacing:.14em;
+    box-shadow:2px 2px 0 rgba(0,0,0,.28);
+  }
+  .tape.active{filter:saturate(1.12) contrast(1.05)}
+  .tape.active .cover{animation:coverIn .46s cubic-bezier(.2,.82,.18,1) forwards}
+  .tape.active .spine{animation:spineOut .36s cubic-bezier(.55,.06,.68,.19) forwards}
+  .tape:not(.active) .cover{clip-path:inset(0 100% 0 0 round 7px)}
+  @keyframes coverIn{from{clip-path:inset(0 100% 0 0 round 7px)}to{clip-path:inset(0 0 0 0 round 7px)}}
+  @keyframes spineOut{from{clip-path:inset(0 0 0 0 round 7px)}to{clip-path:inset(0 0 0 100% round 7px)}}
+  .caption{
+    position:absolute;left:50%;bottom:-4px;transform:translateX(-50%);
+    width:min(92vw,780px);display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:18px;
+  }
+  .arrow{
+    width:48px;height:48px;border-radius:50%;border:2px solid var(--ink);background:var(--paper);
+    color:var(--cobalt);font-size:24px;font-weight:950;cursor:pointer;box-shadow:4px 4px 0 rgba(23,19,15,.22);
+  }
+  .arrow:active{transform:translate(2px,2px);box-shadow:1px 1px 0 rgba(23,19,15,.28)}
+  .title-box{text-align:center;min-width:0}
+  .title-box h1{
+    margin:0;color:var(--cobalt);font-family:"Arial Black", Impact, sans-serif;
+    font-size:clamp(25px,5.4vw,66px);line-height:.95;text-transform:uppercase;letter-spacing:-.04em;
+  }
+  .title-meta{
+    display:flex;justify-content:center;align-items:center;gap:12px;margin-top:10px;
+    color:var(--muted);font-size:11px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;
+  }
+  .rule{height:2px;background:var(--cobalt);width:52px}
+  .info-rail{
+    position:absolute;z-index:2;top:17vh;bottom:18vh;width:172px;
+    display:flex;flex-direction:column;justify-content:space-between;pointer-events:none;
+  }
+  .info-rail.left{left:clamp(12px,3vw,52px)}
+  .info-rail.right{right:clamp(12px,3vw,52px);text-align:right}
+  .micro{
+    color:var(--muted);font-size:10px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;
+  }
+  .micro b{display:block;color:var(--ink);font-size:12px;margin-bottom:6px}
+  .micro span{display:block;margin-top:6px;line-height:1.7}
+  .stamp{
+    display:inline-grid;place-items:center;width:82px;height:82px;border:2px solid var(--pink);border-radius:50%;
+    color:var(--pink);font-size:11px;font-weight:950;letter-spacing:.14em;text-transform:uppercase;
+    transform:rotate(-9deg);background:rgba(255,255,255,.18);
+  }
+  .timeline{
+    position:relative;height:84px;margin:0 auto;width:min(88vw,900px);
+    display:grid;align-items:end;
+  }
+  .timeline-track{position:relative;height:38px;border-top:3px solid var(--ink)}
+  .tick{position:absolute;top:-3px;width:2px;height:12px;background:var(--ink)}
+  .tick small{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:900;color:var(--muted);letter-spacing:.12em}
+  .dot{
+    position:absolute;top:-10px;left:0;width:20px;height:20px;margin-left:-10px;border-radius:50%;
+    background:var(--cobalt);border:3px solid var(--paper);box-shadow:0 0 0 2px var(--cobalt), 4px 5px 0 rgba(23,19,15,.2);
+    will-change:transform;
+  }
+  .detail{
+    position:fixed;inset:0;z-index:10;display:grid;place-items:center;padding:24px;
+    background:rgba(23,19,15,.24);pointer-events:none;visibility:hidden;
+  }
+  .detail.open{pointer-events:auto;visibility:visible}
+  .sheet{
+    width:min(96vw,1080px);max-height:min(88vh,780px);overflow:auto;
+    background:
+      radial-gradient(circle at 20% 10%, rgba(23,70,162,.09) 0 1px, transparent 1.6px) 0 0/8px 8px,
+      var(--paper);
+    border:2px solid var(--ink);box-shadow:14px 14px 0 rgba(23,19,15,.36);
+    padding:clamp(18px,3vw,34px);
+    clip-path:inset(0 100% 0 0);
+  }
+  .detail.open .sheet{animation:sheetIn .48s cubic-bezier(.2,.82,.18,1) forwards}
+  .detail.closing .sheet{animation:sheetOut .3s cubic-bezier(.55,.06,.68,.19) forwards}
+  @keyframes sheetIn{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+  @keyframes sheetOut{from{clip-path:inset(0 0 0 0)}to{clip-path:inset(0 100% 0 0)}}
+  .sheet-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:18px}
+  .sheet h2{margin:0;color:var(--cobalt);font-family:"Arial Black",Impact,sans-serif;font-size:clamp(26px,4vw,52px);line-height:.95;text-transform:uppercase}
+  .sheet-head p{margin:8px 0 0;color:var(--muted);font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:11px}
+  .close{border:2px solid var(--ink);background:var(--ink);color:var(--paper);border-radius:50%;width:42px;height:42px;font-size:20px;cursor:pointer}
+  .sheet-grid{display:grid;grid-template-columns:minmax(220px,360px) 1fr;gap:clamp(18px,3vw,34px);align-items:start}
+  .video-frame{
+    position:relative;border:2px solid var(--ink);background:#050505;box-shadow:8px 8px 0 rgba(23,19,15,.2);
+    aspect-ratio:9/16;overflow:hidden;
+  }
+  .video-frame video{width:100%;height:100%;object-fit:cover;display:block}
+  .ink-wash{position:absolute;inset:0;background:var(--cobalt);mix-blend-mode:multiply;clip-path:inset(0 0 0 100%);pointer-events:none}
+  .detail.open .ink-wash{animation:inkIn .7s .12s cubic-bezier(.2,.82,.18,1) forwards}
+  @keyframes inkIn{0%{clip-path:inset(0 0 0 0)}100%{clip-path:inset(0 0 0 100%)}}
+  .facts{display:grid;gap:14px}
+  .fact{border-top:2px solid var(--ink);padding-top:12px}
+  .fact b{display:block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+  .fact span{font-size:15px;font-weight:750;line-height:1.5}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .chip{border:1.5px solid var(--ink);border-radius:999px;padding:7px 10px;font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;background:rgba(255,255,255,.24)}
+  .sheet-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+  .sheet-actions a{border:2px solid var(--ink);padding:11px 14px;text-decoration:none;color:var(--ink);font-size:11px;font-weight:950;letter-spacing:.14em;text-transform:uppercase;box-shadow:4px 4px 0 rgba(23,19,15,.2)}
+  .sheet-actions a.primary{background:var(--cobalt);color:#fff;border-color:var(--cobalt)}
+  .toast{
+    position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:11;
+    background:var(--ink);color:var(--paper);padding:10px 14px;border-radius:999px;
+    font-size:11px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;
+    clip-path:inset(0 100% 0 0 round 999px);transition:clip-path .25s ease;
+  }
+  .toast.show{clip-path:inset(0 0 0 0 round 999px)}
+  @media (max-width:900px){
+    body{overflow:auto}
+    .page{min-height:100vh;height:auto;grid-template-rows:auto auto auto}
+    header{grid-template-columns:1fr auto}
+    .archive-label{display:none}
+    .contact{gap:6px}
+    .pill{padding:8px 9px;font-size:9px}
+    .shelf-wrap{height:56vh;min-height:390px}
+    .info-rail{display:none}
+    .kanji{opacity:.45}
+    .caption{grid-template-columns:44px 1fr 44px;gap:10px}
+    .arrow{width:44px;height:44px}
+    .sheet-grid{grid-template-columns:1fr}
+    .video-frame{max-width:360px;margin:0 auto}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  }
+</style>
+</head>
+<body>
+  <div class="kanji left" aria-hidden="true">فيديو</div>
+  <div class="kanji right" aria-hidden="true">إبراهيم</div>
+  <div class="page">
+    <header>
+      <div class="brand">
+        <div class="brand-mark">EF</div>
+        <div><strong>Ebrahim Fadel</strong><span>Senior Video Editor</span></div>
+      </div>
+      <div class="archive-label"><b>Curved Video Archive</b><span>Selected client tapes</span></div>
+      <nav class="contact" aria-label="Contact links">
+        <a class="pill" href="mailto:ebrahimfadel8903@gmail.com">Email</a>
+        <a class="pill primary" href="/payment.html">Book a video</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="shelf-wrap" aria-label="Video archive shelf">
+        <div class="info-rail left">
+          <div class="micro"><b>Client index</b><span>Yasmin Yousry<br>Emirates<br>Hatoom<br>Dr Maan<br>EL BADR</span></div>
+          <div class="stamp">15<br>tapes</div>
+        </div>
+        <div class="info-rail right">
+          <div class="micro"><b>Packages</b><span>Spark · 500 EGP<br>Viral · 850 EGP<br>Prime · 1,200 EGP</span></div>
+          <div class="micro"><b>Stack</b><span>Premiere Pro<br>After Effects<br>DaVinci Resolve</span></div>
+        </div>
+        <div class="floor"></div>
+        <div class="shelf-line"></div>
+        <div id="shelf"></div>
+        <div class="caption">
+          <button class="arrow" id="prev" aria-label="Previous tape">‹</button>
+          <div class="title-box">
+            <h1 id="title">Car Hook Reel</h1>
+            <div class="title-meta"><span id="index">Tape 01</span><span class="rule"></span><span id="meta">Automotive Hook</span></div>
+          </div>
+          <button class="arrow" id="next" aria-label="Next tape">›</button>
+        </div>
+      </section>
+      <section class="timeline" aria-label="Archive timeline">
+        <div class="timeline-track" id="timelineTrack"><div class="dot" id="dot"></div></div>
+      </section>
+    </main>
+  </div>
+
+  <div class="detail" id="detail" aria-hidden="true">
+    <article class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+      <div class="sheet-head">
+        <div><h2 id="sheetTitle">Car Hook Reel</h2><p id="sheetMeta">Automotive Hook · Tape 01</p></div>
+        <button class="close" id="close" aria-label="Close detail sheet">×</button>
+      </div>
+      <div class="sheet-grid">
+        <div class="video-frame"><video id="player" controls playsinline preload="metadata"></video><div class="ink-wash"></div></div>
+        <div class="facts">
+          <div class="fact"><b>Project</b><span id="sheetDesc">Short-form automotive hook edit built for instant attention and fast retention.</span></div>
+          <div class="fact"><b>Best fit</b><span>Reels, TikTok, paid social hooks and campaign launches that need a strong first three seconds.</span></div>
+          <div class="fact"><b>Included packages</b><div class="chips"><span class="chip">The Spark Pack · 500 EGP</span><span class="chip">The Viral Growth · 850 EGP</span><span class="chip">Cinematic Prime · 1,200 EGP</span></div></div>
+          <div class="fact"><b>Clients</b><div class="chips"><span class="chip">Yasmin Yousry</span><span class="chip">Emirates</span><span class="chip">Hatoom</span><span class="chip">Dr Maan</span><span class="chip">EL BADR</span></div></div>
+          <div class="sheet-actions"><a class="primary" href="/payment.html">Start this project</a><a href="mailto:ebrahimfadel8903@gmail.com">Email Ebrahim</a><a href="https://www.instagram.com/ebrahimfadel_8/" target="_blank" rel="noopener">Instagram</a></div>
+        </div>
+      </div>
+    </article>
+  </div>
+  <div class="toast" id="toast">Tap the front cover to open the tape</div>
+
+<script>
+const tapes = [
+  {title:"Car Hook Reel", category:"Automotive Hook", src:"/video/17-car-hook-reel.mp4", poster:"/video/1-17-car-hook-reel.jpg", desc:"Short-form automotive hook edit built for instant attention and fast retention."},
+  {title:"Interior Showcase", category:"Interior Commercial", src:"/video/20-interior-showcase-basma.mp4", poster:"/video/2-20-interior-showcase-basma.jpg", desc:"Clean interior showcase edit with smooth pacing, polished transitions and premium visual rhythm."},
+  {title:"Shahenda Reel #1", category:"Social Reel", src:"/video/4-shahenda-reel-1.mp4", poster:"/video/3-4-shahenda-reel-1.jpg", desc:"High-retention social reel with sharp cuts, subtitles and platform-native pacing."},
+  {title:"Shahenda Reel #2", category:"Social Reel", src:"/video/5-shahenda-reel-2.mp4", poster:"/video/4-5-shahenda-reel-2.jpg", desc:"High-retention social reel with sharp cuts, subtitles and platform-native pacing."},
+  {title:"Doaa Book Review", category:"Book Review", src:"/video/21-doaa-book-review.mp4", poster:"/video/5-21-doaa-book-review.jpg", desc:"Talking-head review edit with clean pacing, emphasis cuts and social-first framing."},
+  {title:"Doaa Talk", category:"Coach Content", src:"/video/7-doaa-talk.mp4", poster:"/video/6-7-doaa-talk.jpg", desc:"Coach talking-head edit shaped for clarity, retention and polished subtitle flow."},
+  {title:"Coach Fatma Review #1", category:"Coach Review", src:"/video/8-fatma-review-1.mp4", poster:"/video/7-8-fatma-review-1.jpg", desc:"Coach review edit with clean structure, caption emphasis and social-native pacing."},
+  {title:"Coach Fatma Review #2", category:"Coach Review", src:"/video/9-fatma-review-2.mp4", poster:"/video/8-9-fatma-review-2.jpg", desc:"Coach review edit with clean structure, caption emphasis and social-native pacing."},
+  {title:"Real Estate Ad", category:"Real Estate Commercial", src:"/video/6-real-estate-ad.mp4", poster:"/video/9-6-real-estate-ad.jpg", desc:"Commercial real-estate edit built around property highlights, pacing and premium presentation."},
+  {title:"Yasmin Reel #1", category:"Client Reel", src:"/video/10-yasmin-reel-1.mp4", poster:"/video/10-10-yasmin-reel-1.jpg", desc:"High-retention client reel with sharp pacing, caption rhythm and social-first polish."},
+  {title:"Yasmin Reel #2", category:"Client Reel", src:"/video/11-yasmin-reel-2.mp4", poster:"/video/11-11-yasmin-reel-2.jpg", desc:"High-retention client reel with sharp pacing, caption rhythm and social-first polish."},
+  {title:"Yasmin Reel #3", category:"Client Reel", src:"/video/12-yasmin-reel-3.mp4", poster:"/video/12-12-yasmin-reel-3.jpg", desc:"High-retention client reel with sharp pacing, caption rhythm and social-first polish."},
+  {title:"Shahenda Reel #3", category:"Social Reel", src:"/video/13-shahenda-reel-3.mp4", poster:"/video/13-13-shahenda-reel-3.jpg", desc:"High-retention social reel with sharp cuts, subtitles and platform-native pacing."},
+  {title:"Doaa Reel #2", category:"Coach Reel", src:"/video/14-doaa-reel-2.mp4", poster:"/video/14-14-doaa-reel-2.jpg", desc:"Coach reel edit with clean structure, caption emphasis and social-native pacing."},
+  {title:"Coach Fatma Review #3", category:"Coach Review", src:"/video/15-fatma-review-3.mp4", poster:"/video/15-15-fatma-review-3.jpg", desc:"Coach review edit with clean structure, caption emphasis and social-native pacing."}
+];
+const shelf = document.getElementById('shelf');
+const titleEl = document.getElementById('title');
+const indexEl = document.getElementById('index');
+const metaEl = document.getElementById('meta');
+const dot = document.getElementById('dot');
+const track = document.getElementById('timelineTrack');
+const detail = document.getElementById('detail');
+const sheetTitle = document.getElementById('sheetTitle');
+const sheetMeta = document.getElementById('sheetMeta');
+const sheetDesc = document.getElementById('sheetDesc');
+const player = document.getElementById('player');
+const toast = document.getElementById('toast');
+let active = 0;
+let currentX = 0;
+let targetX = 0;
+let positions = [];
+
+function pad(n){ return String(n+1).padStart(2,'0'); }
+function build(){
+  tapes.forEach((tape,i)=>{
+    const b = document.createElement('button');
+    b.className = 'tape';
+    b.type = 'button';
+    b.style.setProperty('--img', `url("${tape.poster}")`);
+    b.setAttribute('aria-label', `Open ${tape.title}`);
+    b.innerHTML = `<span class="spine" data-title="${tape.title}"></span><span class="cover"></span>`;
+    b.addEventListener('click', () => {
+      if(i === active) openDetail();
+      else { active = i; render(true); }
+    });
+    shelf.appendChild(b);
+    const tick = document.createElement('div');
+    tick.className = 'tick';
+    tick.style.left = `${(i/(tapes.length-1))*100}%`;
+    tick.innerHTML = `<small>${pad(i)}</small>`;
+    track.appendChild(tick);
+  });
+}
+function measure(){
+  const w = Math.min(window.innerWidth * .82, 980);
+  positions = tapes.map((_,i)=>{
+    const off = i-active;
+    const side = Math.sign(off);
+    const abs = Math.abs(off);
+    return {
+      x: off * Math.min(64, w/15),
+      y: abs * 8,
+      z: -abs * 54,
+      ry: side * Math.min(34, 10 + abs * 5),
+      s: Math.max(.62, 1 - abs * .055),
+      active: off === 0
+    };
+  });
+}
+function render(announce){
+  measure();
+  [...shelf.children].forEach((el,i)=>{
+    const p = positions[i];
+    el.classList.toggle('active', p.active);
+    el.style.setProperty('--w', p.active ? 'min(36vw,250px)' : '58px');
+    el.style.setProperty('--h', p.active ? 'min(51vh,390px)' : '272px');
+    el.style.zIndex = String(100 - Math.abs(i-active));
+  });
+  titleEl.textContent = tapes[active].title;
+  indexEl.textContent = `Tape ${pad(active)} / ${pad(tapes.length-1)}`;
+  metaEl.textContent = tapes[active].category;
+  targetX = (active/(tapes.length-1)) * (track.clientWidth || 1);
+  if(announce){
+    toast.classList.add('show');
+    clearTimeout(render.t);
+    render.t = setTimeout(()=>toast.classList.remove('show'), 1200);
+  }
+}
+function frame(){
+  currentX += (targetX-currentX) * .16;
+  dot.style.transform = `translateX(${currentX}px)`;
+  [...shelf.children].forEach((el,i)=>{
+    const p = positions[i];
+    const easeX = p.x + (Math.sin(Date.now()/900 + i) * (p.active ? 1.4 : .45));
+    el.style.setProperty('--x', `${easeX}px`);
+    el.style.setProperty('--y', `${p.y}px`);
+    el.style.setProperty('--z', `${p.z}px`);
+    el.style.setProperty('--ry', `${p.active ? 0 : p.ry}deg`);
+    el.style.setProperty('--s', p.s);
+  });
+  requestAnimationFrame(frame);
+}
+function openDetail(){
+  const tape = tapes[active];
+  sheetTitle.textContent = tape.title;
+  sheetMeta.textContent = `${tape.category} · Tape ${pad(active)}`;
+  sheetDesc.textContent = tape.desc;
+  player.poster = tape.poster;
+  player.src = tape.src;
+  detail.classList.remove('closing');
+  detail.classList.add('open');
+  detail.setAttribute('aria-hidden','false');
+}
+function closeDetail(){
+  player.pause();
+  detail.classList.add('closing');
+  detail.setAttribute('aria-hidden','true');
+  setTimeout(()=>{ detail.classList.remove('open','closing'); player.removeAttribute('src'); player.load(); }, 280);
+}
+document.getElementById('prev').addEventListener('click',()=>{active=(active-1+tapes.length)%tapes.length;render(true);});
+document.getElementById('next').addEventListener('click',()=>{active=(active+1)%tapes.length;render(true);});
+document.getElementById('close').addEventListener('click',closeDetail);
+detail.addEventListener('click',e=>{if(e.target===detail)closeDetail();});
+window.addEventListener('keydown',e=>{
+  if(e.key==='Escape')closeDetail();
+  if(e.key==='ArrowRight'){active=(active+1)%tapes.length;render(true);}
+  if(e.key==='ArrowLeft'){active=(active-1+tapes.length)%tapes.length;render(true);}
+});
+window.addEventListener('resize',render);
+build();render(false);requestAnimationFrame(frame);
+</script>
+</body>
+</html>
