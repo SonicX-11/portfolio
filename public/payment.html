@@ -63,14 +63,14 @@ body{background:#020617; color:var(--ink); font-family:var(--font-body);
 .ambient-pane video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
   opacity:0; transform:scale(1.08); filter:blur(9px) contrast(1.2) brightness(.76) saturate(1.08);
   transition:opacity 1.35s ease; will-change:opacity}
-.ambient-pane video.is-active{opacity:.28}
+.ambient-pane video.is-active{opacity:.34}
 .ambient-bg::after{content:""; position:absolute; inset:0; pointer-events:none;
   background:
-    linear-gradient(180deg, rgba(2,6,18,.86), rgba(2,6,18,.58) 46%, rgba(2,6,18,.90)),
-    linear-gradient(90deg, rgba(2,6,18,.68), rgba(2,6,18,.14) 32%, rgba(2,6,18,.14) 68%, rgba(2,6,18,.68))}
+    linear-gradient(180deg, rgba(2,6,18,.78), rgba(2,6,18,.48) 46%, rgba(2,6,18,.84)),
+    linear-gradient(90deg, rgba(2,6,18,.58), rgba(2,6,18,.10) 32%, rgba(2,6,18,.10) 68%, rgba(2,6,18,.58))}
 @media (max-width:600px){
   .ambient-pane video{filter:blur(12px) contrast(1.16) brightness(.72) saturate(1.06)}
-  .ambient-pane video.is-active{opacity:.23}
+  .ambient-pane video.is-active{opacity:.28}
 }
 @media (prefers-reduced-motion:reduce){ .ambient-bg video{display:none} }
 
@@ -1382,36 +1382,63 @@ function backToForm(){
     if (promise && promise.catch) promise.catch(function(){});
   }
 
-  function crossfadePane(pane, sample){
-    if (!pane || !sample) return;
-    var outgoing = pane.videos[pane.active];
+  function preparePane(pane, sample){
+    if (!pane || !sample) return null;
     var incoming = pane.videos[1 - pane.active];
-    if (incoming.dataset.sampleSrc === sample.src) return;
-    incoming.dataset.sampleSrc = sample.src;
-    incoming.poster = sample.poster || '';
-    incoming.src = sample.src;
-    incoming.load();
-    playAmbient(incoming);
-    incoming.classList.add('is-active');
-    if (outgoing){
-      outgoing.classList.remove('is-active');
-      setTimeout(function(){
-        if (!outgoing.classList.contains('is-active')){
-          outgoing.pause();
-          outgoing.removeAttribute('src');
-          outgoing.removeAttribute('poster');
-          outgoing.dataset.sampleSrc = '';
-          outgoing.load();
-        }
-      }, 1450);
+    if (incoming.dataset.sampleSrc !== sample.src){
+      incoming.dataset.sampleSrc = sample.src;
+      incoming.poster = sample.poster || '';
+      incoming.preload = 'auto';
+      incoming.src = sample.src;
+      incoming.load();
     }
-    pane.active = 1 - pane.active;
+    return incoming;
+  }
+
+  function activatePane(pane, sample, done){
+    var outgoing = pane.videos[pane.active];
+    var incoming = preparePane(pane, sample);
+    if (!incoming) { if (done) done(); return; }
+    var activated = false;
+    var finish = function(){
+      if (activated) return;
+      activated = true;
+      playAmbient(incoming);
+      incoming.classList.add('is-active');
+      if (outgoing){
+        outgoing.classList.remove('is-active');
+        setTimeout(function(){
+          if (!outgoing.classList.contains('is-active')) outgoing.pause();
+        }, 1450);
+      }
+      pane.active = 1 - pane.active;
+      if (done) done();
+    };
+    if (incoming.readyState >= 2) finish();
+    else {
+      incoming.addEventListener('loadeddata', finish, { once:true });
+      incoming.addEventListener('canplay', finish, { once:true });
+      setTimeout(finish, 4500);
+      playAmbient(incoming);
+    }
+  }
+
+  function prefetchAmbient(next){
+    var samples = P[next].samples;
+    var futureStep = (ambient.step + 1) % samples.length;
+    preparePane(ambient.panes[0], samples[futureStep]);
+    preparePane(ambient.panes[1], samples[(futureStep + 1) % samples.length]);
   }
 
   function crossfadeAmbient(next){
     var samples = P[next].samples;
-    crossfadePane(ambient.panes[0], samples[ambient.step % samples.length]);
-    crossfadePane(ambient.panes[1], samples[(ambient.step + 1) % samples.length]);
+    var pending = 2;
+    var done = function(){
+      pending--;
+      if (pending === 0) setTimeout(function(){ prefetchAmbient(next); }, 1600);
+    };
+    activatePane(ambient.panes[0], samples[ambient.step % samples.length], done);
+    activatePane(ambient.panes[1], samples[(ambient.step + 1) % samples.length], done);
   }
 
   function cycleAmbient(){
@@ -1425,7 +1452,7 @@ function backToForm(){
     if (ambient.timer) clearInterval(ambient.timer);
     if (!reduceMotion){
       crossfadeAmbient(next);
-      ambient.timer = setInterval(cycleAmbient, 7500);
+      ambient.timer = setInterval(cycleAmbient, 11000);
     }
   }
 
