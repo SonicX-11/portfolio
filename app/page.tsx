@@ -1127,6 +1127,7 @@ export default function Home() {
                   </span>
                 </button>
 
+
                 <AnimatePresence>
                   {isVideoMenuOpen && (
                     <motion.div
@@ -1305,6 +1306,13 @@ export default function Home() {
                   </span>
                 </button>
 
+                {isThumbnailsMenuOpen && (
+                  <MobileCarouselControls
+                    onScroll={(direction) => scrollCarousel(thumbnailsScrollRef, direction)}
+                    className="my-6 sm:hidden"
+                  />
+                )}
+
                 <AnimatePresence>
                   {isThumbnailsMenuOpen && (
                     <motion.div
@@ -1313,7 +1321,7 @@ export default function Home() {
                       exit={{ opacity: 0, height: 0 }}
                       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                       ref={thumbnailsScrollRef}
-                      className="mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto overflow-y-hidden pb-4 no-scrollbar scroll-smooth sm:grid sm:grid-cols-2 sm:gap-8 sm:overflow-visible sm:pb-0 lg:grid-cols-3"
+                      className="mt-6 flex snap-x snap-mandatory touch-pan-x gap-5 overflow-x-auto overflow-y-hidden pb-4 no-scrollbar scroll-smooth sm:mt-10 sm:grid sm:grid-cols-2 sm:gap-8 sm:overflow-visible sm:pb-0 lg:grid-cols-3"
                     >
                       {thumbnailsData.map((thumb, index) => (
                         <FadeIn key={index} delay={index * 0.1} className="w-[78vw] max-w-[340px] shrink-0 snap-center sm:w-auto sm:max-w-none sm:shrink">
@@ -1338,12 +1346,6 @@ export default function Home() {
                   )}
                 </AnimatePresence>
               </div>
-              {isThumbnailsMenuOpen && (
-                <MobileCarouselControls
-                  onScroll={(direction) => scrollCarousel(thumbnailsScrollRef, direction)}
-                  className="sm:hidden"
-                />
-              )}
             </FadeIn>
           </div>
         </section>

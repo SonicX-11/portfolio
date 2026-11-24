@@ -51,16 +51,33 @@
   }
 }
 html{scroll-behavior:smooth}
-body{background:#04101f; color:var(--ink); font-family:var(--font-body);
+body{background:#020617; color:var(--ink); font-family:var(--font-body);
   -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
   text-rendering:geometricPrecision; overflow-x:hidden; min-height:100%}
+
+/* Full-page ambient package videos: split, blurred, dark, and quiet like the site header. */
+.ambient-bg{position:fixed; inset:0; z-index:-2; display:flex; overflow:hidden; pointer-events:none;
+  background:#020617; isolation:isolate}
+.ambient-pane{position:relative; width:50%; height:100%; overflow:hidden}
+.ambient-pane:first-child{border-right:1px solid rgba(255,255,255,.06)}
+.ambient-pane video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  opacity:0; transform:scale(1.08); filter:blur(9px) contrast(1.2) brightness(.76) saturate(1.08);
+  transition:opacity 1.35s ease; will-change:opacity}
+.ambient-pane video.is-active{opacity:.28}
+.ambient-bg::after{content:""; position:absolute; inset:0; pointer-events:none;
+  background:
+    linear-gradient(180deg, rgba(2,6,18,.86), rgba(2,6,18,.58) 46%, rgba(2,6,18,.90)),
+    linear-gradient(90deg, rgba(2,6,18,.68), rgba(2,6,18,.14) 32%, rgba(2,6,18,.14) 68%, rgba(2,6,18,.68))}
+@media (max-width:600px){
+  .ambient-pane video{filter:blur(12px) contrast(1.16) brightness(.72) saturate(1.06)}
+  .ambient-pane video.is-active{opacity:.23}
+}
+@media (prefers-reduced-motion:reduce){ .ambient-bg video{display:none} }
 
 /* ================= HERO ================= */
 .stage{position:relative; width:100%; height:100vh; overflow:hidden; overflow:clip; isolation:isolate}
 @supports (height:100dvh){ .stage{height:100dvh} }
-.sky{position:absolute; inset:0; z-index:0;
-  background-image:url(https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260827_202133_cf55d1d8-7b59-4a64-80da-d72052ae974e.png);
-  background-size:cover; background-position:center; background-repeat:no-repeat}
+.sky{position:absolute; inset:0; z-index:0; background:transparent}
 .ui{position:absolute; inset:0; z-index:3}
 
 .sky video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
@@ -503,7 +520,7 @@ p.lede{top:calc(433.2 * var(--u)); font-size:calc(18.36 * var(--u)); font-weight
 
 @media print{
   html,body{background:#fff !important}
-  .stage,.big-orb,#stars,#formCard,#order .notice,.inv-actions{display:none !important}
+  .stage,.ambient-bg,.big-orb,#stars,#formCard,#order .notice,.inv-actions{display:none !important}
   #order{padding:0 !important; display:block !important}
   #order .card{background:#fff !important; border:none !important; box-shadow:none !important; backdrop-filter:none !important; padding:0 !important}
   .inv,.inv-box,.inv-deliv{background:#fff !important; border-color:#ccc !important}
@@ -597,16 +614,19 @@ html.no-assets .planet .orb.is-shown{display:block; width:97%; margin:1.5%}
 </style>
 </head>
 <body>
-<canvas id="stars" aria-hidden="true"></canvas>
-<div class="big-orb" aria-hidden="true"><span class="orb" data-planet="earth"><i class="o-tex"></i><i class="o-cloud"></i><i class="o-shade"></i></span><span class="orb" data-planet="venus"><i class="o-tex"></i><i class="o-cloud"></i><i class="o-shade"></i></span><span class="orb" data-planet="mars"><i class="o-tex"></i><i class="o-cloud"></i><i class="o-shade"></i></span></div>
+<div class="ambient-bg" aria-hidden="true">
+  <div class="ambient-pane">
+    <video id="ambientLeftA" muted autoplay loop playsinline preload="metadata"></video>
+    <video id="ambientLeftB" muted autoplay loop playsinline preload="metadata"></video>
+  </div>
+  <div class="ambient-pane">
+    <video id="ambientRightA" muted autoplay loop playsinline preload="metadata"></video>
+    <video id="ambientRightB" muted autoplay loop playsinline preload="metadata"></video>
+  </div>
+</div>
 
 <div class="stage" id="top">
-  <div class="sky">
-    <div class="nebula"></div>
-    <video data-planet="earth" muted loop playsinline preload="none" data-src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260827_202422_3ffb4889-c520-432d-8458-038009eb40df.mp4" poster="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260827_202133_508c64b8-a31e-4290-bdfc-1187df70e0a6.png" aria-hidden="true"></video>
-    <video data-planet="venus" class="is-active" autoplay muted loop playsinline preload="auto" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260827_202422_b211cd74-013b-4dd3-bfd0-64491d8696fa.mp4" poster="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260827_202133_cf55d1d8-7b59-4a64-80da-d72052ae974e.png" aria-hidden="true"></video>
-    <video data-planet="mars" muted loop playsinline preload="none" data-src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260827_202422_51eae59a-2459-4c84-907c-cc5edfe5fea7.mp4" poster="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260827_202133_0ba6de7c-285d-43dc-b7ab-8c54c73707cb.png" aria-hidden="true"></video>
-  </div>
+  <div class="sky"></div>
 
   <div class="ui">
     <header class="navbar">
@@ -629,21 +649,7 @@ html.no-assets .planet .orb.is-shown{display:block; width:97%; margin:1.5%}
       <div class="col rule"><span></span></div>
       <p class="col lede" dir="rtl" lang="ar">باقة برو (الأكثر طلباً) بسعر 850 ج للفيديو.<br>اختار باقتك وابعت مشروعك، = الحجز.</p>
       <div class="col cta">
-        <button class="planet planet-l" type="button" data-slot="l">
-          <img data-planet="earth" alt="" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260827_202005_3346cc4d-ec3b-44ab-825c-b18e49f5021a.png">
-          <img data-planet="venus" alt="" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260827_202012_640b239a-d08a-4200-adb2-741bbe129ac8.png">
-          <img data-planet="mars" alt="" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260827_202018_3d559490-f613-4ed7-a3bb-3b7e9fc90fb8.png">
-          <span class="orb" data-planet="earth"><i class="o-tex"></i><i class="o-cloud"></i><i class="o-shade"></i></span><span class="orb" data-planet="venus"><i class="o-tex"></i><i class="o-cloud"></i><i class="o-shade"></i></span><span class="orb" data-planet="mars"><i class="o-tex"></i><i class="o-cloud"></i><i class="o-shade"></i></span>
-        </button>
-        <button class="planet planet-r" type="button" data-slot="r">
-          <img data-planet="earth" alt="" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260827_202005_3346cc4d-ec3b-44ab-825c-b18e49f5021a.png">
-          <img data-planet="venus" alt="" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260827_202012_640b239a-d08a-4200-adb2-741bbe129ac8.png">
-          <img data-planet="mars" alt="" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260827_202018_3d559490-f613-4ed7-a3bb-3b7e9fc90fb8.png">
-          <span class="orb" data-planet="earth"><i class="o-tex"></i><i class="o-cloud"></i><i class="o-shade"></i></span><span class="orb" data-planet="venus"><i class="o-tex"></i><i class="o-cloud"></i><i class="o-shade"></i></span><span class="orb" data-planet="mars"><i class="o-tex"></i><i class="o-cloud"></i><i class="o-shade"></i></span>
-        </button>
         <a href="#order">احجز الآن</a>
-        <span class="label label-l"></span>
-        <span class="label label-r"></span>
       </div>
     </div>
   </div>
@@ -738,11 +744,6 @@ html.no-assets .planet .orb.is-shown{display:block; width:97%; margin:1.5%}
             <input type="radio" name="tier" id="tier3" value="elite" data-name="Cinematic Prime" data-price="1200">
             <label for="tier3"><span class="gicon"><svg class="ic"><use href="#i-crown"/></svg></span>Cinematic Prime<small>1200 ج/فيديو</small></label>
           </div>
-        </div>
-        <div class="sample-box" aria-live="polite">
-          <div class="sample-head"><span>شاهد نموذج شغل الباقة</span><b id="packageSampleName">The Viral Growth</b></div>
-          <div class="sample-grid" id="packageSampleGrid"></div>
-          <div class="sample-note">النماذج بتتغير تلقائياً مع الباقة اللي بتختارها، وهي مقاطع مختارة من مكتبة أعمال الموقع.</div>
         </div>
         <div class="form-group" style="margin-top:16px">
           <label for="videoCount"><span class="gicon sm"><svg class="ic"><use href="#i-film"/></svg></span> عدد الفيديوهات</label>
@@ -1353,94 +1354,99 @@ function backToForm(){
     mars:{  name:'ELITE', tier:'elite', still:'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260827_202133_0ba6de7c-285d-43dc-b7ab-8c54c73707cb.png',
             sampleTitle:'Cinematic Prime',
             samples:[
-              {title:'Bruno Fernandes | The King', src:'/video/Habib-Ayamy.mp4', poster:'/images/thumbnails/thumb-1.png'},
-              {title:'Bruno Fernandes | Bruno Cut', src:'/video/Man-U.mp4', poster:'/images/thumbnails/thumb-6.png'},
               {title:'Car Hook Reel', src:'/video/17-car-hook-reel.mp4', poster:'/video/1-17-car-hook-reel.jpg'},
-              {title:'Yasmin Reel #1', src:'/video/10-yasmin-reel-1.mp4', poster:'/video/10-10-yasmin-reel-1.jpg'},
-              {title:'Yasmin Reel #2', src:'/video/11-yasmin-reel-2.mp4', poster:'/video/11-11-yasmin-reel-2.jpg'},
-              {title:'Yasmin Reel #3', src:'/video/12-yasmin-reel-3.mp4', poster:'/video/12-12-yasmin-reel-3.jpg'},
-              {title:'Gigabyte Motion Ad', src:'/video/Color.mp4', poster:'/video/color-poster.jpg'},
-              {title:'AORUS Motion Ad', src:'/video/Mb22.mp4', poster:'/video/mb22-poster.jpg'},
-              {title:'The Odyssey Motion Cut', src:'/video/The-Odyssey.mp4', poster:'/video/the-odyssey-poster.jpg'}
+              {title:'The Odyssey Motion Cut', src:'/video/The-Odyssey.mp4', poster:'/video/the-odyssey-poster.jpg'},
+              {title:'Bruno Fernandes | The King', src:'/video/Habib-Ayamy.mp4', poster:'/images/thumbnails/thumb-1.png'},
+              {title:'Bruno Fernandes | Bruno Cut', src:'/video/Man-U.mp4', poster:'/images/thumbnails/thumb-6.png'}
             ],
             lede:'باقة إيليت بسعر 1200 ج للفيديو.' + TAIL }
   };
   var tierToPlanet = { basic:'earth', pro:'venus', elite:'mars' };
 
-  var sky = document.querySelector('.sky');
-  var vids = {};
-  document.querySelectorAll('.sky video').forEach(function(v){ vids[v.dataset.planet] = v; });
   var titleLine = document.querySelector('h1.title .ent-line');
   var lede = document.querySelector('p.lede');
-  var slots = [
-    { btn: document.querySelector('.planet-l'), label: document.querySelector('.label-l') },
-    { btn: document.querySelector('.planet-r'), label: document.querySelector('.label-r') }
-  ];
-  slots.forEach(function(s){ s.imgs = Array.prototype.slice.call(s.btn.querySelectorAll('img')); });
   var current = null;
-  var sampleName = document.getElementById('packageSampleName');
-  var sampleGrid = document.getElementById('packageSampleGrid');
+  var reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var ambient = {
+    step: 0,
+    timer: null,
+    panes: [
+      { videos: [document.getElementById('ambientLeftA'), document.getElementById('ambientLeftB')], active: 0 },
+      { videos: [document.getElementById('ambientRightA'), document.getElementById('ambientRightB')], active: 0 }
+    ]
+  };
 
-  function renderSamples(next){
-    if (!sampleGrid || !P[next].samples) return;
-    sampleGrid.innerHTML = P[next].samples.map(function(sample){
-      return '<figure class="sample-video">' +
-        '<video controls preload="metadata" playsinline poster="' + sample.poster + '" src="' + sample.src + '"></video>' +
-        '<figcaption>' + sample.title + '</figcaption>' +
-      '</figure>';
-    }).join('');
+  function playAmbient(video){
+    if (!video || reduceMotion) return;
+    var promise = video.play();
+    if (promise && promise.catch) promise.catch(function(){});
   }
+
+  function crossfadePane(pane, sample){
+    if (!pane || !sample) return;
+    var outgoing = pane.videos[pane.active];
+    var incoming = pane.videos[1 - pane.active];
+    if (incoming.dataset.sampleSrc === sample.src) return;
+    incoming.dataset.sampleSrc = sample.src;
+    incoming.poster = sample.poster || '';
+    incoming.src = sample.src;
+    incoming.load();
+    playAmbient(incoming);
+    incoming.classList.add('is-active');
+    if (outgoing){
+      outgoing.classList.remove('is-active');
+      setTimeout(function(){
+        if (!outgoing.classList.contains('is-active')){
+          outgoing.pause();
+          outgoing.removeAttribute('src');
+          outgoing.removeAttribute('poster');
+          outgoing.dataset.sampleSrc = '';
+          outgoing.load();
+        }
+      }, 1450);
+    }
+    pane.active = 1 - pane.active;
+  }
+
+  function crossfadeAmbient(next){
+    var samples = P[next].samples;
+    crossfadePane(ambient.panes[0], samples[ambient.step % samples.length]);
+    crossfadePane(ambient.panes[1], samples[(ambient.step + 1) % samples.length]);
+  }
+
+  function cycleAmbient(){
+    if (!current || document.hidden || reduceMotion) return;
+    ambient.step = (ambient.step + 1) % P[current].samples.length;
+    crossfadeAmbient(current);
+  }
+
+  function setAmbient(next){
+    ambient.step = 0;
+    if (ambient.timer) clearInterval(ambient.timer);
+    if (!reduceMotion){
+      crossfadeAmbient(next);
+      ambient.timer = setInterval(cycleAmbient, 7500);
+    }
+  }
+
+  document.addEventListener('visibilitychange', function(){
+    if (!document.hidden && current) cycleAmbient();
+  });
 
   function show(next){
     if (!P[next] || next === current) return;
     current = next;
-    ORDER.forEach(function(k){
-      var v = vids[k];
-      if (k === next){
-        if (!v.getAttribute('src') && v.dataset.src) v.src = v.dataset.src;
-        v.classList.add('is-active');
-        var pr = v.play(); if (pr && pr.catch) pr.catch(function(){});
-      } else {
-        v.classList.remove('is-active'); v.pause();
-      }
-    });
-    sky.style.backgroundImage = 'url(' + P[next].still + ')';
     titleLine.textContent = P[next].name;
     lede.innerHTML = P[next].lede;
-    if (sampleName) sampleName.textContent = P[next].sampleTitle;
-    renderSamples(next);
-    var rest = ORDER.filter(function(k){ return k !== next; });
-    slots.forEach(function(s, i){
-      var k = rest[i];
-      s.imgs.forEach(function(img){ img.classList.toggle('is-shown', img.dataset.planet === k); });
-      s.btn.dataset.planet = k;
-      s.btn.setAttribute('aria-label', 'Show ' + P[k].name);
-      s.label.textContent = P[k].name;
-    });
     document.dispatchEvent(new CustomEvent('planetchange', { detail: next }));
     var radio = document.querySelector('input[name="tier"][value="' + P[next].tier + '"]');
     if (radio) radio.checked = true;
     calculate();
+    setAmbient(next);
   }
-
-  function warm(k){
-    var v = vids[k];
-    if (v && !v.getAttribute('src') && v.dataset.src){ v.preload = 'auto'; v.src = v.dataset.src; v.load(); }
-  }
-  slots.forEach(function(s){
-    s.btn.addEventListener('click', function(){ show(this.dataset.planet); });
-    s.btn.addEventListener('pointerenter', function(){ warm(this.dataset.planet); });
-    s.btn.addEventListener('focus', function(){ warm(this.dataset.planet); });
-  });
 
   document.querySelectorAll('input[name="tier"]').forEach(function(r){
     r.addEventListener('change', function(){ show(tierToPlanet[r.value]); });
-  });
-
-  var warmAll = function(){ ORDER.forEach(warm); };
-  window.addEventListener('load', function(){
-    if ('requestIdleCallback' in window) requestIdleCallback(warmAll, { timeout: 4000 });
-    else setTimeout(warmAll, 2500);
   });
 
   document.querySelector('.scroll').addEventListener('click', function(){
@@ -1492,109 +1498,20 @@ calculate();
   var html=document.documentElement, stage=document.querySelector('.stage'), ui=document.querySelector('.ui'), sky=document.querySelector('.sky');
   var reduce=window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ---- procedural textures (baked to PNG once so the full-page planet stays cheap) ---- */
-  function noiseSvg(o){
-    return "<svg xmlns='http://www.w3.org/2000/svg' width='1024' height='512' viewBox='0 0 512 256'><filter id='f' x='0' y='0' width='100%' height='100%' color-interpolation-filters='sRGB'><feTurbulence type='fractalNoise' baseFrequency='"+o.fx+" "+o.fy+"' numOctaves='"+o.oct+"' seed='"+o.seed+"' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 "+o.rgb[0]+" 0 0 0 0 "+o.rgb[1]+" 0 0 0 0 "+o.rgb[2]+" "+o.a+" 0 0 0 "+o.off+"'/></filter><rect width='512' height='256' filter='url(#f)'/></svg>";
-  }
-  function bake(name,o){
-    var url='data:image/svg+xml,'+encodeURIComponent(noiseSvg(o));
-    html.style.setProperty(name,'url("'+url+'")');
-    var img=new Image();
-    img.onload=function(){
-      try{
-        var c=document.createElement('canvas'); c.width=1024; c.height=512;
-        c.getContext('2d').drawImage(img,0,0,1024,512);
-        html.style.setProperty(name,'url("'+c.toDataURL('image/png')+'")');
-      }catch(e){}
-    };
-    img.src=url;
-  }
-  bake('--t-earth-1',{fx:.011,fy:.022,seed:7,oct:5,rgb:[.22,.52,.26],a:9,off:-4.55});
-  bake('--t-earth-2',{fx:.008,fy:.035,seed:3,oct:4,rgb:[1,1,1],a:6.5,off:-3.0});
-  bake('--t-venus-1',{fx:.003,fy:.06,seed:11,oct:4,rgb:[.99,.92,.72],a:5,off:-2.1});
-  bake('--t-venus-2',{fx:.006,fy:.09,seed:5,oct:4,rgb:[.86,.46,.14],a:5,off:-2.2});
-  bake('--t-mars-1',{fx:.014,fy:.026,seed:21,oct:5,rgb:[.30,.12,.07],a:8,off:-3.7});
-  bake('--t-mars-2',{fx:.02,fy:.03,seed:9,oct:4,rgb:[.97,.72,.52],a:6,off:-3.1});
-
-  /* ---- is the remote artwork reachable? ---- */
-  var probe=new Image(), probed=false;
-  probe.onload=function(){probed=true; html.classList.remove('no-assets');};
-  probe.onerror=function(){html.classList.add('no-assets');};
-  setTimeout(function(){ if(!probed) html.classList.add('no-assets'); },4000);
-  probe.src='https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260827_202005_3346cc4d-ec3b-44ab-825c-b18e49f5021a.png';
-
-  var hasVideo=false;
-  document.querySelectorAll('.sky video').forEach(function(v){
-    v.addEventListener('playing',function(){ if(v.classList.contains('is-active')) hasVideo=true; });
-  });
-
-  /* ---- package change: tint, big planet, text swap ---- */
+  /* ---- package change: tint and text swap ---- */
   var TINT={earth:'70,150,255',venus:'255,154,60',mars:'255,96,56'};
   var titleLine=document.querySelector('h1.title .ent-line'), lede=document.querySelector('p.lede'),
-      labels=document.querySelectorAll('.label'), ruleSpan=document.querySelector('.rule span');
+      ruleSpan=document.querySelector('.rule span');
   var first=true;
   function pop(el,cls){ if(!el) return; el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
   function sync(k){
     html.style.setProperty('--tint-rgb',TINT[k]);
-    document.querySelectorAll('.big-orb .orb').forEach(function(o){ o.classList.toggle('is-featured',o.dataset.planet===k); });
-    document.querySelectorAll('.planet').forEach(function(b){
-      b.querySelectorAll('.orb').forEach(function(o){ o.classList.toggle('is-shown',o.dataset.planet===b.dataset.planet); });
-    });
     if(!first && !reduce){
-      pop(titleLine,'swap-in'); pop(lede,'swap-fade');
-      labels.forEach(function(l){ pop(l,'swap-fade'); });
-      pop(ruleSpan,'rule-redraw');
+      pop(titleLine,'swap-in'); pop(lede,'swap-fade'); pop(ruleSpan,'rule-redraw');
     }
   }
   document.addEventListener('planetchange',function(e){ sync(e.detail); });
   sync('venus'); first=false;
-
-  /* ---- starfield + pointer parallax ---- */
-  var cv=document.getElementById('stars'), cx=cv.getContext('2d'), W=0,H=0,stars=[],shoot=null,nextShoot=3000;
-  var COLORS=['#ffffff','#cfe6ff','#ffe9c9'];
-  function resize(){
-    var dpr=Math.min(window.devicePixelRatio||1,2);
-    W=window.innerWidth; H=window.innerHeight;
-    cv.width=W*dpr; cv.height=H*dpr; cx.setTransform(dpr,0,0,dpr,0,0);
-    var n=Math.round(W*H/5200); stars=[];
-    for(var i=0;i<n;i++) stars.push({x:Math.random()*W,y:Math.random()*H,z:Math.random(),p:Math.random()*6.28,s:.5+Math.random()*1.5,c:COLORS[(Math.random()*3)|0]});
-    if(reduce) draw(0);
-  }
-  var tx=0,ty=0,mx=0,my=0,lastPtr=-1e9;
-  window.addEventListener('pointermove',function(e){ tx=(e.clientX/window.innerWidth-.5)*2; ty=(e.clientY/window.innerHeight-.5)*2; lastPtr=performance.now(); },{passive:true});
-  function draw(t){
-    if(!reduce){
-      if(t-lastPtr>3000){ tx=Math.sin(t/5200)*.55; ty=Math.cos(t/6300)*.35; }
-      mx+=(tx-mx)*.05; my+=(ty-my)*.05;
-      html.style.setProperty('--mx',mx.toFixed(3)); html.style.setProperty('--my',my.toFixed(3));
-    }
-    var covered=true;
-    if(!covered && !document.hidden){
-      cx.clearRect(0,0,W,H);
-      for(var i=0;i<stars.length;i++){
-        var s=stars[i];
-        if(!reduce){ s.x-=.03+s.z*.16; if(s.x<-2) s.x=W+2; }
-        var tw=reduce?1:.6+.4*Math.sin(t/700*s.s+s.p);
-        cx.globalAlpha=(.25+s.z*.75)*tw; cx.fillStyle=s.c;
-        cx.beginPath(); cx.arc(s.x+mx*s.z*16,s.y+my*s.z*10,.35+s.z*1.1,0,6.283); cx.fill();
-      }
-      if(!reduce){
-        if(!shoot && t>nextShoot){ shoot={x:Math.random()*W*.8+W*.1,y:Math.random()*H*.35,vx:-(6+Math.random()*4),vy:3+Math.random()*2,l:0}; nextShoot=t+5000+Math.random()*7000; }
-        if(shoot){
-          shoot.x+=shoot.vx; shoot.y+=shoot.vy; shoot.l++;
-          var ex=shoot.x-shoot.vx*9, ey=shoot.y-shoot.vy*9, g=cx.createLinearGradient(shoot.x,shoot.y,ex,ey);
-          g.addColorStop(0,'rgba(255,255,255,.9)'); g.addColorStop(1,'rgba(255,255,255,0)');
-          cx.globalAlpha=1; cx.strokeStyle=g; cx.lineWidth=1.6; cx.beginPath(); cx.moveTo(shoot.x,shoot.y); cx.lineTo(ex,ey); cx.stroke();
-          if(shoot.l>70||shoot.x<-60||shoot.y>H+60) shoot=null;
-        }
-      }
-      cx.globalAlpha=1;
-    }
-    if(!reduce) requestAnimationFrame(draw);
-  }
-  window.addEventListener('resize',resize);
-  resize();
-  if(!reduce) requestAnimationFrame(draw);
 
   /* ---- hero fades/zooms as you scroll down ---- */
   if(!reduce){
