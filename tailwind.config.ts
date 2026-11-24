@@ -42,10 +42,15 @@ const config: Config = {
           "0%, 100%": { opacity: "0.4" },
           "50%": { opacity: "1" },
         },
+        blink: {
+          "0%, 45%": { opacity: "1" },
+          "50%, 100%": { opacity: "0.2" },
+        },
       },
       animation: {
         marquee: "marquee 30s linear infinite",
         pulseGlow: "pulseGlow 3s ease-in-out infinite",
+        blink: "blink 1.15s ease-in-out infinite",
       },
     },
   },

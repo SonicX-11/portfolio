@@ -65,6 +65,42 @@ const FadeIn: React.FC<FadeInProps> = ({
   );
 };
 
+function MobileCarouselControls({
+  onScroll,
+  className = "",
+  tone = "dark",
+}: {
+  onScroll: (direction: "left" | "right") => void;
+  className?: string;
+  tone?: "dark" | "light";
+}) {
+  const buttonClass =
+    tone === "light"
+      ? "bg-black/5 border-black/15 text-[#0C0C0C] hover:bg-[#B600A8] hover:border-[#B600A8] hover:text-white"
+      : "bg-white/5 border-white/15 text-white hover:bg-[#B600A8] hover:border-[#B600A8]";
+
+  return (
+    <div className={`mt-5 flex items-center justify-center gap-3 ${className}`}>
+      <button
+        type="button"
+        onClick={() => onScroll("left")}
+        className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all text-sm active:scale-95 shadow-md cursor-pointer ${buttonClass}`}
+        aria-label="Scroll section left"
+      >
+        ←
+      </button>
+      <button
+        type="button"
+        onClick={() => onScroll("right")}
+        className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all text-sm active:scale-95 shadow-md cursor-pointer ${buttonClass}`}
+        aria-label="Scroll section right"
+      >
+        →
+      </button>
+    </div>
+  );
+}
+
 function CountUp({ target, suffix = "+" }: { target: number; suffix?: string }) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
@@ -466,15 +502,31 @@ export default function Home() {
 
   const modalVideoRef = useRef<HTMLVideoElement>(null);
   const highlightsScrollRef = useRef<HTMLDivElement>(null);
+  const videosScrollRef = useRef<HTMLDivElement>(null);
+  const reviewsScrollRef = useRef<HTMLDivElement>(null);
+  const thumbnailsScrollRef = useRef<HTMLDivElement>(null);
+  const servicesScrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollCarousel = (
+    ref: React.RefObject<HTMLDivElement | null>,
+    direction: "left" | "right"
+  ) => {
+    const container = ref.current;
+    if (!container) return;
+
+    const firstCard = container.querySelector<HTMLElement>(":scope > *");
+    const scrollDistance = firstCard
+      ? firstCard.getBoundingClientRect().width + 20
+      : container.clientWidth * 0.8;
+
+    container.scrollBy({
+      left: direction === "left" ? -scrollDistance : scrollDistance,
+      behavior: "smooth",
+    });
+  };
 
   const scrollHighlights = (direction: "left" | "right") => {
-    if (highlightsScrollRef.current) {
-      const scrollDistance = highlightsScrollRef.current.clientWidth * 0.75;
-      highlightsScrollRef.current.scrollBy({
-        left: direction === "left" ? -scrollDistance : scrollDistance,
-        behavior: "smooth",
-      });
-    }
+    scrollCarousel(highlightsScrollRef, direction);
   };
 
   // --- SMOOTH SCROLL HANDLER ---
@@ -1122,6 +1174,13 @@ export default function Home() {
               </div>
             </FadeIn>
 
+            {isVideoMenuOpen && (
+              <MobileCarouselControls
+                onScroll={(direction) => scrollCarousel(videosScrollRef, direction)}
+                className="sm:hidden"
+              />
+            )}
+
             <AnimatePresence>
               {isVideoMenuOpen && (
                 <motion.div
@@ -1130,7 +1189,8 @@ export default function Home() {
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.35 }}
-                  className="mt-8 flex snap-x snap-mandatory gap-5 overflow-x-auto overflow-y-hidden pb-4 no-scrollbar sm:mt-10 sm:grid sm:grid-cols-2 sm:gap-8 sm:overflow-visible sm:pb-0 lg:grid-cols-3"
+                  ref={videosScrollRef}
+                  className="mt-8 flex snap-x snap-mandatory gap-5 overflow-x-auto overflow-y-hidden pb-4 no-scrollbar scroll-smooth sm:mt-10 sm:grid sm:grid-cols-2 sm:gap-8 sm:overflow-visible sm:pb-0 lg:grid-cols-3"
                 >
                   {filteredVideos.map((item, idx) => (
                     <FadeIn key={item.id} delay={idx * 0.05} className="w-[82vw] max-w-[360px] shrink-0 snap-center sm:w-auto sm:max-w-none sm:shrink">
@@ -1156,7 +1216,7 @@ export default function Home() {
                           </div>
                         </div>
 
-                        <div className="p-3.5 flex items-start justify-between gap-4">
+                        <div className="p-3.5 flex flex-col items-center gap-2 text-center sm:flex-row sm:items-start sm:justify-between sm:gap-4 sm:text-left">
                           <div>
                             <span className="text-[10px] font-mono uppercase tracking-wider text-[#B600A8] font-bold">
                               {item.category}
@@ -1182,17 +1242,22 @@ export default function Home() {
         {/* --- REVIEWS --- */}
         <section id="reviews" className="py-24 px-6 md:px-12 bg-[#0A0A0A] border-t border-white/5">
           <div className="max-w-6xl mx-auto">
-            <FadeIn delay={0} y={30} className="text-center mb-16">
+            <FadeIn delay={0} y={30} className="text-center mb-8 md:mb-16">
               <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">Testimonials</span>
               <h2 className="hero-heading font-black uppercase text-4xl sm:text-6xl md:text-7xl mt-2">Client Messages</h2>
             </FadeIn>
 
-            <div className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 no-scrollbar md:grid md:grid-cols-2 md:gap-8 md:overflow-visible md:pb-0">
+            <MobileCarouselControls
+              onScroll={(direction) => scrollCarousel(reviewsScrollRef, direction)}
+              className="mb-6 md:hidden"
+            />
+
+            <div ref={reviewsScrollRef} className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 no-scrollbar scroll-smooth md:grid md:grid-cols-2 md:gap-8 md:overflow-visible md:pb-0">
               {clientReviews.map((rev, idx) => (
                 <FadeIn key={idx} delay={idx * 0.1} className="w-[84vw] max-w-[420px] shrink-0 snap-center md:w-auto md:max-w-none md:shrink">
-                  <div className="p-8 rounded-[32px] bg-white/[0.03] backdrop-blur-2xl border border-white/10 flex flex-col justify-between h-full shadow-2xl">
+                  <div className="p-8 rounded-[32px] bg-white/[0.03] backdrop-blur-2xl border border-white/10 flex flex-col justify-between h-full shadow-2xl text-center md:text-left">
                     <div>
-                      <div className="flex justify-between items-center mb-4">
+                      <div className="flex justify-center items-center mb-4 md:justify-between">
                         <span className="text-[#B600A8] text-sm tracking-widest font-mono">{rev.rating}</span>
                         <span className="text-3xl text-white/20 font-serif leading-none">“</span>
                       </div>
@@ -1201,7 +1266,7 @@ export default function Home() {
                       </p>
                     </div>
 
-                    <div className="pt-4 border-t border-white/10 flex items-center gap-3">
+                    <div className="pt-4 border-t border-white/10 flex items-center justify-center gap-3 md:justify-start">
                       <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#B600A8] to-[#7621B0] flex items-center justify-center font-bold text-white text-sm shadow-md">
                         {rev.client.charAt(0)}
                       </div>
@@ -1247,7 +1312,8 @@ export default function Home() {
                       animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
                       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                      className="mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto overflow-y-hidden pb-4 no-scrollbar sm:grid sm:grid-cols-2 sm:gap-8 sm:overflow-visible sm:pb-0 lg:grid-cols-3"
+                      ref={thumbnailsScrollRef}
+                      className="mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto overflow-y-hidden pb-4 no-scrollbar scroll-smooth sm:grid sm:grid-cols-2 sm:gap-8 sm:overflow-visible sm:pb-0 lg:grid-cols-3"
                     >
                       {thumbnailsData.map((thumb, index) => (
                         <FadeIn key={index} delay={index * 0.1} className="w-[78vw] max-w-[340px] shrink-0 snap-center sm:w-auto sm:max-w-none sm:shrink">
@@ -1261,7 +1327,7 @@ export default function Home() {
                               />
                             </div>
 
-                            <div className="p-5 flex flex-col gap-1 text-left">
+                            <div className="p-5 flex flex-col gap-1 text-center sm:text-left">
                               <span className="text-xs uppercase tracking-widest text-[#B600A8] font-medium">{thumb.category}</span>
                               <h3 className="text-[#D7E2EA] font-semibold text-lg sm:text-xl">{thumb.title}</h3>
                             </div>
@@ -1272,6 +1338,12 @@ export default function Home() {
                   )}
                 </AnimatePresence>
               </div>
+              {isThumbnailsMenuOpen && (
+                <MobileCarouselControls
+                  onScroll={(direction) => scrollCarousel(thumbnailsScrollRef, direction)}
+                  className="sm:hidden"
+                />
+              )}
             </FadeIn>
           </div>
         </section>
@@ -1280,20 +1352,26 @@ export default function Home() {
         <section id="services" className="bg-white rounded-t-[40px] sm:rounded-t-[60px] px-6 sm:px-10 py-24 text-[#0C0C0C]">
           <div className="max-w-5xl mx-auto">
             <FadeIn delay={0} y={30}>
-              <h2 className="font-black uppercase text-center mb-16 sm:mb-24 text-4xl sm:text-6xl md:text-7xl text-[#0C0C0C]">
+              <h2 className="font-black uppercase text-center mb-8 sm:mb-12 md:mb-24 text-4xl sm:text-6xl md:text-7xl text-[#0C0C0C]">
                 Services
               </h2>
             </FadeIn>
 
-            <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 no-scrollbar md:flex md:flex-col md:gap-0 md:overflow-visible md:pb-0">
+            <MobileCarouselControls
+              onScroll={(direction) => scrollCarousel(servicesScrollRef, direction)}
+              className="mb-6 md:hidden"
+              tone="light"
+            />
+
+            <div ref={servicesScrollRef} className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 no-scrollbar scroll-smooth md:flex md:flex-col md:gap-0 md:overflow-visible md:pb-0">
               {servicesList.map((item, index) => (
                 <FadeIn key={item.num} delay={index * 0.1} className="w-[82vw] max-w-[360px] shrink-0 snap-center md:w-full md:max-w-none md:shrink">
-                  <div className="flex h-full flex-col items-start justify-between gap-4 rounded-[28px] border border-[rgba(12,12,12,0.15)] bg-white p-6 shadow-sm sm:gap-10 md:h-auto md:flex-row md:items-center md:rounded-none md:border-0 md:border-t md:bg-transparent md:p-0 md:py-10 md:shadow-none">
+                  <div className="flex h-full flex-col items-center justify-between gap-4 rounded-[28px] border border-[rgba(12,12,12,0.15)] bg-white p-6 text-center shadow-sm sm:gap-10 md:h-auto md:flex-row md:items-center md:rounded-none md:border-0 md:border-t md:bg-transparent md:p-0 md:py-10 md:text-left md:shadow-none">
                     <span className="font-black text-[#0C0C0C] text-5xl sm:text-7xl leading-none shrink-0">
                       {item.num}
                     </span>
 
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col items-center gap-2 md:items-start">
                       <h3 className="font-bold uppercase text-xl sm:text-2xl text-[#0C0C0C]">{item.name}</h3>
                       <p className="font-normal leading-relaxed max-w-2xl text-[#0C0C0C]/70 text-sm sm:text-base">{item.desc}</p>
                     </div>

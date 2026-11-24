@@ -120,31 +120,33 @@ export default function PricingPage() {
             {packagesData.map((pkg) => (
               <article
                 key={pkg.id}
-                className={`relative flex w-[86vw] max-w-[420px] shrink-0 snap-center flex-col justify-between rounded-[36px] p-8 backdrop-blur-2xl transition-all duration-300 lg:w-full lg:max-w-none lg:shrink ${
+                className={`relative flex w-[86vw] max-w-[420px] shrink-0 snap-center flex-col justify-between rounded-[36px] p-8 text-center backdrop-blur-2xl transition-all duration-300 lg:w-full lg:max-w-none lg:shrink ${
                   pkg.featured
                     ? "border-2 border-[#B600A8] bg-gradient-to-b from-[#18011F]/90 to-[#121212]/90 shadow-[0_0_40px_rgba(182,0,168,0.25)]"
                     : "border border-white/10 bg-white/[0.03] shadow-2xl hover:border-white/25"
                 }`}
               >
                 {pkg.featured && (
-                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-[#B600A8] px-4 py-1 text-[11px] font-bold uppercase tracking-widest text-white shadow-lg">
+                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 animate-blink whitespace-nowrap rounded-full bg-[#B600A8] px-5 py-1.5 text-xs font-black uppercase tracking-widest text-white shadow-[0_0_20px_rgba(182,0,168,0.55)] sm:text-sm">
                     Most Popular
                   </span>
                 )}
 
                 <div>
-                  <div className="mb-4 flex items-start justify-between">
+                  <div className="mb-4 flex flex-col items-center gap-1">
+                    <span className="font-mono text-xs font-bold text-white/35">{pkg.id}</span>
                     <div>
                       <h2 className="text-2xl font-bold text-white">{pkg.name}</h2>
                       <p className="mt-1 text-sm text-[#D7E2EA]/70">{pkg.subtitle}</p>
                     </div>
-                    <span className="font-mono text-lg font-bold text-white/30">{pkg.id}</span>
                   </div>
 
                   <div className="my-6 border-b border-white/10 pb-6">
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-4xl font-black text-white sm:text-5xl">{pkg.priceEGP}</span>
-                      <span className="text-sm font-medium uppercase tracking-wider text-[#D7E2EA]/60">
+                    <div className="flex flex-wrap items-baseline justify-center gap-x-2 gap-y-1">
+                      <span className="whitespace-nowrap text-4xl font-black text-white sm:text-5xl lg:text-[2.6rem] xl:text-5xl">
+                        {pkg.priceEGP}
+                      </span>
+                      <span className="whitespace-nowrap text-sm font-medium uppercase tracking-wider text-[#D7E2EA]/60">
                         / Video
                       </span>
                     </div>
@@ -155,7 +157,7 @@ export default function PricingPage() {
                     {pkg.features.map((feature) => (
                       <li
                         key={feature}
-                        className="flex items-start gap-3 text-sm font-light leading-relaxed text-[#D7E2EA]/80"
+                        className="flex items-start justify-center gap-2 text-center text-sm font-light leading-relaxed text-[#D7E2EA]/80"
                       >
                         <span className="mt-0.5 inline-block select-none text-base text-[#B600A8]">✦</span>
                         <span>{feature}</span>
@@ -192,7 +194,7 @@ export default function PricingPage() {
           </div>
 
           <div className="rounded-[36px] border border-white/10 bg-white/[0.02] p-8 shadow-2xl backdrop-blur-2xl sm:p-12">
-            <div className="mb-8 flex items-center gap-3">
+            <div className="mb-8 flex flex-col items-center gap-2 text-center">
               <span className="text-xl text-[#B600A8]">✦</span>
               <h2 className="text-2xl font-bold uppercase tracking-wide">General Terms</h2>
             </div>
@@ -204,11 +206,11 @@ export default function PricingPage() {
                     index === 0 ? "border-[#B600A8]/30 bg-[#B600A8]/5 md:col-span-2" : ""
                   }`}
                 >
-                  <h3 className="mb-2 flex items-center gap-2 text-lg font-semibold text-white">
+                  <h3 className="mb-2 flex flex-wrap items-center justify-center gap-2 text-center text-lg font-semibold text-white">
                     <span className="font-mono text-xs text-[#B600A8]">0{index + 1}.</span>
                     {term.title}
                   </h3>
-                  <p className="text-sm font-light leading-relaxed text-[#D7E2EA]/70">{term.desc}</p>
+                  <p className="text-center text-sm font-light leading-relaxed text-[#D7E2EA]/70">{term.desc}</p>
                 </div>
               ))}
             </div>
