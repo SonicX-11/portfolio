@@ -759,8 +759,8 @@ export default function Home() {
 
           {/* Navigation Bar with Smooth Scroll */}
           <FadeIn delay={0} y={-20} className="w-full z-30">
-            <nav className="flex justify-between items-center px-6 md:px-10 py-4 md:py-5 mt-4 mx-4 md:mx-10 rounded-3xl bg-white/[0.03] backdrop-blur-2xl border border-white/10 text-xs md:text-sm font-medium tracking-wider uppercase gap-6 shadow-2xl">
-              <div className="flex gap-4 sm:gap-7 items-center flex-wrap">
+            <nav className="flex flex-col items-stretch gap-4 px-4 py-4 mt-4 mx-4 rounded-3xl bg-white/[0.03] backdrop-blur-2xl border border-white/10 text-[10px] sm:text-xs md:text-sm font-medium tracking-wider uppercase shadow-2xl sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-6 md:px-10 md:py-5">
+              <div className="grid grid-cols-3 gap-x-2 gap-y-3 text-center sm:flex sm:gap-7 sm:items-center">
                 <a
                   href="#about"
                   onClick={(e) => handleScrollTo(e, "#about")}
@@ -810,7 +810,7 @@ export default function Home() {
                 </a>
               </div>
 
-              <div className="flex items-center gap-3 shrink-0">
+              <div className="hidden items-center gap-3 shrink-0 sm:flex">
                 <a href="https://www.instagram.com/ebrahimfadel_8/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all">
                   <InstagramIcon />
                 </a>
@@ -1130,10 +1130,10 @@ export default function Home() {
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.35 }}
-                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-10 overflow-hidden"
+                  className="mt-8 flex snap-x snap-mandatory gap-5 overflow-x-auto overflow-y-hidden pb-4 no-scrollbar sm:mt-10 sm:grid sm:grid-cols-2 sm:gap-8 sm:overflow-visible sm:pb-0 lg:grid-cols-3"
                 >
                   {filteredVideos.map((item, idx) => (
-                    <FadeIn key={item.id} delay={idx * 0.05}>
+                    <FadeIn key={item.id} delay={idx * 0.05} className="w-[82vw] max-w-[360px] shrink-0 snap-center sm:w-auto sm:max-w-none sm:shrink">
                       <div
                         onClick={() => openModal(item)}
                         className="bg-white/[0.04] backdrop-blur-2xl border border-white/15 rounded-[28px] overflow-hidden p-3 sm:p-3.5 shadow-2xl flex flex-col justify-between h-full group hover:border-[#B600A8]/60 transition-all cursor-pointer"
@@ -1187,9 +1187,9 @@ export default function Home() {
               <h2 className="hero-heading font-black uppercase text-4xl sm:text-6xl md:text-7xl mt-2">Client Messages</h2>
             </FadeIn>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+            <div className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 no-scrollbar md:grid md:grid-cols-2 md:gap-8 md:overflow-visible md:pb-0">
               {clientReviews.map((rev, idx) => (
-                <FadeIn key={idx} delay={idx * 0.1}>
+                <FadeIn key={idx} delay={idx * 0.1} className="w-[84vw] max-w-[420px] shrink-0 snap-center md:w-auto md:max-w-none md:shrink">
                   <div className="p-8 rounded-[32px] bg-white/[0.03] backdrop-blur-2xl border border-white/10 flex flex-col justify-between h-full shadow-2xl">
                     <div>
                       <div className="flex justify-between items-center mb-4">
@@ -1247,10 +1247,10 @@ export default function Home() {
                       animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
                       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-10 overflow-hidden"
+                      className="mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto overflow-y-hidden pb-4 no-scrollbar sm:grid sm:grid-cols-2 sm:gap-8 sm:overflow-visible sm:pb-0 lg:grid-cols-3"
                     >
                       {thumbnailsData.map((thumb, index) => (
-                        <FadeIn key={index} delay={index * 0.1}>
+                        <FadeIn key={index} delay={index * 0.1} className="w-[78vw] max-w-[340px] shrink-0 snap-center sm:w-auto sm:max-w-none sm:shrink">
                           <div className="bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[28px] overflow-hidden shadow-2xl group hover:border-[#B600A8]/50 transition-colors duration-300">
                             <div className="w-full aspect-[4/5] overflow-hidden bg-black/50">
                               <img
@@ -1285,10 +1285,10 @@ export default function Home() {
               </h2>
             </FadeIn>
 
-            <div className="flex flex-col">
+            <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 no-scrollbar md:flex md:flex-col md:gap-0 md:overflow-visible md:pb-0">
               {servicesList.map((item, index) => (
-                <FadeIn key={item.num} delay={index * 0.1}>
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-t border-[rgba(12,12,12,0.15)] py-8 sm:py-10 gap-4 sm:gap-10">
+                <FadeIn key={item.num} delay={index * 0.1} className="w-[82vw] max-w-[360px] shrink-0 snap-center md:w-full md:max-w-none md:shrink">
+                  <div className="flex h-full flex-col items-start justify-between gap-4 rounded-[28px] border border-[rgba(12,12,12,0.15)] bg-white p-6 shadow-sm sm:gap-10 md:h-auto md:flex-row md:items-center md:rounded-none md:border-0 md:border-t md:bg-transparent md:p-0 md:py-10 md:shadow-none">
                     <span className="font-black text-[#0C0C0C] text-5xl sm:text-7xl leading-none shrink-0">
                       {item.num}
                     </span>

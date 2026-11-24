@@ -82,11 +82,11 @@ const generalTerms = [
 export default function PricingPage() {
   return (
     <main className="min-h-screen bg-[#0A0A0A] text-white">
-      <nav className="container-x flex h-20 items-center justify-between border-b border-white/5">
-        <Link href="/" className="font-display text-lg tracking-widest text-white">
+      <nav className="container-x flex h-20 items-center justify-between gap-3 border-b border-white/5">
+        <Link href="/" className="whitespace-nowrap font-display text-base tracking-widest text-white sm:text-lg">
           Ebrahim Fadel
         </Link>
-        <div className="flex items-center gap-5 text-xs uppercase tracking-[0.25em] text-white/70">
+        <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.18em] text-white/70 sm:gap-5 sm:text-xs sm:tracking-[0.25em]">
           <Link href="/#videos" className="transition-colors hover:text-white">
             Videos
           </Link>
@@ -113,11 +113,14 @@ export default function PricingPage() {
             </p>
           </div>
 
-          <div className="mb-16 grid grid-cols-1 items-stretch gap-8 lg:grid-cols-3">
+          <p className="mb-4 text-center text-[11px] font-bold uppercase tracking-[0.25em] text-[#D7E2EA]/45 lg:hidden">
+            Swipe to compare packages
+          </p>
+          <div className="mb-16 flex snap-x snap-mandatory items-stretch gap-5 overflow-x-auto pb-5 no-scrollbar lg:grid lg:grid-cols-3 lg:gap-8 lg:overflow-visible lg:pb-0">
             {packagesData.map((pkg) => (
               <article
                 key={pkg.id}
-                className={`relative flex w-full flex-col justify-between rounded-[36px] p-8 backdrop-blur-2xl transition-all duration-300 ${
+                className={`relative flex w-[86vw] max-w-[420px] shrink-0 snap-center flex-col justify-between rounded-[36px] p-8 backdrop-blur-2xl transition-all duration-300 lg:w-full lg:max-w-none lg:shrink ${
                   pkg.featured
                     ? "border-2 border-[#B600A8] bg-gradient-to-b from-[#18011F]/90 to-[#121212]/90 shadow-[0_0_40px_rgba(182,0,168,0.25)]"
                     : "border border-white/10 bg-white/[0.03] shadow-2xl hover:border-white/25"
@@ -193,11 +196,11 @@ export default function PricingPage() {
               <span className="text-xl text-[#B600A8]">✦</span>
               <h2 className="text-2xl font-bold uppercase tracking-wide">General Terms</h2>
             </div>
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 no-scrollbar md:grid md:grid-cols-2 md:gap-6 md:overflow-visible md:pb-0">
               {generalTerms.map((term, index) => (
                 <div
                   key={term.title}
-                  className={`rounded-2xl border border-white/5 bg-white/[0.02] p-6 ${
+                  className={`w-[82vw] max-w-[360px] shrink-0 snap-center rounded-2xl border border-white/5 bg-white/[0.02] p-6 md:w-auto md:max-w-none md:shrink ${
                     index === 0 ? "border-[#B600A8]/30 bg-[#B600A8]/5 md:col-span-2" : ""
                   }`}
                 >
