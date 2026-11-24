@@ -3,9 +3,6 @@
 import React, { useRef, useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence, useSpring, useMotionValue, useInView } from "framer-motion";
 
-// Static payment page served from /public/payment.html
-const PAYMENT_PAGE_URL = "/payment.html";
-
 // --- SVG SOCIAL & SOFTWARE ICONS ---
 
 const InstagramIcon = () => (
@@ -402,79 +399,6 @@ const thumbnailsData = [
   },
 ];
 
-const packagesData = [
-  {
-    id: "01",
-    name: "The Spark Pack",
-    subtitle: "Clean & Fast-Paced Cut",
-    priceUSD: "$10",
-    priceEGP: "500 EGP",
-    featured: false,
-    revisions: "1 Free Revision per video based on feedback",
-    driveLink: "https://drive.google.com/file/d/1Y97S6qk9JqmONHOk-BQcj1XO1piaa0KT/view?usp=drive_link",
-    features: [
-      "Dynamic cutting eliminating dead spaces to ensure fluid rhythm",
-      "Clean, readable, color-coded subtitles matching voice tempo",
-      "Essential Color Correction paired with balanced background music",
-    ],
-  },
-  {
-    id: "02",
-    name: "The Viral Growth",
-    subtitle: "High Retention & Engaging",
-    priceUSD: "$17",
-    priceEGP: "850 EGP",
-    featured: true,
-    revisions: "Up to 2 Revisions per video",
-    driveLink: "https://drive.google.com/file/d/1WtLRXTR_r5RQPndULSfyAwIqst8j7YYX/view?usp=drive_link",
-    features: [
-      "Retention-first pacing calculated to maximize completion rates",
-      "Dynamic Pop-up Subtitles reacting rhythmically to vocal emphasis",
-      "Visual zooms, sound design impacts, risers, and Foley FX",
-      "Supporting B-roll and curated stock footage integration",
-    ],
-  },
-  {
-    id: "03",
-    name: "Cinematic Prime",
-    subtitle: "Commercial & Brand Showcase",
-    priceUSD: "$24",
-    priceEGP: "1,200 EGP",
-    featured: false,
-    revisions: "Up to 3 Revisions per video",
-    driveLink: "https://drive.google.com/file/d/19usAUA3dCWM4rYtLkX557m793uyGFLnW/view?usp=drive_link",
-    features: [
-      "Bespoke cinematic pacing tailored for corporate brands and creators",
-      "Full brand identity adaptation (typography, vectors, palette)",
-      "Dynamic visual framing and pacing elevating core message impact",
-      "Deep cinematic Color Grading + immersive multi-layer sound mastering",
-    ],
-  },
-];
-
-const generalTerms = [
-  {
-    title: "Deposit & Payment Milestones",
-    desc: "A 25% upfront deposit is required prior to project start. The remaining 75% balance is settled upon final approval before delivery of unwatermarked master exports.",
-  },
-  {
-    title: "Short Video Duration",
-    desc: "Listed rates apply specifically to short-form reels and TikToks with a total duration not exceeding 60 seconds.",
-  },
-  {
-    title: "Scheduled Batch Delivery",
-    desc: "Deliveries are organized in clear, pre-scheduled batches agreed in advance to preserve craft precision and streamline production.",
-  },
-  {
-    title: "Revisions Policy",
-    desc: "Please respect the revision allocation per tier. Any additional revision rounds beyond this scope are accommodated at a minor pre-agreed rate.",
-  },
-  {
-    title: "Raw Footage Submission",
-    desc: "Source footage should be uploaded in full native resolution via neatly organized Google Drive or WeTransfer links.",
-  },
-];
-
 const clientReviews = [
   {
     quote: "Lil transformed our raw footage into high-retention commercial reels. The pacing, audio sync, and pop-up subtitles significantly boosted our engagement.",
@@ -528,7 +452,6 @@ const servicesList = [
 // --- MAIN COMPONENT ---
 
 export default function Home() {
-  const [currencyMode, setCurrencyMode] = useState<"ALL" | "USD" | "EGP">("ALL");
   const [selectedVideoTab, setSelectedVideoTab] = useState<"all" | "reels" | "commercial" | "cinematic">("all");
 
   // Accordions state
@@ -859,8 +782,7 @@ export default function Home() {
                   Videos
                 </a>
                 <a
-                  href="#price"
-                  onClick={(e) => handleScrollTo(e, "#price")}
+                  href="/pricing"
                   className="hover:text-[#B600A8] transition-colors cursor-pointer"
                 >
                   Pricing
@@ -1257,165 +1179,6 @@ export default function Home() {
         </section>
 
         {/* --- PRICING --- */}
-        <section id="price" className="py-24 px-5 sm:px-8 md:px-12 bg-[#0A0A0A]">
-          <div className="max-w-6xl mx-auto">
-            <FadeIn delay={0} y={30} className="text-center mb-10">
-              <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
-                Video Editing Packages & Rates
-              </span>
-
-              <h2 className="hero-heading font-black uppercase text-4xl sm:text-6xl md:text-7xl mt-2">
-                Rates & Packages
-              </h2>
-
-              <p className="text-[#D7E2EA]/60 max-w-xl mx-auto mt-3 text-sm sm:text-base font-light">
-                Transparent video production rates in USD and EGP with milestone delivery
-              </p>
-            </FadeIn>
-
-            <FadeIn delay={0.1} y={20} className="flex justify-center mb-16">
-              <div className="inline-flex items-center p-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl font-mono">
-                <button
-                  onClick={() => setCurrencyMode("ALL")}
-                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                    currencyMode === "ALL" ? "bg-[#B600A8] text-white" : "text-white/60 hover:text-white"
-                  }`}
-                >
-                  USD & EGP
-                </button>
-                <button
-                  onClick={() => setCurrencyMode("USD")}
-                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                    currencyMode === "USD" ? "bg-[#B600A8] text-white" : "text-white/60 hover:text-white"
-                  }`}
-                >
-                  USD ($)
-                </button>
-                <button
-                  onClick={() => setCurrencyMode("EGP")}
-                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                    currencyMode === "EGP" ? "bg-[#B600A8] text-white" : "text-white/60 hover:text-white"
-                  }`}
-                >
-                  EGP
-                </button>
-              </div>
-            </FadeIn>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch mb-20">
-              {packagesData.map((pkg, idx) => (
-                <FadeIn key={pkg.id} delay={idx * 0.15} className="flex">
-                  <div
-                    className={`w-full rounded-[36px] p-8 flex flex-col justify-between transition-all duration-300 relative backdrop-blur-2xl ${
-                      pkg.featured
-                        ? "bg-gradient-to-b from-[#18011F]/90 to-[#121212]/90 border-2 border-[#B600A8] shadow-[0_0_40px_rgba(182,0,168,0.25)]"
-                        : "bg-white/[0.03] border border-white/10 hover:border-white/25 shadow-2xl"
-                    }`}
-                  >
-                    {pkg.featured && (
-                      <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#B600A8] text-white text-[11px] font-bold uppercase tracking-widest px-4 py-1 rounded-full shadow-lg">
-                        Most Popular
-                      </span>
-                    )}
-
-                    <div>
-                      <div className="flex justify-between items-start mb-4">
-                        <div>
-                          <h3 className="text-2xl font-bold text-white">{pkg.name}</h3>
-                          <p className="text-[#D7E2EA]/70 text-sm mt-1">{pkg.subtitle}</p>
-                        </div>
-                        <span className="font-mono text-white/30 text-lg font-bold">{pkg.id}</span>
-                      </div>
-
-                      <div className="my-6 pb-6 border-b border-white/10">
-                        <div className="flex items-baseline gap-2">
-                          <span className="text-4xl sm:text-5xl font-black text-white">
-                            {currencyMode === "EGP" ? pkg.priceEGP : pkg.priceUSD}
-                          </span>
-                          <span className="text-sm uppercase tracking-wider text-[#D7E2EA]/60 font-medium">
-                            / Video
-                          </span>
-                        </div>
-                        {currencyMode === "ALL" && (
-                          <div className="text-sm text-[#B600A8] font-bold mt-1">
-                            ≈ {pkg.priceEGP} / Video
-                          </div>
-                        )}
-                      </div>
-
-                      <ul className="space-y-4 mb-8">
-                        {pkg.features.map((feat, i) => (
-                          <li
-                            key={i}
-                            className="flex items-start gap-3 text-sm text-[#D7E2EA]/80 leading-relaxed font-light"
-                          >
-                            <span className="text-[#B600A8] text-base mt-0.5 inline-block select-none">✦</span>
-                            <span>{feat}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    <div className="pt-6 border-t border-white/10 flex flex-col gap-3">
-                      <p className="text-xs text-[#D7E2EA]/50 text-center font-medium font-mono">
-                        {pkg.revisions}
-                      </p>
-
-                      <a
-                        href={pkg.driveLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full text-center py-2.5 rounded-full border border-[#B600A8]/60 hover:bg-[#B600A8]/20 text-xs uppercase font-bold tracking-wider text-[#D7E2EA] transition-colors shadow-md"
-                      >
-                        ▶ Watch Video Sample
-                      </a>
-
-                      <MagneticButton
-                        href={`${PAYMENT_PAGE_URL}?package=${encodeURIComponent(pkg.name)}`}
-                        className={`block w-full text-center rounded-full uppercase tracking-widest font-semibold py-3.5 text-sm transition-all duration-300 cursor-pointer ${
-                          pkg.featured
-                            ? "bg-[#B600A8] hover:bg-[#9d0091] text-white shadow-lg shadow-[#B600A8]/30"
-                            : "border border-white/20 hover:bg-white/10 text-white shadow-md"
-                        }`}
-                      >
-                        Book This Package
-                      </MagneticButton>
-                    </div>
-                  </div>
-                </FadeIn>
-              ))}
-            </div>
-
-            <FadeIn delay={0.2} y={30}>
-              <div className="rounded-[36px] bg-white/[0.02] backdrop-blur-2xl border border-white/10 p-8 sm:p-12 shadow-2xl">
-                <div className="flex items-center gap-3 mb-8">
-                  <span className="text-[#B600A8] text-xl">✦</span>
-                  <h3 className="text-2xl sm:text-3xl font-bold text-white">
-                    General Terms & Production Flow
-                  </h3>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-                  {generalTerms.map((term, i) => (
-                    <div
-                      key={i}
-                      className={`p-6 rounded-2xl bg-white/[0.02] border border-white/5 ${
-                        i === 0 ? "md:col-span-2 border-[#B600A8]/30 bg-[#B600A8]/5" : ""
-                      }`}
-                    >
-                      <h4 className="text-lg font-semibold text-white mb-2 flex items-center gap-2">
-                        <span className="text-xs text-[#B600A8] font-mono">0{i + 1}.</span>
-                        {term.title}
-                      </h4>
-                      <p className="text-sm text-[#D7E2EA]/70 leading-relaxed font-light">{term.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </FadeIn>
-          </div>
-        </section>
-
         {/* --- REVIEWS --- */}
         <section id="reviews" className="py-24 px-6 md:px-12 bg-[#0A0A0A] border-t border-white/5">
           <div className="max-w-6xl mx-auto">
