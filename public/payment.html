@@ -55,7 +55,7 @@ body{background:#020617; color:var(--ink); font-family:var(--font-body);
   -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
   text-rendering:geometricPrecision; overflow-x:hidden; min-height:100%}
 
-/* Full-page ambient package videos: split, blurred, dark, and quiet like the site header. */
+/* Full-page ambient package videos: split, clear enough to read as motion, and kept behind a dark scrim. */
 .ambient-bg{position:fixed; inset:0; z-index:-2; display:flex; overflow:hidden; pointer-events:none;
   background:#020617; isolation:isolate}
 .ambient-pane{position:relative; width:50%; height:100%; overflow:hidden}
@@ -63,7 +63,7 @@ body{background:#020617; color:var(--ink); font-family:var(--font-body);
 .ambient-pane video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
   opacity:0; transform:scale(1.08); filter:blur(3px) contrast(1.08) brightness(.84) saturate(1.05);
   transition:opacity 1.35s ease; will-change:opacity}
-.ambient-pane video.is-active{opacity:.34}
+.ambient-pane video.is-active{opacity:.46}
 .ambient-bg::after{content:""; position:absolute; inset:0; pointer-events:none;
   background:
     linear-gradient(180deg, rgba(2,6,18,.68), rgba(2,6,18,.36) 46%, rgba(2,6,18,.74)),
