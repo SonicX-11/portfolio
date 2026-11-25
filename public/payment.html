@@ -1408,41 +1408,41 @@ function backToForm(){
   }
 
   function activatePane(pane, sample, done){
-    var outgoing = pane.videos[pane.active];
+    var shown = pane.videos.filter(function(v){ return v.classList.contains('is-active'); })[0];
+    if (shown && shown.dataset.sampleSrc === sample.src && pane.pending == null){ if (done) done(); return; }
     var incoming = preparePane(pane, sample);
     if (!incoming) { if (done) done(); return; }
-    var outgoingStill = pane.stills[pane.active];
-    var incomingStill = pane.stills[1 - pane.active];
-    var activated = false;
+    var token = (pane.token = (pane.token || 0) + 1);
+    pane.pending = token;
+    var hadVisible = false;
+    pane.videos.forEach(function(v){
+      if (v !== incoming && v.classList.contains('is-active')){
+        hadVisible = true;
+        v.classList.remove('is-active');
+        setTimeout(function(){ if (!v.classList.contains('is-active')) v.pause(); }, 1000);
+      }
+    });
+    pane.active = pane.videos.indexOf(incoming);
     var revealed = false;
     var reveal = function(){
-      if (revealed) return;
+      if (revealed || pane.token !== token) return;
       revealed = true;
-      incoming.classList.add('is-active');
-      playAmbient(incoming);
-    };
-    var finish = function(){
-      if (activated) return;
-      activated = true;
-      if (incomingStill) incomingStill.classList.add('is-active');
-      if (outgoingStill) outgoingStill.classList.remove('is-active');
-      if (outgoing){
-        outgoing.classList.remove('is-active');
-        setTimeout(function(){
-          if (!outgoing.classList.contains('is-active')) outgoing.pause();
-        }, 1450);
-      }
-      pane.active = 1 - pane.active;
-      var revealLater = function(){ setTimeout(reveal, outgoing && outgoing.classList.contains('is-active') === false && outgoing.currentSrc ? 850 : 0); };
-      if (incoming.readyState >= 2) revealLater();
-      else {
-        incoming.addEventListener('loadeddata', revealLater, { once:true });
-        incoming.addEventListener('canplay', revealLater, { once:true });
+      pane.pending = null;
+      // wait for the old clip to finish fading out so two clips never show together
+      setTimeout(function(){
+        if (pane.token !== token) return;
+        incoming.classList.add('is-active');
         playAmbient(incoming);
-      }
-      if (done) done();
+      }, hadVisible ? 850 : 0);
     };
-    finish();
+    if (incoming.readyState >= 2) reveal();
+    else {
+      incoming.addEventListener('loadeddata', reveal, { once:true });
+      incoming.addEventListener('canplay', reveal, { once:true });
+      playAmbient(incoming);
+      setTimeout(reveal, 4500);
+    }
+    if (done) done();
   }
 
   function prefetchAmbient(next){
