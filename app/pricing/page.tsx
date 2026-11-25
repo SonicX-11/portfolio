@@ -82,7 +82,7 @@ const generalTerms = [
 export default function PricingPage() {
   return (
     <main className="min-h-screen bg-[#0A0A0A] text-white">
-      <nav className="container-x flex h-20 items-center justify-between gap-3 border-b border-white/5">
+      <nav className="mx-auto w-full max-w-6xl px-5 sm:px-8 flex h-20 items-center justify-between gap-3 border-b border-white/5">
         <Link href="/" className="whitespace-nowrap font-display text-base tracking-widest text-white sm:text-lg">
           Ebrahim Fadel
         </Link>

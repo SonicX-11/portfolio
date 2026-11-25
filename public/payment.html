@@ -58,11 +58,12 @@ body{background:#020617; color:var(--ink); font-family:var(--font-body);
 /* Full-page ambient package videos: split, clear enough to read as motion, and kept behind a dark scrim. */
 .ambient-bg{position:fixed; inset:0; z-index:-2; display:flex; overflow:hidden; pointer-events:none;
   background:#020617; isolation:isolate}
-.ambient-pane{position:relative; width:50%; height:100%; overflow:hidden}
+.ambient-pane{position:relative; width:100%; height:100%; overflow:hidden}
+.ambient-pane + .ambient-pane{display:none}
 .ambient-pane:first-child{border-right:1px solid rgba(255,255,255,.06)}
 .ambient-pane video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
   opacity:0; transform:scale(1.08); filter:blur(3px) contrast(1.08) brightness(.84) saturate(1.05);
-  transition:opacity 1.35s ease; will-change:opacity}
+  transition:opacity .8s ease; will-change:opacity}
 .ambient-pane video.is-active{opacity:.46}
 .ambient-bg::after{content:""; position:absolute; inset:0; pointer-events:none;
   background:
@@ -1375,8 +1376,7 @@ function backToForm(){
     step: 0,
     timer: null,
     panes: [
-      { videos: [document.getElementById('ambientLeftA'), document.getElementById('ambientLeftB')], active: 0 },
-      { videos: [document.getElementById('ambientRightA'), document.getElementById('ambientRightB')], active: 0 }
+      { videos: [document.getElementById('ambientLeftA'), document.getElementById('ambientLeftB')], active: 0 }
     ]
   };
 
@@ -1433,10 +1433,11 @@ function backToForm(){
         }, 1450);
       }
       pane.active = 1 - pane.active;
-      if (incoming.readyState >= 2) reveal();
+      var revealLater = function(){ setTimeout(reveal, outgoing && outgoing.classList.contains('is-active') === false && outgoing.currentSrc ? 850 : 0); };
+      if (incoming.readyState >= 2) revealLater();
       else {
-        incoming.addEventListener('loadeddata', reveal, { once:true });
-        incoming.addEventListener('canplay', reveal, { once:true });
+        incoming.addEventListener('loadeddata', revealLater, { once:true });
+        incoming.addEventListener('canplay', revealLater, { once:true });
         playAmbient(incoming);
       }
       if (done) done();
@@ -1448,18 +1449,16 @@ function backToForm(){
     var samples = P[next].samples;
     var futureStep = (ambient.step + 1) % samples.length;
     preparePane(ambient.panes[0], samples[futureStep]);
-    preparePane(ambient.panes[1], samples[(futureStep + 1) % samples.length]);
   }
 
   function crossfadeAmbient(next){
     var samples = P[next].samples;
-    var pending = 2;
+    var pending = 1;
     var done = function(){
       pending--;
       if (pending === 0) setTimeout(function(){ prefetchAmbient(next); }, 1600);
     };
     activatePane(ambient.panes[0], samples[ambient.step % samples.length], done);
-    activatePane(ambient.panes[1], samples[(ambient.step + 1) % samples.length], done);
   }
 
   function cycleAmbient(){
