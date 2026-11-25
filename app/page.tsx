@@ -885,8 +885,9 @@ export default function Home() {
           <div className="overflow-hidden w-full select-none my-auto z-10">
             <FadeIn delay={0.15} y={40}>
               <h1 className="hero-heading font-black uppercase tracking-tight leading-none whitespace-nowrap w-full text-center text-[15vw] sm:text-[16vw] md:text-[18vw] inline-flex items-center justify-center">
-                <span>{typedText}</span>
-                <span className="text-[#B600A8] animate-pulse ml-2 font-light">|</span>
+                <span className="sr-only">Lil Company - Video Editing and Motion Graphics by Ebrahim Fadel</span>
+                <span aria-hidden="true">{typedText}</span>
+                <span className="text-[#B600A8] animate-pulse ml-2 font-light" aria-hidden="true">|</span>
               </h1>
             </FadeIn>
           </div>
