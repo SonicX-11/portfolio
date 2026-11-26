@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Video Editing Prices & Packages | Lil Company",
+  title: "Video Editing Prices & Packages | Lil Media",
   description:
-    "Video editing rates from Lil Company: The Spark Pack 500 EGP, The Viral Growth 850 EGP, Cinematic Prime 1,200 EGP per video. أسعار باقات المونتاج.",
+    "Video editing rates from Lil Media: The Spark Pack 500 EGP, The Viral Growth 850 EGP, Cinematic Prime 1,200 EGP per video. أسعار باقات المونتاج.",
   alternates: { canonical: "/pricing" },
 };
 

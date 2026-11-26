@@ -8,8 +8,8 @@ const SITE_URL = "https://portfolio-two-ashen-80.vercel.app";
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
-  name: "Lil Company",
-  alternateName: ["Lil", "Ebrahim Fadel", "Lil Company Video Editing"],
+  name: "Lil Media",
+  alternateName: ["Lil", "Ebrahim Fadel", "Lil Media Video Editing"],
   description:
     "Video editing and motion graphics for short-form reels, YouTube and brand content. Packages from 500 EGP per video.",
   url: SITE_URL,
@@ -23,13 +23,13 @@ const jsonLd = {
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Lil Company | Video Editing & Motion Graphics by Ebrahim Fadel",
+    default: "Lil Media | Video Editing & Motion Graphics by Ebrahim Fadel",
     template: "%s",
   },
   description:
-    "Lil Company: professional video editor in Egypt for reels, YouTube and brand videos. High-retention editing, subtitles, color and motion graphics. Packages from 500 EGP per video. | مونتاج فيديو احترافي",
+    "Lil Media: professional video editor in Egypt for reels, YouTube and brand videos. High-retention editing, subtitles, color and motion graphics. Packages from 500 EGP per video. | مونتاج فيديو احترافي",
   keywords: [
-    "Lil Company",
+    "Lil Media",
     "Lil video editor",
     "Ebrahim Fadel",
     "video editor Egypt",
@@ -44,15 +44,15 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: SITE_URL,
-    siteName: "Lil Company",
-    title: "Lil Company | Video Editing & Motion Graphics",
+    siteName: "Lil Media",
+    title: "Lil Media | Video Editing & Motion Graphics",
     description:
       "Professional video editing for reels, YouTube and brands. Packages from 500 EGP per video.",
     images: [{ url: "/images/avatar.png" }],
   },
   twitter: {
     card: "summary",
-    title: "Lil Company | Video Editing & Motion Graphics",
+    title: "Lil Media | Video Editing & Motion Graphics",
     description: "Professional video editing for reels, YouTube and brands.",
   },
   icons: {
