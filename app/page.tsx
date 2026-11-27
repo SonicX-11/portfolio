@@ -1,6 +1,6 @@
 "use client";
 
-import LiquidBar from "@/components/LiquidBar";
+import AppleNav from "@/components/AppleNav";
 import React, { useRef, useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence, useSpring, useMotionValue, useInView } from "framer-motion";
 
@@ -812,75 +812,19 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-r from-[#0A0A0A] via-transparent to-[#0A0A0A]" />
           </div>
 
-          {/* Navigation Bar with Smooth Scroll */}
-          <FadeIn delay={0} y={-20} className="w-full z-30">
-            <LiquidBar className="flex flex-col items-stretch gap-4 px-4 py-4 mt-4 mx-4 rounded-3xl text-[10px] sm:text-xs md:text-sm font-medium tracking-wider uppercase sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-6 md:px-10 md:py-5">
-              <div className="grid grid-cols-3 gap-x-2 gap-y-3 text-center sm:flex sm:gap-7 sm:items-center">
-                <a
-                  href="#about"
-                  onClick={(e) => handleScrollTo(e, "#about")}
-                  className="hover:text-[#B600A8] transition-colors cursor-pointer"
-                >
-                  About
-                </a>
-                <button
-                  onClick={() => setIsWorkflowOpen(true)}
-                  className="text-[#D7E2EA] hover:text-[#B600A8] transition-colors uppercase tracking-wider font-semibold cursor-pointer"
-                >
-                  Workflow 
-                </button>
-                <a
-                  href="#videos"
-                  onClick={(e) => handleScrollTo(e, "#videos")}
-                  className="hover:text-[#B600A8] transition-colors cursor-pointer"
-                >
-                  Videos
-                </a>
-                <a
-                  href="/pricing"
-                  className="hover:text-[#B600A8] transition-colors cursor-pointer"
-                >
-                  Pricing
-                </a>
-                <a
-                  href="#reviews"
-                  onClick={(e) => handleScrollTo(e, "#reviews")}
-                  className="hover:text-[#B600A8] transition-colors cursor-pointer"
-                >
-                  Reviews
-                </a>
-                <a
-                  href="#thumbnails"
-                  onClick={(e) => handleScrollTo(e, "#thumbnails")}
-                  className="hover:text-[#B600A8] transition-colors cursor-pointer"
-                >
-                  Thumbnails
-                </a>
-                <a
-                  href="#services"
-                  onClick={(e) => handleScrollTo(e, "#services")}
-                  className="hover:text-[#B600A8] transition-colors cursor-pointer"
-                >
-                  Services
-                </a>
-              </div>
-
-              <div className="hidden items-center gap-3 shrink-0 sm:flex">
-                <a href="https://www.instagram.com/ebrahimfadel_8/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all">
-                  <InstagramIcon />
-                </a>
-                <a href="https://www.facebook.com/EbrahimFadel8" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all">
-                  <FacebookIcon />
-                </a>
-                <a href="https://wa.me/201211871199" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-[#25D366] hover:border-[#25D366] hover:bg-[#25D366]/10 transition-all">
-                  <WhatsAppIcon />
-                </a>
-                <a href="mailto:ebrahimfadel8903@gmail.com" aria-label="Email" className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all">
-                  <MailIcon />
-                </a>
-              </div>
-            </LiquidBar>
-          </FadeIn>
+          {/* Apple-style global navigation */}
+          <AppleNav
+            items={[
+              { label: "About", href: "#about", onClick: (e) => handleScrollTo(e, "#about") },
+              { label: "Videos", href: "#videos", onClick: (e) => handleScrollTo(e, "#videos") },
+              { label: "Pricing", href: "/pricing" },
+              { label: "Reviews", href: "#reviews", onClick: (e) => handleScrollTo(e, "#reviews") },
+              { label: "Thumbnails", href: "#thumbnails", onClick: (e) => handleScrollTo(e, "#thumbnails") },
+              { label: "Services", href: "#services", onClick: (e) => handleScrollTo(e, "#services") },
+            ]}
+            onWorkflow={() => setIsWorkflowOpen(true)}
+          />
+          <div className="apple-nav-spacer" />
 
           {/* Clean Big Title */}
           <div className="overflow-hidden w-full select-none my-auto z-10">
