@@ -76,8 +76,8 @@ function MobileCarouselControls({
 }) {
   const buttonClass =
     tone === "light"
-      ? "bg-black/5 border-black/15 text-[#0C0C0C] hover:bg-[#B600A8] hover:border-[#B600A8] hover:text-white"
-      : "bg-white/5 border-white/15 text-white hover:bg-[#B600A8] hover:border-[#B600A8]";
+      ? "bg-black/5 border-black/15 text-[#0C0C0C] hover:bg-[#6E9BFF] hover:text-[#07090D] hover:border-[#6E9BFF]"
+      : "bg-white/5 border-white/15 text-white hover:bg-[#6E9BFF] hover:text-[#07090D] hover:border-[#6E9BFF]";
 
   return (
     <div className={`mt-5 flex items-center justify-center gap-3 ${className}`}>
@@ -688,12 +688,12 @@ export default function Home() {
           viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          style={{ filter: "drop-shadow(0 0 4px #B600A8) drop-shadow(0 0 10px #B600A8)" }}
+          style={{ filter: "drop-shadow(0 0 4px #6E9BFF) drop-shadow(0 0 10px #6E9BFF)" }}
         >
           <path
             d="M3 3L10.5 21L13.5 13.5L21 10.5L3 3Z"
             fill="#FFFFFF"
-            stroke="#B600A8"
+            stroke="#6E9BFF"
             strokeWidth="1.6"
             strokeLinejoin="round"
           />
@@ -715,11 +715,11 @@ export default function Home() {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto bg-[#121216] border border-white/20 rounded-[36px] p-6 sm:p-10 shadow-[0_0_60px_rgba(182,0,168,0.3)] custom-scrollbar"
+              className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto bg-[#121216] border border-white/20 rounded-[36px] p-6 sm:p-10 shadow-[0_0_60px_rgba(110,155,255,0.3)] custom-scrollbar"
             >
               <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/10">
                 <div>
-                  <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
+                  <span className="text-xs uppercase tracking-widest text-[#6E9BFF] font-bold">
                     Production Pipeline
                   </span>
                   <h3 className="text-2xl sm:text-3xl font-black text-white mt-1">
@@ -728,7 +728,7 @@ export default function Home() {
                 </div>
                 <button
                   onClick={() => setIsWorkflowOpen(false)}
-                  className="w-10 h-10 rounded-full bg-white/10 border border-white/20 text-white flex items-center justify-center text-lg hover:bg-[#B600A8] transition-all cursor-pointer"
+                  className="w-10 h-10 rounded-full bg-white/10 border border-white/20 text-white flex items-center justify-center text-lg hover:bg-[#6E9BFF] hover:text-[#07090D] transition-all cursor-pointer"
                 >
                   ✕
                 </button>
@@ -737,21 +737,21 @@ export default function Home() {
               <div className="relative border-l-2 border-white/15 ml-4 pl-6 space-y-8">
                 {processSteps.map((step) => (
                   <div key={step.num} className="relative group">
-                    <div className="absolute -left-[31px] top-1.5 w-5 h-5 rounded-full bg-[#0A0A0A] border-2 border-[#B600A8] flex items-center justify-center shadow-[0_0_12px_rgba(182,0,168,0.8)]">
+                    <div className="absolute -left-[31px] top-1.5 w-5 h-5 rounded-full bg-[#07090D] border-2 border-[#6E9BFF] flex items-center justify-center shadow-[0_0_12px_rgba(110,155,255,0.8)]">
                       <div className="w-1.5 h-1.5 rounded-full bg-white" />
                     </div>
 
-                    <div className="p-5 rounded-2xl bg-white/[0.04] border border-white/10 hover:border-[#B600A8]/50 transition-all">
+                    <div className="p-5 rounded-2xl bg-white/[0.04] border border-white/10 hover:border-[#6E9BFF]/50 transition-all">
                       <div className="flex items-center justify-between gap-2 mb-1.5">
                         <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-mono text-[#B600A8] font-bold px-2 py-0.5 rounded bg-[#B600A8]/20 border border-[#B600A8]/40">
+                          <span className="text-[10px] font-mono text-[#6E9BFF] font-bold px-2 py-0.5 rounded bg-[#6E9BFF]/20 border border-[#6E9BFF]/40">
                             STEP {step.num}
                           </span>
                           <h4 className="text-base font-bold text-white">{step.title}</h4>
                         </div>
-                        <span className="text-xs text-[#D7E2EA]/50 font-mono">{step.tag}</span>
+                        <span className="text-xs text-[#F2F4F8]/50 font-mono">{step.tag}</span>
                       </div>
-                      <p className="text-xs sm:text-sm text-[#D7E2EA]/75 leading-relaxed font-light">
+                      <p className="text-xs sm:text-sm text-[#F2F4F8]/75 leading-relaxed font-light">
                         {step.desc}
                       </p>
                     </div>
@@ -762,7 +762,7 @@ export default function Home() {
               <div className="mt-8 pt-4 border-t border-white/10 text-center">
                 <button
                   onClick={() => setIsWorkflowOpen(false)}
-                  className="px-6 py-2.5 rounded-full bg-[#B600A8] text-white text-xs font-bold uppercase tracking-widest shadow-lg hover:bg-[#9d0091] transition-all cursor-pointer"
+                  className="px-6 py-2.5 rounded-full bg-[#6E9BFF] text-[#07090D] text-xs font-bold uppercase tracking-widest shadow-lg hover:bg-[#8FB2FF] transition-all cursor-pointer"
                 >
                   Got It, Let&apos;s Start
                 </button>
@@ -774,10 +774,10 @@ export default function Home() {
 
       <main
         dir="ltr"
-        className="relative w-full min-h-screen bg-[#0A0A0A] text-[#D7E2EA] selection:bg-[#B600A8] selection:text-white overflow-x-hidden font-sans"
+        className="relative w-full min-h-screen bg-[#07090D] text-[#F2F4F8] selection:bg-[#6E9BFF] selection:text-white overflow-x-hidden font-sans"
       >
         {/* --- HERO SECTION WITH SUBTLE AMBIENT DUAL-VIDEO BACKGROUND --- */}
-        <section className="relative min-h-screen flex flex-col justify-between overflow-x-clip bg-[#0A0A0A] pb-8">
+        <section className="relative min-h-screen flex flex-col justify-between overflow-x-clip bg-[#07090D] pb-8">
           {/* Subtle Split Ambient Video Background */}
           <div className="absolute inset-0 z-0 flex pointer-events-none overflow-hidden select-none">
             {/* Man Utd View (Left) */}
@@ -807,8 +807,8 @@ export default function Home() {
             </div>
 
             {/* Gradient Mask Overlay to ensure complete text readability */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/50 to-[#0A0A0A]/90" />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#0A0A0A] via-transparent to-[#0A0A0A]" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#07090D] via-[#07090D]/50 to-[#07090D]/90" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#07090D] via-transparent to-[#07090D]" />
           </div>
 
           {/* Navigation Bar with Smooth Scroll */}
@@ -818,68 +818,74 @@ export default function Home() {
                 <a
                   href="#about"
                   onClick={(e) => handleScrollTo(e, "#about")}
-                  className="hover:text-[#B600A8] transition-colors cursor-pointer"
+                  className="hover:text-[#6E9BFF] transition-colors cursor-pointer"
                 >
                   About
                 </a>
                 <button
                   onClick={() => setIsWorkflowOpen(true)}
-                  className="text-[#D7E2EA] hover:text-[#B600A8] transition-colors uppercase tracking-wider font-semibold cursor-pointer"
+                  className="text-[#F2F4F8] hover:text-[#6E9BFF] transition-colors uppercase tracking-wider font-semibold cursor-pointer"
                 >
                   Workflow 
                 </button>
                 <a
                   href="#videos"
                   onClick={(e) => handleScrollTo(e, "#videos")}
-                  className="hover:text-[#B600A8] transition-colors cursor-pointer"
+                  className="hover:text-[#6E9BFF] transition-colors cursor-pointer"
                 >
                   Videos
                 </a>
                 <a
                   href="/pricing"
-                  className="hover:text-[#B600A8] transition-colors cursor-pointer"
+                  className="hover:text-[#6E9BFF] transition-colors cursor-pointer"
                 >
                   Pricing
                 </a>
                 <a
                   href="#reviews"
                   onClick={(e) => handleScrollTo(e, "#reviews")}
-                  className="hover:text-[#B600A8] transition-colors cursor-pointer"
+                  className="hover:text-[#6E9BFF] transition-colors cursor-pointer"
                 >
                   Reviews
                 </a>
                 <a
                   href="#thumbnails"
                   onClick={(e) => handleScrollTo(e, "#thumbnails")}
-                  className="hover:text-[#B600A8] transition-colors cursor-pointer"
+                  className="hover:text-[#6E9BFF] transition-colors cursor-pointer"
                 >
                   Thumbnails
                 </a>
                 <a
                   href="#services"
                   onClick={(e) => handleScrollTo(e, "#services")}
-                  className="hover:text-[#B600A8] transition-colors cursor-pointer"
+                  className="hover:text-[#6E9BFF] transition-colors cursor-pointer"
                 >
                   Services
                 </a>
               </div>
 
               <div className="m-nav-icons flex items-center justify-center gap-3 shrink-0">
-                <a href="https://www.instagram.com/ebrahimfadel_8/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all">
+                <a href="https://www.instagram.com/ebrahimfadel_8/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-[#6E9BFF] hover:bg-[#6E9BFF]/20 transition-all">
                   <InstagramIcon />
                 </a>
-                <a href="https://www.facebook.com/EbrahimFadel8" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all">
+                <a href="https://www.facebook.com/EbrahimFadel8" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-[#6E9BFF] hover:bg-[#6E9BFF]/20 transition-all">
                   <FacebookIcon />
                 </a>
                 <a href="https://wa.me/201211871199" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-[#25D366] hover:border-[#25D366] hover:bg-[#25D366]/10 transition-all">
                   <WhatsAppIcon />
                 </a>
-                <a href="mailto:ebrahimfadel8903@gmail.com" aria-label="Email" className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all">
+                <a href="mailto:ebrahimfadel8903@gmail.com" aria-label="Email" className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-[#6E9BFF] hover:bg-[#6E9BFF]/20 transition-all">
                   <MailIcon />
                 </a>
               </div>
             </nav>
           </FadeIn>
+
+          {/* Lil Media logo */}
+          <div className="flex justify-center pt-6 z-10">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/brand/logo.png" alt="Lil Media" width={694} height={782} className="h-auto w-[120px] sm:w-[140px]" />
+          </div>
 
           {/* Clean Big Title */}
           <div className="overflow-hidden w-full select-none my-auto z-10 py-3">
@@ -887,7 +893,7 @@ export default function Home() {
               <h1 className="hero-heading font-black uppercase tracking-tight leading-none whitespace-nowrap w-full text-center text-[9.6vw] sm:text-[10vw] md:text-[10.2vw] inline-flex items-center justify-center">
                 <span className="sr-only">Lil Media - Video Editing and Motion Graphics by Ebrahim Fadel</span>
                 <span aria-hidden="true">{typedText}</span>
-                <span className="text-[#B600A8] animate-pulse ml-2 font-light" aria-hidden="true">|</span>
+                <span className="text-[#6E9BFF] animate-pulse ml-2 font-light" aria-hidden="true">|</span>
               </h1>
             </FadeIn>
           </div>
@@ -895,7 +901,7 @@ export default function Home() {
           {/* Hero Bottom Bar */}
           <div className="flex flex-col sm:flex-row justify-between items-center sm:items-end px-6 md:px-10 gap-6 z-20 mt-12 sm:mt-0">
             <FadeIn delay={0.3} y={20}>
-              <p className="text-[#D7E2EA] font-light leading-snug max-w-[280px] text-center sm:text-start text-xs sm:text-sm md:text-base opacity-80 uppercase tracking-wide">
+              <p className="text-[#F2F4F8] font-light leading-snug max-w-[280px] text-center sm:text-start text-xs sm:text-sm md:text-base opacity-80 uppercase tracking-wide">
                 Senior video editor shaping memorable visual stories
               </p>
             </FadeIn>
@@ -904,7 +910,7 @@ export default function Home() {
               <MagneticButton
                 href="#videos"
                 onClick={(e) => handleScrollTo(e, "#videos")}
-                className="rounded-full border-2 border-white/20 bg-white/[0.04] backdrop-blur-xl text-[#D7E2EA] font-medium uppercase tracking-widest px-6 py-2.5 text-xs sm:text-sm hover:bg-white/15 transition-colors shadow-lg cursor-pointer"
+                className="rounded-full border-2 border-white/20 bg-white/[0.04] backdrop-blur-xl text-[#F2F4F8] font-medium uppercase tracking-widest px-6 py-2.5 text-xs sm:text-sm hover:bg-white/15 transition-colors shadow-lg cursor-pointer"
               >
                 Watch Videos
               </MagneticButton>
@@ -912,13 +918,11 @@ export default function Home() {
               <MagneticButton
                 href="#contact"
                 onClick={(e) => handleScrollTo(e, "#contact")}
-                className="rounded-full uppercase tracking-widest font-semibold text-white px-7 py-3 text-xs sm:text-sm shadow-xl cursor-pointer"
+                className="rounded-full uppercase tracking-widest font-semibold text-[#07090D] px-7 py-3 text-xs sm:text-sm shadow-xl cursor-pointer"
                 style={{
-                  background: "linear-gradient(123deg, #18011F 7%, #B600A8 37%, #7621B0 72%, #BE4C00 100%)",
-                  boxShadow: "0px 4px 4px rgba(181, 1, 167, 0.25), inset 4px 4px 12px #7721B1",
-                  outline: "2px solid #FFFFFF",
-                  outlineOffset: "-3px",
-                }}
+                  background: "#6E9BFF",
+                  boxShadow: "none",
+                                  }}
               >
                 Get in touch
               </MagneticButton>
@@ -927,10 +931,10 @@ export default function Home() {
         </section>
 
         {/* --- HIGHLIGHTS SECTION --- */}
-        <section className="bg-[#0A0A0A] pt-16 pb-12 overflow-hidden flex flex-col gap-6 border-y border-white/5">
+        <section className="bg-[#07090D] pt-16 pb-12 overflow-hidden flex flex-col gap-6 border-y border-white/5">
           <div className="max-w-7xl mx-auto px-6 md:px-12 w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
+              <span className="text-xs uppercase tracking-widest text-[#6E9BFF] font-bold">
                 Visual Catalogue
               </span>
               <h3 className="text-white text-xl sm:text-2xl font-bold mt-1">
@@ -941,14 +945,14 @@ export default function Home() {
             <div className="flex items-center gap-3 self-end sm:self-center">
               <button
                 onClick={() => scrollHighlights("left")}
-                className="w-9 h-9 rounded-full bg-white/5 border border-white/15 text-white flex items-center justify-center hover:bg-[#B600A8] hover:border-[#B600A8] transition-all text-sm active:scale-95 shadow-md cursor-pointer"
+                className="w-9 h-9 rounded-full bg-white/5 border border-white/15 text-white flex items-center justify-center hover:bg-[#6E9BFF] hover:text-[#07090D] hover:border-[#6E9BFF] transition-all text-sm active:scale-95 shadow-md cursor-pointer"
                 aria-label="Scroll left"
               >
                 ←
               </button>
               <button
                 onClick={() => scrollHighlights("right")}
-                className="w-9 h-9 rounded-full bg-white/5 border border-white/15 text-white flex items-center justify-center hover:bg-[#B600A8] hover:border-[#B600A8] transition-all text-sm active:scale-95 shadow-md cursor-pointer"
+                className="w-9 h-9 rounded-full bg-white/5 border border-white/15 text-white flex items-center justify-center hover:bg-[#6E9BFF] hover:text-[#07090D] hover:border-[#6E9BFF] transition-all text-sm active:scale-95 shadow-md cursor-pointer"
                 aria-label="Scroll right"
               >
                 →
@@ -957,7 +961,7 @@ export default function Home() {
               <a
                 href="#videos"
                 onClick={(e) => handleScrollTo(e, "#videos")}
-                className="px-5 py-2 rounded-full bg-white/5 border border-white/15 text-white text-xs uppercase font-bold tracking-wider hover:bg-[#B600A8] hover:border-[#B600A8] transition-all flex items-center gap-2 shadow-lg cursor-pointer"
+                className="px-5 py-2 rounded-full bg-white/5 border border-white/15 text-white text-xs uppercase font-bold tracking-wider hover:bg-[#6E9BFF] hover:text-[#07090D] hover:border-[#6E9BFF] transition-all flex items-center gap-2 shadow-lg cursor-pointer"
               >
                 <span>View All Videos</span>
                 <span>↗</span>
@@ -992,7 +996,7 @@ export default function Home() {
                   />
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent flex flex-col justify-end p-5 pointer-events-none">
-                  <span className="text-[11px] uppercase tracking-widest text-[#B600A8] font-bold">
+                  <span className="text-[11px] uppercase tracking-widest text-[#6E9BFF] font-bold">
                     {item.category}
                   </span>
                   <h4 className="text-white font-semibold text-base truncate mt-1">
@@ -1005,10 +1009,10 @@ export default function Home() {
         </section>
 
         {/* --- ABOUT --- */}
-        <section id="about" className="py-24 px-6 md:px-12 bg-[#0A0A0A]">
+        <section id="about" className="py-24 px-6 md:px-12 bg-[#07090D]">
           <div className="max-w-5xl mx-auto">
             <FadeIn delay={0} y={30} className="text-center mb-16">
-              <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
+              <span className="text-xs uppercase tracking-widest text-[#6E9BFF] font-bold">
                 Background & Track Record
               </span>
               <h2 className="hero-heading font-black uppercase text-4xl sm:text-6xl md:text-7xl mt-2">
@@ -1022,31 +1026,31 @@ export default function Home() {
                   Hey, I&apos;m Ebrahim — Senior Video Editor
                 </h3>
 
-                <p className="text-[#D7E2EA]/80 leading-relaxed text-base sm:text-lg mb-6 font-light">
+                <p className="text-[#F2F4F8]/80 leading-relaxed text-base sm:text-lg mb-6 font-light">
                   Specialized in building high-retention visual assets that captivate audiences. With extensive experience across Adobe Premiere Pro, After Effects, and DaVinci Resolve, I bridge the gap between creative storytelling, surgical audio design, and conversion-driven marketing.
                 </p>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-white/10 text-center mb-8 font-mono">
                   <div>
                     <div className="text-2xl sm:text-3xl font-black text-white"><CountUp target={4} suffix="+" /></div>
-                    <div className="text-[10px] sm:text-[11px] text-[#D7E2EA]/60 uppercase tracking-wider mt-1">Years Experience</div>
+                    <div className="text-[10px] sm:text-[11px] text-[#F2F4F8]/60 uppercase tracking-wider mt-1">Years Experience</div>
                   </div>
                   <div>
                     <div className="text-2xl sm:text-3xl font-black text-white"><CountUp target={350} suffix="+" /></div>
-                    <div className="text-[10px] sm:text-[11px] text-[#D7E2EA]/60 uppercase tracking-wider mt-1">Videos Delivered</div>
+                    <div className="text-[10px] sm:text-[11px] text-[#F2F4F8]/60 uppercase tracking-wider mt-1">Videos Delivered</div>
                   </div>
                   <div>
                     <div className="text-2xl sm:text-3xl font-black text-white"><CountUp target={20} suffix="+" /></div>
-                    <div className="text-[10px] sm:text-[11px] text-[#D7E2EA]/60 uppercase tracking-wider mt-1">Brands & Creators</div>
+                    <div className="text-[10px] sm:text-[11px] text-[#F2F4F8]/60 uppercase tracking-wider mt-1">Brands & Creators</div>
                   </div>
                   <div>
                     <div className="text-2xl sm:text-3xl font-black text-white"><CountUp target={45} suffix="%" /></div>
-                    <div className="text-[10px] sm:text-[11px] text-[#D7E2EA]/60 uppercase tracking-wider mt-1">Retention Growth</div>
+                    <div className="text-[10px] sm:text-[11px] text-[#F2F4F8]/60 uppercase tracking-wider mt-1">Retention Growth</div>
                   </div>
                 </div>
 
                 <div className="pt-6 border-t border-white/10">
-                  <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold block mb-4">
+                  <span className="text-xs uppercase tracking-widest text-[#6E9BFF] font-bold block mb-4">
                     Primary Software Suite
                   </span>
 
@@ -1054,9 +1058,9 @@ export default function Home() {
                     {softwareStack.map((soft, idx) => (
                       <div
                         key={idx}
-                        className="p-3 rounded-2xl bg-white/[0.02] border border-white/10 flex flex-col items-center text-center hover:border-[#B600A8]/60 transition-colors"
+                        className="p-3 rounded-2xl bg-white/[0.02] border border-white/10 flex flex-col items-center text-center hover:border-[#6E9BFF]/60 transition-colors"
                       >
-                        <span className="w-9 h-9 rounded-xl bg-[#B600A8]/20 border border-[#B600A8]/40 text-[#B600A8] font-black text-sm flex items-center justify-center mb-2">
+                        <span className="w-9 h-9 rounded-xl bg-[#6E9BFF]/20 border border-[#6E9BFF]/40 text-[#6E9BFF] font-black text-sm flex items-center justify-center mb-2">
                           {soft.icon}
                         </span>
                         <h4 className="text-white text-xs font-semibold">{soft.name}</h4>
@@ -1069,7 +1073,7 @@ export default function Home() {
 
               <FadeIn delay={0.2} className="md:col-span-5 bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[32px] p-8 sm:p-10 flex flex-col justify-between h-full shadow-2xl">
                 <div>
-                  <span className="text-xs uppercase tracking-widest text-[#B600A8] font-semibold">
+                  <span className="text-xs uppercase tracking-widest text-[#6E9BFF] font-semibold">
                     Client Deliverables
                   </span>
 
@@ -1081,9 +1085,9 @@ export default function Home() {
                     {["Ahmed Abdelkareem", "Sameh Othman", "Maryam", "Sawsan", "Yasmine", "Rania", "Mai"].map((client, idx) => (
                       <div
                         key={idx}
-                        className="px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-[#D7E2EA]/90 flex items-center gap-1.5"
+                        className="px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-[#F2F4F8]/90 flex items-center gap-1.5"
                       >
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#B600A8]" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#6E9BFF]" />
                         <span>{client}</span>
                       </div>
                     ))}
@@ -1094,7 +1098,7 @@ export default function Home() {
                   <MagneticButton
                     href="#contact"
                     onClick={(e) => handleScrollTo(e, "#contact")}
-                    className="block text-center w-full py-3 rounded-full bg-white/10 hover:bg-[#B600A8] text-white text-xs font-bold uppercase tracking-wider transition-colors shadow-lg cursor-pointer"
+                    className="block text-center w-full py-3 rounded-full bg-white/10 hover:bg-[#6E9BFF] hover:text-[#07090D] text-white text-xs font-bold uppercase tracking-wider transition-colors shadow-lg cursor-pointer"
                   >
                     Book Your Project
                   </MagneticButton>
@@ -1107,11 +1111,11 @@ export default function Home() {
         {/* --- FEATURED VIDEOS (COLLAPSIBLE) --- */}
         <section
           id="videos"
-          className="py-20 sm:py-24 px-4 sm:px-8 md:px-12 bg-[#0A0A0A] border-t border-white/5"
+          className="py-20 sm:py-24 px-4 sm:px-8 md:px-12 bg-[#07090D] border-t border-white/5"
         >
           <div className="max-w-6xl mx-auto">
             <FadeIn delay={0} y={30} className="text-center mb-4">
-              <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
+              <span className="text-xs uppercase tracking-widest text-[#6E9BFF] font-bold">
                 Interactive Video Portfolio
               </span>
 
@@ -1122,7 +1126,7 @@ export default function Home() {
                 >
                   <span>Featured Video Cuts</span>
                   <span
-                    className={`text-xl sm:text-4xl text-[#B600A8] transition-transform duration-300 ${
+                    className={`text-xl sm:text-4xl text-[#6E9BFF] transition-transform duration-300 ${
                       isVideoMenuOpen ? "rotate-180" : "rotate-0"
                     }`}
                   >
@@ -1165,8 +1169,8 @@ export default function Home() {
                           }
                           className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all duration-200 border cursor-pointer ${
                             selectedVideoTab === tab.id
-                              ? "bg-[#B600A8] text-white border-[#B600A8] shadow-lg shadow-[#B600A8]/30"
-                              : "bg-white/5 text-[#D7E2EA]/70 border-white/10 hover:border-white/20 hover:text-white"
+                              ? "bg-[#6E9BFF] text-[#07090D] border-[#6E9BFF] shadow-lg shadow-[#6E9BFF]/30"
+                              : "bg-white/5 text-[#F2F4F8]/70 border-white/10 hover:border-white/20 hover:text-white"
                           }`}
                         >
                           {tab.label}
@@ -1200,7 +1204,7 @@ export default function Home() {
                     <FadeIn key={item.id} delay={idx * 0.05} className="w-[82vw] max-w-[360px] shrink-0 snap-center sm:w-auto sm:max-w-none sm:shrink">
                       <div
                         onClick={() => openModal(item)}
-                        className="bg-white/[0.04] backdrop-blur-2xl border border-white/15 rounded-[28px] overflow-hidden p-3 sm:p-3.5 shadow-2xl flex flex-col justify-between h-full group hover:border-[#B600A8]/60 transition-all cursor-pointer"
+                        className="bg-white/[0.04] backdrop-blur-2xl border border-white/15 rounded-[28px] overflow-hidden p-3 sm:p-3.5 shadow-2xl flex flex-col justify-between h-full group hover:border-[#6E9BFF]/60 transition-all cursor-pointer"
                       >
                         <div className="rounded-[20px] overflow-hidden aspect-[9/16] w-full bg-black relative">
                           <video
@@ -1222,14 +1226,14 @@ export default function Home() {
 
                         <div className="p-3.5 flex flex-col items-center gap-2 text-center sm:flex-row sm:items-start sm:justify-between sm:gap-4 sm:text-left">
                           <div>
-                            <span className="text-[10px] font-mono uppercase tracking-wider text-[#B600A8] font-bold">
+                            <span className="text-[10px] font-mono uppercase tracking-wider text-[#6E9BFF] font-bold">
                               {item.category}
                             </span>
                             <h3 className="text-white font-semibold text-base mt-0.5 leading-snug">
                               {item.title}
                             </h3>
                           </div>
-                          <span className="shrink-0 text-xs uppercase font-bold text-white/50 group-hover:text-[#B600A8] transition-colors pt-1">
+                          <span className="shrink-0 text-xs uppercase font-bold text-white/50 group-hover:text-[#6E9BFF] transition-colors pt-1">
                             Expand 
                           </span>
                         </div>
@@ -1244,10 +1248,10 @@ export default function Home() {
 
         {/* --- PRICING --- */}
         {/* --- REVIEWS --- */}
-        <section id="reviews" className="py-24 px-6 md:px-12 bg-[#0A0A0A] border-t border-white/5">
+        <section id="reviews" className="py-24 px-6 md:px-12 bg-[#07090D] border-t border-white/5">
           <div className="max-w-6xl mx-auto">
             <FadeIn delay={0} y={30} className="text-center mb-8 md:mb-16">
-              <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">Testimonials</span>
+              <span className="text-xs uppercase tracking-widest text-[#6E9BFF] font-bold">Testimonials</span>
               <h2 className="hero-heading font-black uppercase text-4xl sm:text-6xl md:text-7xl mt-2">Client Messages</h2>
             </FadeIn>
 
@@ -1262,21 +1266,21 @@ export default function Home() {
                   <div className="p-8 rounded-[32px] bg-white/[0.03] backdrop-blur-2xl border border-white/10 flex flex-col justify-between h-full shadow-2xl text-center md:text-left">
                     <div>
                       <div className="flex justify-center items-center mb-4 md:justify-between">
-                        <span className="text-[#B600A8] text-sm tracking-widest font-mono">{rev.rating}</span>
+                        <span className="text-[#6E9BFF] text-sm tracking-widest font-mono">{rev.rating}</span>
                         <span className="text-3xl text-white/20 font-serif leading-none">“</span>
                       </div>
-                      <p className="text-[#D7E2EA]/85 text-base sm:text-lg leading-relaxed mb-6 font-light">
+                      <p className="text-[#F2F4F8]/85 text-base sm:text-lg leading-relaxed mb-6 font-light">
                         &quot;{rev.quote}&quot;
                       </p>
                     </div>
 
                     <div className="pt-4 border-t border-white/10 flex items-center justify-center gap-3 md:justify-start">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#B600A8] to-[#7621B0] flex items-center justify-center font-bold text-white text-sm shadow-md">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#6E9BFF] to-[#4F6FB6] flex items-center justify-center font-bold text-white text-sm shadow-md">
                         {rev.client.charAt(0)}
                       </div>
                       <div>
                         <h4 className="text-white font-semibold text-sm sm:text-base">{rev.client}</h4>
-                        <p className="text-xs text-[#D7E2EA]/60">{rev.role}</p>
+                        <p className="text-xs text-[#F2F4F8]/60">{rev.role}</p>
                       </div>
                     </div>
                   </div>
@@ -1287,10 +1291,10 @@ export default function Home() {
         </section>
 
         {/* --- THUMBNAILS & COVERS (COLLAPSIBLE) --- */}
-        <section id="thumbnails" className="py-24 px-5 sm:px-8 md:px-12 bg-[#0A0A0A]">
+        <section id="thumbnails" className="py-24 px-5 sm:px-8 md:px-12 bg-[#07090D]">
           <div className="max-w-6xl mx-auto">
             <FadeIn delay={0} y={30} className="text-center mb-4">
-              <span className="text-xs uppercase tracking-widest text-[#B600A8] font-bold">
+              <span className="text-xs uppercase tracking-widest text-[#6E9BFF] font-bold">
                 Graphic Covers & Visuals
               </span>
 
@@ -1301,7 +1305,7 @@ export default function Home() {
                 >
                   <span>Thumbnails & Covers</span>
                   <span
-                    className={`text-2xl sm:text-4xl text-[#B600A8] transition-transform duration-300 ${
+                    className={`text-2xl sm:text-4xl text-[#6E9BFF] transition-transform duration-300 ${
                       isThumbnailsMenuOpen ? "rotate-180" : "rotate-0"
                     }`}
                   >
@@ -1329,7 +1333,7 @@ export default function Home() {
                     >
                       {thumbnailsData.map((thumb, index) => (
                         <FadeIn key={index} delay={index * 0.1} className="w-[78vw] max-w-[340px] shrink-0 snap-center sm:w-auto sm:max-w-none sm:shrink">
-                          <div className="bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[28px] overflow-hidden shadow-2xl group hover:border-[#B600A8]/50 transition-colors duration-300">
+                          <div className="bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[28px] overflow-hidden shadow-2xl group hover:border-[#6E9BFF]/50 transition-colors duration-300">
                             <div className="w-full aspect-[4/5] overflow-hidden bg-black/50">
                               <img
                                 src={thumb.src}
@@ -1340,8 +1344,8 @@ export default function Home() {
                             </div>
 
                             <div className="p-5 flex flex-col gap-1 text-center sm:text-left">
-                              <span className="text-xs uppercase tracking-widest text-[#B600A8] font-medium">{thumb.category}</span>
-                              <h3 className="text-[#D7E2EA] font-semibold text-lg sm:text-xl">{thumb.title}</h3>
+                              <span className="text-xs uppercase tracking-widest text-[#6E9BFF] font-medium">{thumb.category}</span>
+                              <h3 className="text-[#F2F4F8] font-semibold text-lg sm:text-xl">{thumb.title}</h3>
                             </div>
                           </div>
                         </FadeIn>
@@ -1388,9 +1392,9 @@ export default function Home() {
         </section>
 
         {/* --- CONTACT --- */}
-        <section id="contact" className="py-24 px-6 text-center bg-[#0A0A0A] border-t border-white/10">
+        <section id="contact" className="py-24 px-6 text-center bg-[#07090D] border-t border-white/10">
           <FadeIn delay={0} y={30} className="max-w-3xl mx-auto">
-            <span className="text-xs uppercase tracking-[0.25em] text-[#B600A8] font-bold">
+            <span className="text-xs uppercase tracking-[0.25em] text-[#6E9BFF] font-bold">
               Available for new projects
             </span>
 
@@ -1398,28 +1402,28 @@ export default function Home() {
               Let&apos;s Create Together
             </h2>
 
-            <p className="text-[#D7E2EA]/70 mb-10 max-w-xl mx-auto text-sm sm:text-base font-light">
+            <p className="text-[#F2F4F8]/70 mb-10 max-w-xl mx-auto text-sm sm:text-base font-light">
               Available for commercial campaigns, ongoing reels retainers, and high-retention video post-production.
             </p>
 
             <div className="flex justify-center items-center gap-4 mb-10">
-              <a href="https://www.instagram.com/ebrahimfadel_8/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all shadow-xl">
+              <a href="https://www.instagram.com/ebrahimfadel_8/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/70 hover:text-white hover:border-[#6E9BFF] hover:bg-[#6E9BFF]/20 transition-all shadow-xl">
                 <InstagramIcon />
               </a>
-              <a href="https://www.facebook.com/EbrahimFadel8" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all shadow-xl">
+              <a href="https://www.facebook.com/EbrahimFadel8" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/70 hover:text-white hover:border-[#6E9BFF] hover:bg-[#6E9BFF]/20 transition-all shadow-xl">
                 <FacebookIcon />
               </a>
               <a href="https://wa.me/201211871199" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/70 hover:text-[#25D366] hover:border-[#25D366] hover:bg-[#25D366]/20 transition-all shadow-xl">
                 <WhatsAppIcon />
               </a>
-              <a href="mailto:ebrahimfadel8903@gmail.com" aria-label="Email" className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all shadow-xl">
+              <a href="mailto:ebrahimfadel8903@gmail.com" aria-label="Email" className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/70 hover:text-white hover:border-[#6E9BFF] hover:bg-[#6E9BFF]/20 transition-all shadow-xl">
                 <MailIcon />
               </a>
             </div>
 
             <MagneticButton
               href="https://wa.me/201211871199?text=Hey%20Ebrahim!%20I%20want%20to%20start%20a%20video%20editing%20project."
-              className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#B600A8] hover:bg-[#9d0091] text-white uppercase tracking-widest text-xs font-bold transition-all shadow-[0_0_30px_rgba(182,0,168,0.35)] cursor-pointer"
+              className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#6E9BFF] hover:bg-[#8FB2FF] text-[#07090D] uppercase tracking-widest text-xs font-bold transition-all shadow-[0_0_30px_rgba(110,155,255,0.35)] cursor-pointer"
             >
               Start a Project
               <span>→</span>
@@ -1440,7 +1444,7 @@ export default function Home() {
               exit={{ opacity: 0, scale: 0.8 }}
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               aria-label="Scroll to top"
-              className="fixed bottom-8 right-8 z-40 w-12 h-12 rounded-full bg-[#141418]/80 backdrop-blur-xl border border-white/20 text-[#B600A8] hover:bg-[#B600A8] hover:text-white hover:border-[#B600A8] shadow-2xl flex items-center justify-center font-black transition-all"
+              className="fixed bottom-8 right-8 z-40 w-12 h-12 rounded-full bg-[#141418]/80 backdrop-blur-xl border border-white/20 text-[#6E9BFF] hover:bg-[#6E9BFF] hover:text-[#07090D] hover:text-white hover:border-[#6E9BFF] shadow-2xl flex items-center justify-center font-black transition-all"
             >
               ↑
             </motion.button>
@@ -1459,7 +1463,7 @@ export default function Home() {
             className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-3xl flex items-center justify-center p-2 sm:p-6"
           >
             <div className="absolute top-3 sm:top-6 left-3 sm:left-6 right-3 sm:right-6 z-[130] flex items-center justify-between pointer-events-none">
-              <span className="px-3.5 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-2xl text-xs uppercase font-mono text-[#B600A8] font-bold pointer-events-auto">
+              <span className="px-3.5 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-2xl text-xs uppercase font-mono text-[#6E9BFF] font-bold pointer-events-auto">
                 {currentVideoIndex + 1} / {videosData.length}
               </span>
 
@@ -1469,13 +1473,13 @@ export default function Home() {
                     e.stopPropagation();
                     toggleSound();
                   }}
-                  className="px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-white text-xs font-bold hover:bg-[#B600A8] transition-all cursor-pointer"
+                  className="px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-white text-xs font-bold hover:bg-[#6E9BFF] hover:text-[#07090D] transition-all cursor-pointer"
                 >
                   {isModalMuted ? "🔇 UNMUTE" : "🔊 MUTE"}
                 </button>
                 <button
                   onClick={closeModal}
-                  className="w-10 h-10 rounded-full bg-white/10 border border-white/20 text-white flex items-center justify-center hover:bg-[#B600A8] transition-all cursor-pointer"
+                  className="w-10 h-10 rounded-full bg-white/10 border border-white/20 text-white flex items-center justify-center hover:bg-[#6E9BFF] hover:text-[#07090D] transition-all cursor-pointer"
                 >
                   ✕
                 </button>
@@ -1487,7 +1491,7 @@ export default function Home() {
                 e.stopPropagation();
                 goPrevious();
               }}
-              className="absolute left-2 sm:left-6 z-[120] w-11 h-11 rounded-full bg-black/60 border border-white/20 text-white flex items-center justify-center text-xl hover:bg-[#B600A8] transition-all cursor-pointer"
+              className="absolute left-2 sm:left-6 z-[120] w-11 h-11 rounded-full bg-black/60 border border-white/20 text-white flex items-center justify-center text-xl hover:bg-[#6E9BFF] hover:text-[#07090D] transition-all cursor-pointer"
             >
               ←
             </button>
@@ -1497,7 +1501,7 @@ export default function Home() {
                 e.stopPropagation();
                 goNext();
               }}
-              className="absolute right-2 sm:right-6 z-[120] w-11 h-11 rounded-full bg-black/60 border border-white/20 text-white flex items-center justify-center text-xl hover:bg-[#B600A8] transition-all cursor-pointer"
+              className="absolute right-2 sm:right-6 z-[120] w-11 h-11 rounded-full bg-black/60 border border-white/20 text-white flex items-center justify-center text-xl hover:bg-[#6E9BFF] hover:text-[#07090D] transition-all cursor-pointer"
             >
               →
             </button>
@@ -1507,7 +1511,7 @@ export default function Home() {
               animate={{ scale: 1 }}
               exit={{ scale: 0.94 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-[380px] h-[84dvh] aspect-[9/16] bg-black rounded-[32px] overflow-hidden border border-white/20 shadow-[0_0_80px_rgba(182,0,168,0.35)]"
+              className="relative w-full max-w-[380px] h-[84dvh] aspect-[9/16] bg-black rounded-[32px] overflow-hidden border border-white/20 shadow-[0_0_80px_rgba(110,155,255,0.35)]"
             >
               <video
                 ref={modalVideoRef}

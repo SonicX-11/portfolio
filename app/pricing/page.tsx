@@ -83,10 +83,11 @@ const generalTerms = [
 
 export default function PricingPage() {
   return (
-    <main className="min-h-screen bg-[#0A0A0A] text-white">
+    <main className="min-h-screen bg-[#07090D] text-white">
       <nav className="mx-auto w-full max-w-6xl px-5 sm:px-8 flex h-20 items-center justify-between gap-3 border-b border-white/5">
         <Link href="/" className="whitespace-nowrap font-display text-base tracking-widest text-white sm:text-lg">
-          Ebrahim Fadel
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/logo.png" alt="Lil Media" width={694} height={782} className="h-12 w-auto" />
         </Link>
         <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.18em] text-white/70 sm:gap-5 sm:text-xs sm:tracking-[0.25em]">
           <Link href="/#videos" className="transition-colors hover:text-white">
@@ -104,18 +105,18 @@ export default function PricingPage() {
       <section className="px-5 py-20 sm:px-8 md:px-12">
         <div className="mx-auto max-w-6xl">
           <div className="mb-14 text-center">
-            <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#B600A8]">
+            <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#6E9BFF]">
               Video Editing Packages
             </p>
             <h1 className="hero-heading mt-3 text-5xl font-black uppercase sm:text-6xl md:text-7xl">
               Rates & Packages
             </h1>
-            <p className="mx-auto mt-4 max-w-xl text-sm font-light text-[#D7E2EA]/65 sm:text-base">
+            <p className="mx-auto mt-4 max-w-xl text-sm font-light text-[#F2F4F8]/65 sm:text-base">
               Transparent video production rates in EGP, with the matching USD rate shown on each package.
             </p>
           </div>
 
-          <p className="mb-4 text-center text-[11px] font-bold uppercase tracking-[0.25em] text-[#D7E2EA]/45 lg:hidden">
+          <p className="mb-4 text-center text-[11px] font-bold uppercase tracking-[0.25em] text-[#F2F4F8]/45 lg:hidden">
             Swipe to compare packages
           </p>
           <div className="mb-16 flex snap-x snap-mandatory items-stretch gap-5 overflow-x-auto pb-5 no-scrollbar lg:grid lg:grid-cols-3 lg:gap-8 lg:overflow-visible lg:pb-0">
@@ -124,12 +125,12 @@ export default function PricingPage() {
                 key={pkg.id}
                 className={`relative flex w-[86vw] max-w-[420px] shrink-0 snap-center flex-col justify-between rounded-[36px] p-8 text-center backdrop-blur-2xl transition-all duration-300 lg:w-full lg:max-w-none lg:shrink ${
                   pkg.featured
-                    ? "border-2 border-[#B600A8] bg-gradient-to-b from-[#18011F]/90 to-[#121212]/90 shadow-[0_0_40px_rgba(182,0,168,0.25)]"
+                    ? "border-2 border-[#6E9BFF] bg-gradient-to-b from-[#111725]/90 to-[#121212]/90 shadow-[0_0_40px_rgba(110,155,255,0.25)]"
                     : "border border-white/10 bg-white/[0.03] shadow-2xl hover:border-white/25"
                 }`}
               >
                 {pkg.featured && (
-                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 animate-blink whitespace-nowrap rounded-full bg-[#B600A8] px-5 py-1.5 text-xs font-black uppercase tracking-widest text-white shadow-[0_0_20px_rgba(182,0,168,0.55)] sm:text-sm">
+                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 animate-blink whitespace-nowrap rounded-full bg-[#6E9BFF] px-5 py-1.5 text-xs font-black uppercase tracking-widest text-[#07090D] shadow-[0_0_20px_rgba(110,155,255,0.55)] sm:text-sm">
                     Most Popular
                   </span>
                 )}
@@ -139,7 +140,7 @@ export default function PricingPage() {
                     <span className="font-mono text-xs font-bold text-white/35">{pkg.id}</span>
                     <div>
                       <h2 className="text-2xl font-bold text-white">{pkg.name}</h2>
-                      <p className="mt-1 text-sm text-[#D7E2EA]/70">{pkg.subtitle}</p>
+                      <p className="mt-1 text-sm text-[#F2F4F8]/70">{pkg.subtitle}</p>
                     </div>
                   </div>
 
@@ -148,20 +149,20 @@ export default function PricingPage() {
                       <span className="whitespace-nowrap text-4xl font-black text-white sm:text-5xl lg:text-[2.6rem] xl:text-[2.6rem] 2xl:text-[2.6rem]">
                         {pkg.priceEGP}
                       </span>
-                      <span className="whitespace-nowrap text-sm font-medium uppercase tracking-wider text-[#D7E2EA]/60">
+                      <span className="whitespace-nowrap text-sm font-medium uppercase tracking-wider text-[#F2F4F8]/60">
                         / Video
                       </span>
                     </div>
-                    <div className="mt-1 text-sm font-bold text-[#B600A8]">≈ {pkg.priceUSD} / Video</div>
+                    <div className="mt-1 text-sm font-bold text-[#6E9BFF]">≈ {pkg.priceUSD} / Video</div>
                   </div>
 
                   <ul className="mb-8 space-y-4">
                     {pkg.features.map((feature) => (
                       <li
                         key={feature}
-                        className="flex items-start justify-center gap-2 text-center text-sm font-light leading-relaxed text-[#D7E2EA]/80"
+                        className="flex items-start justify-center gap-2 text-center text-sm font-light leading-relaxed text-[#F2F4F8]/80"
                       >
-                        <span className="mt-0.5 inline-block select-none text-base text-[#B600A8]">✦</span>
+                        <span className="mt-0.5 inline-block select-none text-base text-[#6E9BFF]">✦</span>
                         <span>{feature}</span>
                       </li>
                     ))}
@@ -169,14 +170,14 @@ export default function PricingPage() {
                 </div>
 
                 <div className="flex flex-col gap-3 border-t border-white/10 pt-6">
-                  <p className="text-center font-mono text-xs font-medium text-[#D7E2EA]/50">
+                  <p className="text-center font-mono text-xs font-medium text-[#F2F4F8]/50">
                     {pkg.revisions}
                   </p>
                   <a
                     href={pkg.driveLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full rounded-full border border-[#B600A8]/60 py-2.5 text-center text-xs font-bold uppercase tracking-wider text-[#D7E2EA] shadow-md transition-colors hover:bg-[#B600A8]/20"
+                    className="w-full rounded-full border border-[#6E9BFF]/60 py-2.5 text-center text-xs font-bold uppercase tracking-wider text-[#F2F4F8] shadow-md transition-colors hover:bg-[#6E9BFF]/20"
                   >
                     ▶ Watch Video Sample
                   </a>
@@ -184,7 +185,7 @@ export default function PricingPage() {
                     href={`/payment.html?package=${encodeURIComponent(pkg.name)}`}
                     className={`block w-full rounded-full py-3.5 text-center text-sm font-semibold uppercase tracking-widest transition-all duration-300 ${
                       pkg.featured
-                        ? "bg-[#B600A8] text-white shadow-lg shadow-[#B600A8]/30 hover:bg-[#9d0091]"
+                        ? "bg-[#6E9BFF] text-[#07090D] shadow-lg shadow-[#6E9BFF]/30 hover:bg-[#8FB2FF]"
                         : "border border-white/20 text-white shadow-md hover:bg-white/10"
                     }`}
                   >
@@ -197,7 +198,7 @@ export default function PricingPage() {
 
           <div className="rounded-[36px] border border-white/10 bg-white/[0.02] p-8 shadow-2xl backdrop-blur-2xl sm:p-12">
             <div className="mb-8 flex flex-col items-center gap-2 text-center">
-              <span className="text-xl text-[#B600A8]">✦</span>
+              <span className="text-xl text-[#6E9BFF]">✦</span>
               <h2 className="text-2xl font-bold uppercase tracking-wide">General Terms</h2>
             </div>
             <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 no-scrollbar md:grid md:grid-cols-2 md:gap-6 md:overflow-visible md:pb-0">
@@ -205,14 +206,14 @@ export default function PricingPage() {
                 <div
                   key={term.title}
                   className={`w-[82vw] max-w-[360px] shrink-0 snap-center rounded-2xl border border-white/5 bg-white/[0.02] p-6 md:w-auto md:max-w-none md:shrink ${
-                    index === 0 ? "border-[#B600A8]/30 bg-[#B600A8]/5 md:col-span-2" : ""
+                    index === 0 ? "border-[#6E9BFF]/30 bg-[#6E9BFF]/5 md:col-span-2" : ""
                   }`}
                 >
                   <h3 className="mb-2 flex flex-wrap items-center justify-center gap-2 text-center text-lg font-semibold text-white">
-                    <span className="font-mono text-xs text-[#B600A8]">0{index + 1}.</span>
+                    <span className="font-mono text-xs text-[#6E9BFF]">0{index + 1}.</span>
                     {term.title}
                   </h3>
-                  <p className="text-center text-sm font-light leading-relaxed text-[#D7E2EA]/70">{term.desc}</p>
+                  <p className="text-center text-sm font-light leading-relaxed text-[#F2F4F8]/70">{term.desc}</p>
                 </div>
               ))}
             </div>
