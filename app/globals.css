@@ -63,3 +63,11 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #7621B0;
 }
+/* Mobile header polish (phones only) */
+@media (max-width: 639px) {
+  .m-nav-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 2px; }
+  .m-nav-links a, .m-nav-links button { min-height: 38px; display: inline-flex; align-items: center; padding: 0 9px; border-radius: 999px; font-size: 10.5px; letter-spacing: .05em; -webkit-tap-highlight-color: transparent; transition: background-color .2s ease, transform .2s ease; }
+  .m-nav-links a:active, .m-nav-links button:active { background: rgba(255,255,255,.12); transform: scale(.96); }
+  .m-nav-icons { padding-top: 12px; margin-top: -4px; border-top: 1px solid rgba(255,255,255,.1); gap: 14px !important; }
+  .m-nav-icons a { width: 40px !important; height: 40px !important; }
+}

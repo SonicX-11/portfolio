@@ -567,7 +567,7 @@ export default function Home() {
 
   // Typewriter
   useEffect(() => {
-    const fullText = "Hi, i'm Lil";
+    const fullText = "Hi, i'm Ebrahim";
     let index = 0;
 
     const interval = setInterval(() => {
@@ -814,7 +814,7 @@ export default function Home() {
           {/* Navigation Bar with Smooth Scroll */}
           <FadeIn delay={0} y={-20} className="w-full z-30">
             <nav className="flex flex-col items-stretch gap-4 px-4 py-4 mt-4 mx-4 rounded-3xl bg-white/[0.03] backdrop-blur-2xl border border-white/10 text-[10px] sm:text-xs md:text-sm font-medium tracking-wider uppercase shadow-2xl sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-6 md:px-10 md:py-5">
-              <div className="grid grid-cols-3 gap-x-2 gap-y-3 text-center sm:flex sm:gap-7 sm:items-center">
+              <div className="m-nav-links grid grid-cols-3 gap-x-2 gap-y-3 text-center sm:flex sm:gap-7 sm:items-center">
                 <a
                   href="#about"
                   onClick={(e) => handleScrollTo(e, "#about")}
@@ -864,7 +864,7 @@ export default function Home() {
                 </a>
               </div>
 
-              <div className="hidden items-center gap-3 shrink-0 sm:flex">
+              <div className="m-nav-icons flex items-center justify-center gap-3 shrink-0">
                 <a href="https://www.instagram.com/ebrahimfadel_8/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-9 h-9 rounded-full bg-white/5 border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-[#B600A8] hover:bg-[#B600A8]/20 transition-all">
                   <InstagramIcon />
                 </a>
@@ -882,9 +882,9 @@ export default function Home() {
           </FadeIn>
 
           {/* Clean Big Title */}
-          <div className="overflow-hidden w-full select-none my-auto z-10">
+          <div className="overflow-hidden w-full select-none my-auto z-10 py-3">
             <FadeIn delay={0.15} y={40}>
-              <h1 className="hero-heading font-black uppercase tracking-tight leading-none whitespace-nowrap w-full text-center text-[15vw] sm:text-[16vw] md:text-[18vw] inline-flex items-center justify-center">
+              <h1 className="hero-heading font-black uppercase tracking-tight leading-none whitespace-nowrap w-full text-center text-[9.6vw] sm:text-[11vw] md:text-[12.5vw] inline-flex items-center justify-center">
                 <span className="sr-only">Lil Media - Video Editing and Motion Graphics by Ebrahim Fadel</span>
                 <span aria-hidden="true">{typedText}</span>
                 <span className="text-[#B600A8] animate-pulse ml-2 font-light" aria-hidden="true">|</span>
