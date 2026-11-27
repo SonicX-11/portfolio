@@ -884,7 +884,7 @@ export default function Home() {
           {/* Clean Big Title */}
           <div className="overflow-hidden w-full select-none my-auto z-10 py-3">
             <FadeIn delay={0.15} y={40}>
-              <h1 className="hero-heading font-black uppercase tracking-tight leading-none whitespace-nowrap w-full text-center text-[9.6vw] sm:text-[11vw] md:text-[12.5vw] inline-flex items-center justify-center">
+              <h1 className="hero-heading font-black uppercase tracking-tight leading-none whitespace-nowrap w-full text-center text-[9.6vw] sm:text-[10vw] md:text-[10.2vw] inline-flex items-center justify-center">
                 <span className="sr-only">Lil Media - Video Editing and Motion Graphics by Ebrahim Fadel</span>
                 <span aria-hidden="true">{typedText}</span>
                 <span className="text-[#B600A8] animate-pulse ml-2 font-light" aria-hidden="true">|</span>
