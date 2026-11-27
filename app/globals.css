@@ -94,3 +94,6 @@ body {
 .lg-bar:not(.has-refraction) .lg-bar__lens { -webkit-backdrop-filter: blur(1px) saturate(180%) brightness(1.2) !important; backdrop-filter: blur(1px) saturate(180%) brightness(1.2) !important; }
 .lg-bar a:not([aria-label]):hover, .lg-bar button:hover { transform: none !important; }
 .lg-bar a[aria-label]:hover { transform: none !important; }
+
+.lg-bar__lens.stretch { animation: lg-wobble .8s cubic-bezier(.3,1.25,.5,1); }
+@keyframes lg-wobble { 0% { scale: 1.3 .78; } 25% { scale: .9 1.14; } 50% { scale: 1.07 .95; } 75% { scale: .98 1.02; } 100% { scale: 1 1; } }
