@@ -6,12 +6,12 @@ import { useEffect, useId, useRef, useState } from "react";
 function buildMap(w: number, h: number, r: number, lens?: boolean) {
   if (lens) {
     // Thick-lens map: gentle magnification in the middle, strong bending at the rim.
-    const amp = Math.min(1, (h / w) * 1.15);
+    const amp = Math.min(1, (h / w) * 0.7);
     const hi = Math.round(128 + 127 * amp), lo = Math.round(128 - 128 * amp);
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><defs>
 <linearGradient id="x" x1="0" x2="1" y1="0" y2="0"><stop offset="0%" stop-color="rgb(255,0,0)"/><stop offset="10%" stop-color="rgb(185,0,0)"/><stop offset="30%" stop-color="rgb(148,0,0)"/><stop offset="50%" stop-color="rgb(128,0,0)"/><stop offset="70%" stop-color="rgb(108,0,0)"/><stop offset="90%" stop-color="rgb(71,0,0)"/><stop offset="100%" stop-color="rgb(0,0,0)"/></linearGradient>
 <linearGradient id="y" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="rgb(0,0,${hi})"/><stop offset="12%" stop-color="rgb(0,0,${Math.round(128 + (hi - 128) * 0.6)})"/><stop offset="50%" stop-color="rgb(0,0,128)"/><stop offset="88%" stop-color="rgb(0,0,${Math.round(128 - (128 - lo) * 0.6)})"/><stop offset="100%" stop-color="rgb(0,0,${lo})"/></linearGradient></defs>
-<rect width="${w}" height="${h}" fill="rgb(0,128,128)"/>
+<rect width="${w}" height="${h}" fill="rgb(0,0,0)"/>
 <rect width="${w}" height="${h}" rx="${r}" fill="url(#x)" style="mix-blend-mode:screen"/>
 <rect width="${w}" height="${h}" rx="${r}" fill="url(#y)" style="mix-blend-mode:screen"/></svg>`;
     return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
@@ -21,7 +21,7 @@ function buildMap(w: number, h: number, r: number, lens?: boolean) {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><defs>
 <linearGradient id="x" x1="0" x2="1" y1="0" y2="0"><stop offset="0%" stop-color="rgb(255,0,0)"/><stop offset="${ex}%" stop-color="rgb(128,0,0)"/><stop offset="${100 - ex}%" stop-color="rgb(128,0,0)"/><stop offset="100%" stop-color="rgb(0,0,0)"/></linearGradient>
 <linearGradient id="y" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="rgb(0,0,255)"/><stop offset="${ey}%" stop-color="rgb(0,0,128)"/><stop offset="${100 - ey}%" stop-color="rgb(0,0,128)"/><stop offset="100%" stop-color="rgb(0,0,0)"/></linearGradient></defs>
-<rect width="${w}" height="${h}" fill="rgb(0,128,128)"/>
+<rect width="${w}" height="${h}" fill="rgb(0,0,0)"/>
 <rect width="${w}" height="${h}" rx="${r}" fill="url(#x)" style="mix-blend-mode:screen"/>
 <rect width="${w}" height="${h}" rx="${r}" fill="url(#y)" style="mix-blend-mode:screen"/></svg>`;
   return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
@@ -76,7 +76,7 @@ export default function LiquidBar({ className = "", children }: { className?: st
       lf.setAttribute('width', String(lw)); lf.setAttribute('height', String(lh));
       lm.setAttribute('width', String(lw)); lm.setAttribute('height', String(lh));
       lm.setAttribute('href', buildMap(lw, lh, lh / 2, true));
-      const sc = lw * 0.34;
+      const sc = lw * 0.3;
       lensDispRefs.current.forEach((d, i) => d && d.setAttribute('scale', String(sc * (1 - i * 0.12))));
     }
     lens.style.transform = `translate(${t.left - padX}px, ${t.top - padY}px)`;
