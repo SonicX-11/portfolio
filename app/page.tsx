@@ -1019,7 +1019,7 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
               <FadeIn delay={0.1} className="md:col-span-7 bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[32px] p-8 sm:p-10 shadow-2xl">
                 <h3 className="text-2xl font-bold text-white mb-4">
-                  Hey, I&apos;m Lil — Senior Video Editor
+                  Hey, I&apos;m Ebrahim — Senior Video Editor
                 </h3>
 
                 <p className="text-[#D7E2EA]/80 leading-relaxed text-base sm:text-lg mb-6 font-light">
@@ -1418,7 +1418,7 @@ export default function Home() {
             </div>
 
             <MagneticButton
-              href="https://wa.me/201211871199?text=Hey%20Lil!%20I%20want%20to%20start%20a%20video%20editing%20project."
+              href="https://wa.me/201211871199?text=Hey%20Ebrahim!%20I%20want%20to%20start%20a%20video%20editing%20project."
               className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#B600A8] hover:bg-[#9d0091] text-white uppercase tracking-widest text-xs font-bold transition-all shadow-[0_0_30px_rgba(182,0,168,0.35)] cursor-pointer"
             >
               Start a Project
@@ -1426,7 +1426,7 @@ export default function Home() {
             </MagneticButton>
 
             <div className="text-xs text-white/40 mt-10 font-mono">
-              © 2026 Lil. All rights reserved.
+              © 2026 Ebrahim. All rights reserved.
             </div>
           </FadeIn>
         </section>
