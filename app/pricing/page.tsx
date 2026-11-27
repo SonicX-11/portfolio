@@ -1,3 +1,4 @@
+import AppleNav from "@/components/AppleNav";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -84,22 +85,15 @@ const generalTerms = [
 export default function PricingPage() {
   return (
     <main className="min-h-screen bg-[#0A0A0A] text-white">
-      <nav className="mx-auto w-full max-w-6xl px-5 sm:px-8 flex h-20 items-center justify-between gap-3 border-b border-white/5">
-        <Link href="/" className="whitespace-nowrap font-display text-base tracking-widest text-white sm:text-lg">
-          Ebrahim Fadel
-        </Link>
-        <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.18em] text-white/70 sm:gap-5 sm:text-xs sm:tracking-[0.25em]">
-          <Link href="/#videos" className="transition-colors hover:text-white">
-            Videos
-          </Link>
-          <Link href="/pricing" className="text-white">
-            Pricing
-          </Link>
-          <Link href="/#contact" className="transition-colors hover:text-white">
-            Contact
-          </Link>
-        </div>
-      </nav>
+      <AppleNav
+        current="Pricing"
+        items={[
+          { label: "Videos", href: "/#videos" },
+          { label: "Pricing", href: "/pricing" },
+          { label: "Contact", href: "/#contact" },
+        ]}
+      />
+      <div className="apple-nav-spacer" />
 
       <section className="px-5 py-20 sm:px-8 md:px-12">
         <div className="mx-auto max-w-6xl">
