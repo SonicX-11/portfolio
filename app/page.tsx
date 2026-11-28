@@ -883,7 +883,7 @@ export default function Home() {
 
           {/* Lil Media logo (absolute so it never affects hero layout) */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/brand/logo-sm.png" alt="Lil Media" width={300} height={338} className="pointer-events-none absolute left-1/2 top-[172px] z-10 h-auto w-[110px] -translate-x-1/2 sm:top-[104px] sm:w-[140px]" />
+          <img src="/brand/logo-sm.png" alt="Lil Media" width={300} height={338} className="pointer-events-none absolute left-1/2 top-[204px] z-10 h-auto w-[110px] -translate-x-1/2 sm:top-[104px] sm:w-[140px]" />
 
           {/* Clean Big Title */}
           <div className="overflow-hidden w-full select-none my-auto z-10 py-3">
