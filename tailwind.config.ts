@@ -17,7 +17,7 @@ const config: Config = {
         line: "rgba(255,255,255,0.08)",
       },
       fontFamily: {
-        display: ["var(--font-playfair)", "var(--font-thmanyah)", "serif"],
+        display: ["var(--font-playfair)", "serif"],
         body: ["var(--font-inter)", "sans-serif"],
       },
       fontSize: {

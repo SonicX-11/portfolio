@@ -16,7 +16,7 @@ html {
 body {
   background-color: #07090D;
   color: #F2F4F8;
-  font-family: var(--font-inter), var(--font-thmanyah), sans-serif;
+  font-family: var(--font-inter), sans-serif;
   overscroll-behavior: none;
   overflow-x: clip;
 }
@@ -36,8 +36,8 @@ body {
   }
 }
 
-h1, h2, h3, .font-display { font-family: var(--font-playfair), var(--font-thmanyah), serif; font-style: italic; }
-:lang(ar), [dir="rtl"] { font-family: var(--font-thmanyah), var(--font-inter), serif; font-style: normal; }
+h1, h2, h3, .font-display { font-family: var(--font-playfair), serif; font-style: italic; }
+:lang(ar), [dir="rtl"] { font-style: normal; }
 .hero-heading {
   background: linear-gradient(180deg, #9AA3B5 0%, #F2F4F8 100%);
   -webkit-background-clip: text;

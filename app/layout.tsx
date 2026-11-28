@@ -1,18 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Inter, Playfair_Display } from "next/font/google";
-import localFont from "next/font/local";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const playfair = Playfair_Display({ subsets: ["latin"], style: ["italic"], weight: ["400", "700"], variable: "--font-playfair", display: "swap" });
-const thmanyah = localFont({
-  src: [
-    { path: "./fonts/thmanyah-serif-display-Regular.otf", weight: "400", style: "normal" },
-    { path: "./fonts/thmanyah-serif-display-Bold.otf", weight: "700", style: "normal" },
-  ],
-  variable: "--font-thmanyah",
-  display: "swap",
-});
 
 
 const SITE_URL = "https://portfolio-two-ashen-80.vercel.app";
@@ -75,7 +66,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable} ${thmanyah.variable}`}>
+    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <body>
         <script
           type="application/ld+json"
